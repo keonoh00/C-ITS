@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Shield, LayoutGrid, ClipboardList, Lock } from "lucide-react";
+import { Shield, ClipboardList, Lock, HomeIcon } from "lucide-react";
 
 export interface MenuItemType {
   name: string;
@@ -13,7 +13,7 @@ export interface MenuItemType {
 }
 
 export const MENU_ITEMS: MenuItemType[] = [
-  { name: "Asset", icon: <LayoutGrid />, url: "/asset" },
+  { name: "Home", icon: <HomeIcon />, url: "/" },
   { name: "Defend", icon: <Shield />, url: "/defend" },
   { name: "Defend Scenario", icon: <Lock />, url: "/defend-scenario" },
   { name: "Assessment", icon: <ClipboardList />, url: "/assessment" },
@@ -74,7 +74,7 @@ const Sidebar: React.FC = () => {
               <div
                 className={`flex items-center p-2 text-sm font-medium rounded-md transition-colors duration-200
                   ${
-                    pathname.startsWith(item.url)
+                    pathname == item.url
                       ? "text-blue-500 bg-blue-100 dark:bg-gray-800"
                       : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                   }
