@@ -4,6 +4,31 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --color-base-950: oklch(0.26 0.01 270); /* #282E38 */
+  --color-base-900: oklch(0.28 0.01 270); /* #313844 */
+  --color-base-800: oklch(0.32 0.01 270); /* #343B48 */
+  --color-base-700: oklch(0.34 0.01 270); /* #3A414C */
+  --color-base-600: oklch(0.36 0.03 270); /* #3C4F65 */
+
+  --color-primary-500: oklch(0.72 0.22 250); /* #428CF4 */
+  --color-primary-400: oklch(0.75 0.19 250); /* #71B6F9 */
+  --color-primary-300: oklch(0.74 0.21 240); /* #40A0FC */
+  --color-primary-200: oklch(0.73 0.22 245); /* #4D59A0 */
+
+  --color-accent-500: oklch(0.72 0.25 250); /* #009FE3 */
+  --color-accent-400: oklch(0.68 0.23 245); /* #0169B4 */
+  --color-accent-300: oklch(0.74 0.21 240); /* #35B8E0 */
+
+  --color-danger-500: oklch(0.72 0.25 30); /* #FF5C5B */
+  --color-danger-400: oklch(0.73 0.27 28); /* #FE4500 */
+
+  --color-warning-500: oklch(0.89 0.19 100); /* #F9C851 */
+
+  --color-neutral-500: oklch(0.78 0.01 260); /* #ACB5BD */
+  --color-neutral-400: oklch(0.82 0.01 260); /* #C6C6C6 */
+  --color-neutral-300: oklch(0.94 0.01 270); /* #F8F9FA */
+  --color-neutral-200: oklch(0.55 0.01 260); /* #6C757D */
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
