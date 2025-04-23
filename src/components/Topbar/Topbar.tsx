@@ -1,27 +1,28 @@
 "use client";
+
 import { MenuIcon } from "lucide-react";
-import React from "react";
-import { MENU_ITEMS, useSidebar } from "../Sidebar/Sidebar";
+import React, { ReactNode, useRef } from "react";
 import { usePathname } from "next/navigation";
+import Sidebar, { MENU_ITEMS, SidebarRef } from "../Sidebar/Sidebar";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface TopbarProps {}
+interface TopbarProps {
+  leftEnhancer?: ReactNode;
+}
 
-const Topbar: React.FC<TopbarProps> = ({}) => {
-  const { toggle } = useSidebar();
+const Topbar: React.FC<TopbarProps> = ({ leftEnhancer }) => {
   const pathname = usePathname();
-  const matchingMenu = MENU_ITEMS.filter((item) => item.url == pathname);
+
+  const matchingMenu = MENU_ITEMS.find((item) => item.url === pathname);
+
   return (
-    <div className="flex flex-row w-full h-18 items-center">
-      <button onClick={toggle}>
-        <MenuIcon size={32} />
-      </button>
-      <div className="justify-center">
-        <p className="text-2xl ml-4">
-          {matchingMenu && matchingMenu.length > 0 ? matchingMenu[0].name : ""}
-        </p>
+    <>
+      <div className="flex flex-row w-full h-18 items-center">
+        {leftEnhancer}
+        <div className="ml-4 text-2xl">
+          {matchingMenu ? matchingMenu.name : ""}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
