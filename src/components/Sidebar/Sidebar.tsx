@@ -1,10 +1,10 @@
 "use client";
 
-import React, { createContext, useContext, useState } from "react";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
+import { Shield, ClipboardList, Lock, HomeIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Shield, ClipboardList, Lock, HomeIcon } from "lucide-react";
 
 export interface MenuItemType {
   name: string;
@@ -19,36 +19,20 @@ export const MENU_ITEMS: MenuItemType[] = [
   { name: "Assessment", icon: <ClipboardList />, url: "/assessment" },
 ];
 
-interface SidebarContextType {
-  expanded: boolean;
+export interface SidebarRef {
   toggle: () => void;
 }
 
-const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface SidebarProps {}
 
-export const useSidebar = () => {
-  const context = useContext(SidebarContext);
-  if (!context)
-    throw new Error("useSidebar must be used within a SidebarProvider");
-  return context;
-};
-
-export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const [expanded, setExpanded] = useState(true);
-  const toggle = () => setExpanded((prev) => !prev);
-
-  return (
-    <SidebarContext.Provider value={{ expanded, toggle }}>
-      {children}
-    </SidebarContext.Provider>
-  );
-};
-
-const Sidebar: React.FC = () => {
-  const { expanded } = useSidebar();
+const Sidebar = forwardRef<SidebarRef, SidebarProps>(({}, ref) => {
   const pathname = usePathname();
+  const [expanded, setExpanded] = useState(true);
+
+  useImperativeHandle(ref, () => ({
+    toggle: () => setExpanded((prev) => !prev),
+  }));
 
   return (
     <div
@@ -62,7 +46,6 @@ const Sidebar: React.FC = () => {
             src={expanded ? "/assets/logo-dark.png" : "/assets/logo-sm.png"}
             alt="Logo"
             fill
-            sizes={expanded ? "224px" : "64px"}
             className="object-contain"
           />
         </div>
@@ -75,7 +58,7 @@ const Sidebar: React.FC = () => {
                 className={`flex items-center p-2 text-sm font-medium rounded-md transition-colors duration-200
                   ${
                     pathname == item.url
-                      ? "text-blue-500 bg-blue-100 dark:bg-gray-800"
+                      ? "text-blue-500 dark:bg-gray-800"
                       : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                   }
                   ${!expanded ? "justify-center" : ""}`}
@@ -96,6 +79,7 @@ const Sidebar: React.FC = () => {
       </nav>
     </div>
   );
-};
+});
 
+Sidebar.displayName = "Sidebar";
 export default Sidebar;

@@ -1,5 +1,3 @@
-"use client";
-
 export default function Home() {
-  return <div></div>;
+  return <div>asjdflas;djf</div>;
 }
