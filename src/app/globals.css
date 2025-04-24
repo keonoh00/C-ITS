@@ -126,6 +126,9 @@
   --color-neutral-400: rgb(172, 181, 189);
   --color-neutral-300: rgb(198, 198, 198);
   --color-neutral-100: rgb(248, 249, 250);
+
+  --color-purple-400: #4d59a0;
+  --color-purple-300: #5b69bc;
 }
 
 @layer base {
