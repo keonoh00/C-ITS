@@ -3,7 +3,7 @@
 import { DefendTable } from "@/components/DefendTable/DefendTable";
 import { SaveIcon, Search, Trash2 } from "lucide-react";
 
-export default function Home() {
+export default function Defend() {
   const onSearchClick = () => {
     console.log("asdfasdfas");
   };
