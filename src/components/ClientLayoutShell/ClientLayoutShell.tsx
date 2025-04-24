@@ -18,7 +18,11 @@ export default function ClientLayoutShell({
       <div className="flex p-6 w-full flex-col bg-base-950">
         <Topbar
           leftEnhancer={
-            <button onClick={sidebarRef.current?.toggle}>
+            <button
+              onClick={() => {
+                sidebarRef.current?.toggle();
+              }}
+            >
               <MenuIcon color={"white"} size={32} />
             </button>
           }
