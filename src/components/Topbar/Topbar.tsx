@@ -17,7 +17,7 @@ const Topbar: React.FC<TopbarProps> = ({ leftEnhancer }) => {
     <>
       <div className="flex flex-row w-full mb-6 items-center">
         {leftEnhancer}
-        <div className="ml-4 text-2xl">
+        <div className="ml-10 text-2xl font-bold">
           {matchingMenu ? matchingMenu.name : ""}
         </div>
       </div>

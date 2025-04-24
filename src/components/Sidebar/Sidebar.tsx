@@ -15,7 +15,11 @@ export interface MenuItemType {
 export const MENU_ITEMS: MenuItemType[] = [
   { name: "Home", icon: <HomeIcon />, url: "/" },
   { name: "Defend", icon: <Shield />, url: "/defend" },
-  { name: "Defend Scenario", icon: <Lock />, url: "/defend-scenario" },
+  {
+    name: "Defend Scenario",
+    icon: <Lock />,
+    url: "/defend-scenario",
+  },
   { name: "Assessment", icon: <ClipboardList />, url: "/assessment" },
 ];
 
@@ -55,7 +59,7 @@ const Sidebar = forwardRef<SidebarRef, SidebarProps>(({}, ref) => {
           <div className="relative group" key={item.name}>
             <Link href={item.url}>
               <div
-                className={`flex items-center p-2 text-sm font-medium rounded-md transition-colors duration-200
+                className={`flex items-center py-2 px-6  text-sm font-medium rounded-md transition-colors duration-200
                   ${
                     pathname == item.url
                       ? "text-blue-500"
