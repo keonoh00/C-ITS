@@ -56,7 +56,7 @@ const Sidebar = forwardRef<SidebarRef, SidebarProps>(({}, ref) => {
       </div>
       <nav className="mt-5 space-y-2">
         {MENU_ITEMS.map((item) => (
-          <div className="relative group" key={item.name}>
+          <div className="relative group" key={item.url}>
             <Link href={item.url}>
               <div
                 className={`flex items-center py-2 px-6  text-sm font-medium rounded-md transition-colors duration-200
