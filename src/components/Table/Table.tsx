@@ -21,7 +21,7 @@ export function Table<T>({ data, columns, striped = true }: TableProps<T>) {
             <th
               key={idx}
               className={
-                col.className || "text-white text-lg font-bold text-center"
+                col.className || "text-white text-lg font-bold text-center py-3"
               }
             >
               {col.label}
