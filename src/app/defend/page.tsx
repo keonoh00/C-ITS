@@ -1,52 +1,7 @@
 "use client";
 
-import {
-  DefendMethods,
-  DefendPlatform,
-  DefendPlugin,
-  DefendTable,
-  DefendTactics,
-} from "@/components/DefendTable/DefendTable";
+import { DefendTable } from "@/components/DefendTable/DefendTable";
 import { SaveIcon, Search, Trash2 } from "lucide-react";
-
-const DATA: DefendMethods[] = [
-  {
-    id: "1",
-    name: "Find Unauthorized Process",
-    platform: "Windows" as DefendPlatform,
-    plugin: ["Elastic", "Shell"] as DefendPlugin[],
-    tactics: "Detection" as DefendTactics,
-    technique: false,
-    lastUpdated: new Date("2023-07-04T00:00:00.000Z"),
-  },
-  {
-    id: "2",
-    name: "Hunt for known suspicious files",
-    platform: "Windows" as DefendPlatform,
-    plugin: ["Elastic", "Shell"] as DefendPlugin[],
-    tactics: "Detection" as DefendTactics,
-    technique: false,
-    lastUpdated: new Date("2023-07-04T00:00:00.000Z"),
-  },
-  {
-    id: "3",
-    name: "Find Unauthorized Process",
-    platform: "Windows" as DefendPlatform,
-    plugin: ["Elastic", "Shell"] as DefendPlugin[],
-    tactics: "Detection" as DefendTactics,
-    technique: false,
-    lastUpdated: new Date("2023-07-04T00:00:00.000Z"),
-  },
-  {
-    id: "4",
-    name: "Hunt for known suspicious files",
-    platform: "Windows" as DefendPlatform,
-    plugin: ["Elastic", "Shell"] as DefendPlugin[],
-    tactics: "Detection" as DefendTactics,
-    technique: false,
-    lastUpdated: new Date("2023-07-04T00:00:00.000Z"),
-  },
-];
 
 export default function Home() {
   const onSearchClick = () => {
@@ -78,7 +33,7 @@ export default function Home() {
       </div>
 
       <div className="mt-4">
-        <DefendTable data={DATA} />
+        <DefendTable />
       </div>
     </div>
   );

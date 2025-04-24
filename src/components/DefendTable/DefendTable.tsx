@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Table, TableColumn } from "@/components/Table/Table";
 import AbilityModal from "@/components/AbilityModal/AbilityModal";
 
 export enum DefendPlatform {
@@ -26,63 +27,99 @@ export type DefendMethods = {
   lastUpdated: Date;
 };
 
+const MOCK_DATA: DefendMethods[] = [
+  {
+    id: "1",
+    name: "Find Unauthorized Process",
+    platform: DefendPlatform.WINDOWS,
+    plugin: [DefendPlugin.ELASTIC, DefendPlugin.SHELL],
+    tactics: DefendTactics.DETECTION,
+    technique: false,
+    lastUpdated: new Date("2023-07-04T00:00:00.000Z"),
+  },
+  {
+    id: "2",
+    name: "Hunt for known suspicious files",
+    platform: DefendPlatform.WINDOWS,
+    plugin: [DefendPlugin.ELASTIC, DefendPlugin.SHELL],
+    tactics: DefendTactics.DETECTION,
+    technique: true,
+    lastUpdated: new Date("2023-07-04T00:00:00.000Z"),
+  },
+  {
+    id: "3",
+    name: "Detect fileless malware execution",
+    platform: DefendPlatform.WINDOWS,
+    plugin: [DefendPlugin.SHELL],
+    tactics: DefendTactics.DETECTION,
+    technique: true,
+    lastUpdated: new Date("2023-07-04T00:00:00.000Z"),
+  },
+  {
+    id: "4",
+    name: "Command-and-Control DNS blocking",
+    platform: DefendPlatform.WINDOWS,
+    plugin: [DefendPlugin.ELASTIC],
+    tactics: DefendTactics.DETECTION,
+    technique: false,
+    lastUpdated: new Date("2023-07-04T00:00:00.000Z"),
+  },
+];
+
 interface DefendTableProps {
-  data: DefendMethods[];
+  data?: DefendMethods[];
 }
 
-export function DefendTable({ data }: DefendTableProps) {
+export function DefendTable({ data = MOCK_DATA }: DefendTableProps) {
   const [open, setOpen] = useState(false);
 
-  const onCheck = () => {};
-
-  const onClickName = () => {
-    setOpen(true);
-  };
+  const columns: TableColumn<DefendMethods>[] = [
+    {
+      label: "Select",
+      className: "w-[5%]",
+      render: () => <input type="checkbox" />,
+    },
+    {
+      label: "Name",
+      render: (item) => (
+        <span
+          className="underline cursor-pointer hover:text-blue-400 transition-colors"
+          onClick={() => setOpen(true)}
+        >
+          {item.name}
+        </span>
+      ),
+    },
+    {
+      label: "Platform",
+      render: (item) => item.platform,
+    },
+    {
+      label: "Plug In",
+      render: (item) => item.plugin.join(", "),
+    },
+    {
+      label: "ATT&CK Tactics",
+      render: (item) => item.tactics,
+    },
+    {
+      label: "Technique",
+      render: (item) => (item.technique ? "O" : "X"),
+    },
+    {
+      label: "Last Updated",
+      render: (item) => item.lastUpdated.toISOString().split("T")[0],
+    },
+  ];
 
   return (
-    <div className="bg-base-800 p-4">
-      <table className="w-full">
-        <thead>
-          <tr className="border-b-1 border-base-850">
-            <th className="text-left w-[5%] p-4">Select</th>
-            <th>Name</th>
-            <th>Platform</th>
-            <th>Plug In</th>
-            <th>ATT&CK Tactics</th>
-            <th>Technique</th>
-            <th>Last Updated</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item, index) => {
-            return (
-              <tr
-                key={index}
-                className={`text-neutral-200 font-bold text-center text-xs border-b-1 border-base-850 ${
-                  index % 2 == 1 ? "" : "bg-base-700"
-                }`}
-              >
-                <td className="text-left px-4 py-3">
-                  <input type="checkbox" onChange={onCheck} />
-                </td>
-                <td className="text-left underline" onClick={onClickName}>
-                  {item.name}
-                </td>
-                <td>{item.platform}</td>
-                <td>{item.plugin}</td>
-                <td>{item.tactics}</td>
-                <td>{item.technique ? "O" : "X"}</td>
-                <td>{item.lastUpdated.toISOString().split("T")[0]}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+    <>
+      <Table data={data} columns={columns} striped />
       <AbilityModal
         open={open}
         onClose={() => setOpen(false)}
         onSave={() => console.log("Save")}
       />
-    </div>
+    </>
   );
 }
