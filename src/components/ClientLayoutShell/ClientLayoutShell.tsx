@@ -13,7 +13,7 @@ export default function ClientLayoutShell({
   const sidebarRef = useRef<SidebarRef>(null);
 
   return (
-    <div className="flex">
+    <div className="flex text-white">
       <Sidebar ref={sidebarRef} />
       <div className="flex p-6 w-full flex-col bg-base-950">
         <Topbar

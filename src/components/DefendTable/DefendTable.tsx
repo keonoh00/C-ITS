@@ -1,5 +1,8 @@
 "use client";
 
+import { useState } from "react";
+import AbilityModal from "@/components/AbilityModal/AbilityModal";
+
 export enum DefendPlatform {
   WINDOWS = "Windows",
 }
@@ -28,7 +31,13 @@ interface DefendTableProps {
 }
 
 export function DefendTable({ data }: DefendTableProps) {
+  const [open, setOpen] = useState(false);
+
   const onCheck = () => {};
+
+  const onClickName = () => {
+    setOpen(true);
+  };
 
   return (
     <div className="bg-base-800 p-4">
@@ -56,7 +65,9 @@ export function DefendTable({ data }: DefendTableProps) {
                 <td className="text-left px-4 py-3">
                   <input type="checkbox" onChange={onCheck} />
                 </td>
-                <td className="text-left underline">{item.name}</td>
+                <td className="text-left underline" onClick={onClickName}>
+                  {item.name}
+                </td>
                 <td>{item.platform}</td>
                 <td>{item.plugin}</td>
                 <td>{item.tactics}</td>
@@ -67,6 +78,11 @@ export function DefendTable({ data }: DefendTableProps) {
           })}
         </tbody>
       </table>
+      <AbilityModal
+        open={open}
+        onClose={() => setOpen(false)}
+        onSave={() => console.log("Save")}
+      />
     </div>
   );
 }
