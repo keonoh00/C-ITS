@@ -36,7 +36,7 @@ const Sidebar = forwardRef<SidebarRef, SidebarProps>(({}, ref) => {
 
   return (
     <div
-      className={`h-screen bg-white dark:bg-gray-900 border-r transition-all duration-300 ${
+      className={`h-screen bg-white border-r transition-all duration-300 ${
         expanded ? "w-56" : "w-16"
       }`}
     >
@@ -58,8 +58,8 @@ const Sidebar = forwardRef<SidebarRef, SidebarProps>(({}, ref) => {
                 className={`flex items-center p-2 text-sm font-medium rounded-md transition-colors duration-200
                   ${
                     pathname == item.url
-                      ? "text-blue-500 dark:bg-gray-800"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                      ? "text-blue-500"
+                      : "text-gray-700 hover:bg-gray-100"
                   }
                   ${!expanded ? "justify-center" : ""}`}
               >
