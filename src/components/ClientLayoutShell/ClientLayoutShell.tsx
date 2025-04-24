@@ -3,7 +3,6 @@
 import React, { useRef } from "react";
 import Topbar from "@/components/Topbar/Topbar";
 import Sidebar, { SidebarRef } from "@/components/Sidebar/Sidebar";
-import { Button } from "@/components/ui/button";
 import { MenuIcon } from "lucide-react";
 
 export default function ClientLayoutShell({
@@ -14,17 +13,17 @@ export default function ClientLayoutShell({
   const sidebarRef = useRef<SidebarRef>(null);
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex">
       <Sidebar ref={sidebarRef} />
-      <div className="flex flex-col">
+      <div className="flex p-6 w-full flex-col bg-base-950">
         <Topbar
           leftEnhancer={
-            <Button onClick={sidebarRef.current?.toggle}>
-              <MenuIcon size={32} />
-            </Button>
+            <button onClick={sidebarRef.current?.toggle}>
+              <MenuIcon color={"white"} size={32} />
+            </button>
           }
         />
-        <main className="p-6 overflow-y-auto">{children}</main>
+        <main className="overflow-y-auto flex w-full h-ful">{children}</main>
       </div>
     </div>
   );

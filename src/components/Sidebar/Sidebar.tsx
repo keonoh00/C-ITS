@@ -70,7 +70,7 @@ const Sidebar = forwardRef<SidebarRef, SidebarProps>(({}, ref) => {
               </div>
             </Link>
             {!expanded && (
-              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1 rounded bg-gray-800 text-white text-sm shadow-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-50">
+              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1 rounded bg-gray-800 text-sm shadow-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-50">
                 {item.name}
               </div>
             )}

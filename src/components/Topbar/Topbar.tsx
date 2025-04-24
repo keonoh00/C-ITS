@@ -1,9 +1,8 @@
 "use client";
 
-import { MenuIcon } from "lucide-react";
-import React, { ReactNode, useRef } from "react";
+import React, { ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import Sidebar, { MENU_ITEMS, SidebarRef } from "../Sidebar/Sidebar";
+import { MENU_ITEMS } from "../Sidebar/Sidebar";
 
 interface TopbarProps {
   leftEnhancer?: ReactNode;
@@ -16,7 +15,7 @@ const Topbar: React.FC<TopbarProps> = ({ leftEnhancer }) => {
 
   return (
     <>
-      <div className="flex flex-row w-full h-18 items-center">
+      <div className="flex flex-row w-full mb-6 items-center">
         {leftEnhancer}
         <div className="ml-4 text-2xl">
           {matchingMenu ? matchingMenu.name : ""}
