@@ -75,15 +75,15 @@ export function DefendTable({ data = MOCK_DATA }: DefendTableProps) {
 
   const columns: TableColumn<DefendMethods>[] = [
     {
-      label: "Select",
-      className: "w-[5%]",
+      label: "선택",
+      className: "w-[5%] py-2 px-4 text-white text-lg font-bold",
       render: () => <input type="checkbox" />,
     },
     {
       label: "Name",
       render: (item) => (
         <span
-          className="underline cursor-pointer hover:text-blue-400 transition-colors"
+          className="underline cursor-pointer hover:text-blue-400 transition-colors text-left link"
           onClick={() => setOpen(true)}
         >
           {item.name}
