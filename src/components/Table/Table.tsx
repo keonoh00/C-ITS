@@ -18,7 +18,12 @@ export function Table<T>({ data, columns, striped = true }: TableProps<T>) {
       <thead className="bg-base-800 text-neutral-300 border-b border-base-700">
         <tr>
           {columns.map((col, idx) => (
-            <th key={idx} className={col.className || "px-4 py-2"}>
+            <th
+              key={idx}
+              className={
+                col.className || "text-white text-lg font-bold text-center"
+              }
+            >
               {col.label}
             </th>
           ))}
@@ -40,7 +45,8 @@ export function Table<T>({ data, columns, striped = true }: TableProps<T>) {
               <td
                 key={colIdx}
                 className={
-                  col.className || "px-4 py-3 font-medium text-neutral-200"
+                  col.className ||
+                  "px-4 py-3 font-medium text-neutral-200 text-center"
                 }
               >
                 {col.render(item, rowIdx)}
