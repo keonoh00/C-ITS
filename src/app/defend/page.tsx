@@ -7,7 +7,6 @@ import {
   DefendTable,
   DefendTactics,
 } from "@/components/DefendTable/DefendTable";
-import { ColumnDef } from "@tanstack/react-table";
 import { SaveIcon, Search, Trash2 } from "lucide-react";
 
 const DATA: DefendMethods[] = [
@@ -46,33 +45,6 @@ const DATA: DefendMethods[] = [
     tactics: "Detection" as DefendTactics,
     technique: false,
     lastUpdated: new Date("2023-07-04T00:00:00.000Z"),
-  },
-];
-
-export const columns: ColumnDef<DefendMethods>[] = [
-  {
-    accessorKey: "name",
-    header: "Name",
-  },
-  {
-    accessorKey: "platform",
-    header: "Platform",
-  },
-  {
-    accessorKey: "plugin",
-    header: "Plug In",
-  },
-  {
-    accessorKey: "tactics",
-    header: "ATT&CK Tactics",
-  },
-  {
-    accessorKey: "technique",
-    header: "Technique",
-  },
-  {
-    accessorKey: "amount",
-    header: "Amount",
   },
 ];
 
