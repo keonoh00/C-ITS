@@ -1,35 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
 @theme inline {
-  --color-base-950: rgb(40, 46, 56); /* #282E38 */
-  --color-base-900: rgb(49, 56, 68); /* #313844 */
-  --color-base-850: rgb(71, 78, 89); /* ##474E59 */
-  --color-base-800: rgb(52, 59, 72); /* #343B48 */
-  --color-base-700: rgb(58, 65, 76); /* #3A414C */
-  --color-base-600: rgb(60, 79, 101); /* #3C4F65 */
-
-  --color-primary-600: rgb(77, 89, 160); /* #4D59A0 */
-  --color-primary-500: rgb(66, 140, 244); /* #428CF4 */
-  --color-primary-400: rgb(113, 182, 249); /* #71B6F9 */
-  --color-primary-300: rgb(64, 160, 252); /* #40A0FC */
-
-  --color-accent-600: rgb(1, 105, 180); /* #0169B4 */
-  --color-accent-500: rgb(0, 159, 227); /* #009FE3 */
-  --color-accent-400: rgb(53, 184, 224); /* #35B8E0 */
-
-  --color-danger-600: rgb(254, 69, 0); /* #FE4500 */
-  --color-danger-500: rgb(255, 92, 91); /* #FF5C5B */
-
-  --color-warning-500: rgb(249, 200, 81); /* #F9C851 */
-
-  --color-neutral-500: rgb(108, 117, 125); /* #6C757D */
-  --color-neutral-400: rgb(172, 181, 189); /* #ACB5BD */
-  --color-neutral-300: rgb(198, 198, 198); /* #C6C6C6 */
-  --color-neutral-100: rgb(248, 249, 250); /* #F8F9FA */
-
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -102,47 +74,40 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-}
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --color-base-950: rgb(40, 46, 56);
+  --color-base-900: rgb(49, 56, 68);
+  --color-base-850: rgb(71, 78, 89);
+  --color-base-800: rgb(52, 59, 72);
+  --color-base-700: rgb(58, 65, 76);
+  --color-base-600: rgb(60, 79, 101);
+
+  --color-primary-600: rgb(77, 89, 160);
+  --color-primary-500: rgb(66, 140, 244);
+  --color-primary-400: rgb(113, 182, 249);
+  --color-primary-300: rgb(64, 160, 252);
+
+  --color-accent-600: rgb(1, 105, 180);
+  --color-accent-500: rgb(0, 159, 227);
+  --color-accent-400: rgb(53, 184, 224);
+
+  --color-danger-600: rgb(254, 69, 0);
+  --color-danger-500: rgb(255, 92, 91);
+
+  --color-warning-500: rgb(249, 200, 81);
+
+  --color-neutral-500: rgb(108, 117, 125);
+  --color-neutral-400: rgb(172, 181, 189);
+  --color-neutral-300: rgb(198, 198, 198);
+  --color-neutral-100: rgb(248, 249, 250);
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+  html {
+    @apply bg-background text-foreground;
   }
+
   body {
-    @apply bg-background text-foreground text-white;
+    @apply font-sans;
   }
 }
