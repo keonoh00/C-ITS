@@ -2,6 +2,7 @@
 
 import clsx from "clsx";
 import { Table, TableColumn } from "@/components/Table/Table";
+import Link from "next/link";
 
 interface AssessmentItem {
   name: string;
@@ -32,7 +33,14 @@ export default function AssessmentTable() {
   const columns: TableColumn<AssessmentItem>[] = [
     {
       label: "Assessment Name",
-      render: (item) => item.name,
+      render: (item) => (
+        <Link
+          href={"/assessment/123123"}
+          className="underline cursor-pointer hover:text-blue-400 transition-colors"
+        >
+          {item.name}
+        </Link>
+      ),
     },
     {
       label: "Defend Scenario",
