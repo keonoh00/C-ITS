@@ -27,50 +27,11 @@ export type DefendMethods = {
   lastUpdated: Date;
 };
 
-const MOCK_DATA: DefendMethods[] = [
-  {
-    id: "1",
-    name: "Find Unauthorized Process",
-    platform: DefendPlatform.WINDOWS,
-    plugin: [DefendPlugin.ELASTIC, DefendPlugin.SHELL],
-    tactics: DefendTactics.DETECTION,
-    technique: false,
-    lastUpdated: new Date("2023-07-04T00:00:00.000Z"),
-  },
-  {
-    id: "2",
-    name: "Hunt for known suspicious files",
-    platform: DefendPlatform.WINDOWS,
-    plugin: [DefendPlugin.ELASTIC, DefendPlugin.SHELL],
-    tactics: DefendTactics.DETECTION,
-    technique: true,
-    lastUpdated: new Date("2023-07-04T00:00:00.000Z"),
-  },
-  {
-    id: "3",
-    name: "Detect fileless malware execution",
-    platform: DefendPlatform.WINDOWS,
-    plugin: [DefendPlugin.SHELL],
-    tactics: DefendTactics.DETECTION,
-    technique: true,
-    lastUpdated: new Date("2023-07-04T00:00:00.000Z"),
-  },
-  {
-    id: "4",
-    name: "Command-and-Control DNS blocking",
-    platform: DefendPlatform.WINDOWS,
-    plugin: [DefendPlugin.ELASTIC],
-    tactics: DefendTactics.DETECTION,
-    technique: false,
-    lastUpdated: new Date("2023-07-04T00:00:00.000Z"),
-  },
-];
-
 interface DefendTableProps {
-  data?: DefendMethods[];
+  data: DefendMethods[];
 }
 
-export function DefendTable({ data = MOCK_DATA }: DefendTableProps) {
+export function DefendTable({ data }: DefendTableProps) {
   const [open, setOpen] = useState(false);
 
   const columns: TableColumn<DefendMethods>[] = [

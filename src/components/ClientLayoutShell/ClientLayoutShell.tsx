@@ -27,7 +27,7 @@ export default function ClientLayoutShell({
             </button>
           }
         />
-        <main className="overflow-y-auto flex w-full h-ful">{children}</main>
+        <main className="overflow-y-auto flex w-full">{children}</main>
       </div>
     </div>
   );
