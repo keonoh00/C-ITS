@@ -1,7 +1,59 @@
+import Link from "next/link";
+import Image from "next/image";
+
+function TopBar() {
+  return (
+    <div className="ml-26 py-4">
+      <Image
+        src="/assets/logo-light.png"
+        width={120}
+        height={40}
+        alt="KSIGN Logo"
+        className="object-contain"
+      />
+    </div>
+  );
+}
+
+enum NavMenus {
+  Assessment = "/eval-assessment",
+  Round = "/round",
+  Properties = "/properties",
+  Evaluate = "/evaluate",
+}
+
+function NavBar() {
+  return (
+    <div className="flex items-center bg-base-900 text-gray-300 pl-24 py-3">
+      {Object.keys(NavMenus).map((key) => (
+        <Link
+          key={key}
+          href={NavMenus[key as keyof typeof NavMenus]}
+          className="p-2 text-sm"
+        >
+          {key}
+        </Link>
+      ))}
+    </div>
+  );
+}
+
 export default function EvaluationLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  return <main className="overflow-y-auto flex w-full">{children}</main>;
+}) {
+  return (
+    <div className="flex flex-col min-h-screen bg-base-950 text-white">
+      <TopBar />
+
+      <NavBar />
+
+      <div className="flex flex-1">
+        <main className="bg-gray-850 px-26 py-6 overflow-y-auto w-full">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
 }
