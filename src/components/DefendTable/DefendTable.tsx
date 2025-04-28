@@ -3,38 +3,16 @@
 import { useState } from "react";
 import { Table, TableColumn } from "@/components/Table/Table";
 import AbilityModal from "@/components/AbilityModal/AbilityModal";
-
-export enum DefendPlatform {
-  WINDOWS = "Windows",
-}
-
-export enum DefendTactics {
-  DETECTION = "Detection",
-}
-
-export enum DefendPlugin {
-  ELASTIC = "Elastic",
-  SHELL = "Shell",
-}
-
-export type DefendMethods = {
-  id: string;
-  name: string;
-  platform: DefendPlatform;
-  plugin: DefendPlugin[];
-  tactics: DefendTactics;
-  technique: boolean;
-  lastUpdated: Date;
-};
+import { AttackDataItem, AttackResponse } from "@/api/defend/defend";
 
 interface DefendTableProps {
-  data: DefendMethods[];
+  data: AttackResponse;
 }
 
 export function DefendTable({ data }: DefendTableProps) {
   const [open, setOpen] = useState(false);
 
-  const columns: TableColumn<DefendMethods>[] = [
+  const columns: TableColumn<AttackDataItem>[] = [
     {
       label: "선택",
       className: "w-[5%] py-2 px-4 text-white text-lg font-bold",
@@ -53,29 +31,33 @@ export function DefendTable({ data }: DefendTableProps) {
     },
     {
       label: "Platform",
-      render: (item) => item.platform,
+      render: (item) =>
+        item.executors.map((item, index) => <p key={index}>{item.platform}</p>),
     },
     {
       label: "Plug In",
-      render: (item) => item.plugin.join(", "),
+      render: (item) =>
+        item.executors.map((item, index) => <p key={index}>{item.name}</p>),
     },
     {
       label: "ATT&CK Tactics",
-      render: (item) => item.tactics,
+      render: (item) => item.technique_name,
     },
     {
       label: "Technique",
-      render: (item) => (item.technique ? "O" : "X"),
+      render: (item) => item.technique_id,
     },
     {
       label: "Last Updated",
-      render: (item) => item.lastUpdated.toISOString().split("T")[0],
+      render: (item) => (
+        <p>{new Date(item.last_modified).toISOString().split("T")[0]}</p>
+      ),
     },
   ];
 
   return (
     <>
-      <Table data={data} columns={columns} striped />
+      <Table data={data.data} columns={columns} striped />
       <AbilityModal
         open={open}
         onClose={() => setOpen(false)}
