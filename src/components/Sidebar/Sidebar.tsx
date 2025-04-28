@@ -1,25 +1,38 @@
 "use client";
 
 import React, { forwardRef, useImperativeHandle, useState } from "react";
-import { Shield, ClipboardList, Lock, HomeIcon } from "lucide-react";
+import {
+  Shield,
+  ClipboardList,
+  Lock,
+  ChevronDown,
+  ChevronRight,
+  Monitor,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import clsx from "clsx";
 
 export interface MenuItemType {
   name: string;
   icon: React.ReactNode;
   url: string;
+  children?: MenuItemType[];
 }
 
 export const MENU_ITEMS: MenuItemType[] = [
-  { name: "Home", icon: <HomeIcon />, url: "/" },
-  { name: "Defend", icon: <Shield />, url: "/defend" },
   {
-    name: "Defend Scenario",
-    icon: <Lock />,
-    url: "/defend-scenario",
+    name: "Assets",
+    icon: <Monitor />,
+    url: "",
+    children: [
+      { name: "Asset List", icon: null, url: "/asset-list" },
+      { name: "Deploy Agent", icon: null, url: "/deploy" },
+    ],
   },
+  { name: "Defend", icon: <Shield />, url: "/defend" },
+  { name: "Defend Scenario", icon: <Lock />, url: "/defend-scenario" },
   { name: "Assessment", icon: <ClipboardList />, url: "/assessment" },
 ];
 
@@ -27,25 +40,39 @@ export interface SidebarRef {
   toggle: () => void;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface SidebarProps {}
+type SidebarProps = object;
 
 const Sidebar = forwardRef<SidebarRef, SidebarProps>(({}, ref) => {
   const pathname = usePathname();
   const [expanded, setExpanded] = useState(true);
+  const [assetOpen, setAssetOpen] = useState(false);
 
   useImperativeHandle(ref, () => ({
     toggle: () => setExpanded((prev) => !prev),
   }));
 
+  const handleAssetClick = () => {
+    if (!expanded) {
+      setExpanded(true);
+      if (!assetOpen) {
+        setTimeout(() => {
+          setAssetOpen(true);
+        }, 300);
+      }
+    } else {
+      setAssetOpen((prev) => !prev);
+    }
+  };
+
   return (
     <div
-      className={`h-screen bg-white border-r transition-all duration-300 ${
+      className={clsx(
+        "h-screen bg-white border-r transition-all duration-300",
         expanded ? "w-56" : "w-16"
-      }`}
+      )}
     >
       <div className="flex items-center justify-between p-4 ml-1">
-        <div className={`relative h-10 ${expanded ? "w-56" : "w-16"}`}>
+        <div className={clsx("relative h-10", expanded ? "w-56" : "w-16")}>
           <Image
             src={expanded ? "/assets/logo-dark.png" : "/assets/logo-sm.png"}
             alt="Logo"
@@ -54,25 +81,78 @@ const Sidebar = forwardRef<SidebarRef, SidebarProps>(({}, ref) => {
           />
         </div>
       </div>
+
       <nav className="mt-5 space-y-2">
         {MENU_ITEMS.map((item) => (
-          <div className="relative group" key={item.url}>
-            <Link href={item.url}>
+          <div key={item.url} className="relative group">
+            {item.children ? (
               <div
-                className={`flex items-center py-2 px-6  text-sm font-medium rounded-md transition-colors duration-200
-                  ${
-                    pathname == item.url
-                      ? "text-blue-500"
-                      : "text-gray-700 hover:bg-gray-100"
-                  }
-                  ${!expanded ? "justify-center" : ""}`}
+                onClick={handleAssetClick}
+                className={clsx(
+                  "flex items-center py-2 px-6 cursor-pointer text-sm font-medium rounded-md transition-colors duration-200",
+                  pathname === item.url
+                    ? "text-blue-500"
+                    : "text-gray-700 hover:bg-gray-100",
+                  !expanded ? "justify-center" : ""
+                )}
               >
                 <div className="w-6 h-6">{item.icon}</div>
                 {expanded && (
-                  <span className="ml-3 whitespace-nowrap">{item.name}</span>
+                  <div className="flex flex-row items-center justify-between w-full">
+                    <div>
+                      <span className="ml-3 whitespace-nowrap">
+                        {item.name}
+                      </span>
+                    </div>
+                    <div>
+                      {assetOpen ? (
+                        <ChevronDown size={16} />
+                      ) : (
+                        <ChevronRight size={16} />
+                      )}
+                    </div>
+                  </div>
                 )}
               </div>
-            </Link>
+            ) : (
+              <Link href={item.url}>
+                <div
+                  className={clsx(
+                    "flex items-center py-2 px-6 text-sm font-medium rounded-md transition-colors duration-200",
+                    pathname === item.url
+                      ? "text-blue-500"
+                      : "text-gray-700 hover:bg-gray-100",
+                    !expanded ? "justify-center" : ""
+                  )}
+                >
+                  <div className="w-6 h-6">{item.icon}</div>
+                  {expanded && (
+                    <span className="ml-3 whitespace-nowrap">{item.name}</span>
+                  )}
+                </div>
+              </Link>
+            )}
+
+            {item.children && expanded && assetOpen && (
+              <div className="flex flex-col space-y-1 mt-1">
+                {item.children.map((child) => (
+                  <Link
+                    key={child.url}
+                    href={child.url}
+                    className={clsx(
+                      "flex items-center py-1 px-6 gap-2 rounded-md transition-colors duration-200 text-sm",
+                      pathname === child.url
+                        ? "text-blue-500 font-semibold"
+                        : "text-gray-700 hover:bg-gray-100"
+                    )}
+                  >
+                    <div className="w-4 h-4">{child.icon}</div>
+                    <span className="whitespace-nowrap">{child.name}</span>
+                  </Link>
+                ))}
+              </div>
+            )}
+
             {!expanded && (
               <div className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-3 py-1 rounded bg-gray-800 text-sm shadow-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-50">
                 {item.name}

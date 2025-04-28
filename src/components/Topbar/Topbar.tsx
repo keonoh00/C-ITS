@@ -11,7 +11,11 @@ interface TopbarProps {
 const Topbar: React.FC<TopbarProps> = ({ leftEnhancer }) => {
   const pathname = usePathname();
 
-  const matchingMenu = MENU_ITEMS.find((item) => item.url === pathname);
+  const flatMenu = MENU_ITEMS.flatMap((item) =>
+    item.children ? item.children : item
+  );
+
+  const matchingMenu = flatMenu.find((item) => item.url === pathname);
 
   return (
     <>
