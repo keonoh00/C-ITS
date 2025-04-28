@@ -1,85 +1,14 @@
-"use client";
+import { fetchAttacks } from "@/api/defend/defend";
+import { DefendClientComponent } from "@/components/DefendClientComponent/DefendClientComponent";
 
-import {
-  DefendMethods,
-  DefendPlatform,
-  DefendPlugin,
-  DefendTable,
-  DefendTactics,
-} from "@/components/DefendTable/DefendTable";
-import { SaveIcon, Search, Trash2 } from "lucide-react";
+export default async function Defend() {
+  let initialData = undefined;
 
-const MOCK_DATA: DefendMethods[] = [
-  {
-    id: "1",
-    name: "Find Unauthorized Process",
-    platform: DefendPlatform.WINDOWS,
-    plugin: [DefendPlugin.ELASTIC, DefendPlugin.SHELL],
-    tactics: DefendTactics.DETECTION,
-    technique: false,
-    lastUpdated: new Date("2023-07-04T00:00:00.000Z"),
-  },
-  {
-    id: "2",
-    name: "Hunt for known suspicious files",
-    platform: DefendPlatform.WINDOWS,
-    plugin: [DefendPlugin.ELASTIC, DefendPlugin.SHELL],
-    tactics: DefendTactics.DETECTION,
-    technique: true,
-    lastUpdated: new Date("2023-07-04T00:00:00.000Z"),
-  },
-  {
-    id: "3",
-    name: "Detect fileless malware execution",
-    platform: DefendPlatform.WINDOWS,
-    plugin: [DefendPlugin.SHELL],
-    tactics: DefendTactics.DETECTION,
-    technique: true,
-    lastUpdated: new Date("2023-07-04T00:00:00.000Z"),
-  },
-  {
-    id: "4",
-    name: "Command-and-Control DNS blocking",
-    platform: DefendPlatform.WINDOWS,
-    plugin: [DefendPlugin.ELASTIC],
-    tactics: DefendTactics.DETECTION,
-    technique: false,
-    lastUpdated: new Date("2023-07-04T00:00:00.000Z"),
-  },
-];
+  try {
+    initialData = await fetchAttacks({});
+  } catch (error) {
+    console.error("Failed to fetch attacks:", error);
+  }
 
-export default function Defend() {
-  const onSearchClick = () => {
-    console.log("asdfasdfas");
-  };
-  return (
-    <div className="flex flex-col w-full bg-base-900 p-8 rounded-xl">
-      <div className="justify-between flex w-full items-center">
-        <div className="flex items-center">
-          <input
-            placeholder="Search..."
-            className="p-2 w-120 border border-neutral-500 text-neutral-300 rounded-sm"
-            onSubmit={onSearchClick}
-          />
-          <button className="ml-2 p-2" onClick={onSearchClick}>
-            <Search size={18} className="text-neutral-400" />
-          </button>
-        </div>
-        <div className="flex-row flex">
-          <button className="p-2 bg-primary-300 flex flex-row rounded-sm">
-            <SaveIcon color="white" />
-            <p className="ml-1">등록</p>
-          </button>
-          <button className="p-2 bg-danger-500 flex flex-row rounded-sm ml-2">
-            <Trash2 color="white" />
-            <p className="ml-1">삭제</p>
-          </button>
-        </div>
-      </div>
-
-      <div className="mt-4">
-        <DefendTable data={MOCK_DATA} />
-      </div>
-    </div>
-  );
+  return <DefendClientComponent initialData={initialData} />;
 }

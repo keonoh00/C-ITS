@@ -94,11 +94,17 @@ export interface AttackResponse {
   filter_count: AttackFilterCount;
 }
 
-export async function fetchAttacks(
+export interface AttackRequest {
+  query?: string;
+  page?: number;
+  itemsPerPage?: number;
+}
+
+export async function fetchAttacks({
   query = "",
   page = 1,
-  itemsPerPage = 10
-): Promise<AttackResponse> {
+  itemsPerPage = 10,
+}: AttackRequest): Promise<AttackResponse> {
   const response = await fetch("http://192.168.5.111:8888/attacks", {
     method: "POST",
     headers: {
