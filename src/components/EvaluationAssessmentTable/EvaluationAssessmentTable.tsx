@@ -98,9 +98,5 @@ const columns: TableColumn<EvaluationRoundItem>[] = [
 ];
 
 export default function EvaluationRoundTable() {
-  return (
-    <div className="flex flex-3">
-      <Table data={data} columns={columns} />
-    </div>
-  );
+  return <Table data={data} columns={columns} />;
 }

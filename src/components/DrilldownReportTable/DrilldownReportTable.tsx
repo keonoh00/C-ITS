@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Table, TableColumn } from "@/components/Table/Table"; // Assuming you placed it like this
-import { Search } from "lucide-react";
+import SearchInput from "../SearchInput/SearchInput";
 
 interface DrillDownItem {
   testCase: string;
@@ -113,18 +113,7 @@ export default function DrillDownTable() {
 
   return (
     <div className="flex flex-col">
-      <div className="flex items-center mb-6">
-        <input
-          type="text"
-          placeholder="Search..."
-          className="p-2 text-white placeholder:text-neutral-500 text-sm focus:outline-none bg-base-800 w-[20%] border border-neutral-500 rounded"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <button className="ml-3 text-neutral-500">
-          <Search />
-        </button>
-      </div>
+      <SearchInput onSearch={setSearch} />
 
       <Table<DrillDownItem> data={filteredData} columns={columns} />
     </div>

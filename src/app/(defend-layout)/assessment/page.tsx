@@ -1,7 +1,8 @@
 "use client";
 
 import AssessmentTable from "@/components/AssessmentTable/AssessmentTable";
-import { SaveIcon, Search, Trash2 } from "lucide-react";
+import SearchInput from "@/components/SearchInput/SearchInput";
+import { SaveIcon, Trash2 } from "lucide-react";
 
 export default function Assessment() {
   const onSearchClick = () => {
@@ -10,16 +11,7 @@ export default function Assessment() {
   return (
     <div className="flex flex-col w-full bg-base-900 p-8 rounded-xl">
       <div className="justify-between flex w-full items-center">
-        <div className="flex items-center">
-          <input
-            placeholder="Search..."
-            className="p-2 w-120 border border-neutral-500 text-neutral-300 rounded-sm"
-            onSubmit={onSearchClick}
-          />
-          <button className="ml-2 p-2" onClick={onSearchClick}>
-            <Search size={18} className="text-neutral-400" />
-          </button>
-        </div>
+        <SearchInput onSearch={onSearchClick} />
         <div className="flex-row flex">
           <button className="p-2 bg-primary-300 flex flex-row rounded-sm">
             <SaveIcon color="white" />
