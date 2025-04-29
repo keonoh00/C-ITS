@@ -71,16 +71,18 @@ const Sidebar = forwardRef<SidebarRef, SidebarProps>(({}, ref) => {
         expanded ? "w-56" : "w-16"
       )}
     >
-      <div className="flex items-center justify-between p-4 ml-1">
-        <div className={clsx("relative h-10", expanded ? "w-56" : "w-16")}>
-          <Image
-            src={expanded ? "/assets/logo-dark.png" : "/assets/logo-sm.png"}
-            alt="Logo"
-            fill
-            className="object-contain"
-          />
+      <Link href={"/"}>
+        <div className="flex items-center justify-between p-4 ml-1">
+          <div className={clsx("relative h-10", expanded ? "w-56" : "w-16")}>
+            <Image
+              src={expanded ? "/assets/logo-dark.png" : "/assets/logo-sm.png"}
+              alt="Logo"
+              fill
+              className="object-contain"
+            />
+          </div>
         </div>
-      </div>
+      </Link>
 
       <nav className="mt-5 space-y-2">
         {MENU_ITEMS.map((item) => (
