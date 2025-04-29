@@ -24,7 +24,9 @@ export default function Selector({
       {...props}
       className={`border p-4 rounded-md space-y-4 ${className ?? ""}`}
     >
-      <h2 className="font-bold">{title}</h2>
+      <div className="border-b-1 border-gray-300">
+        <h2 className="font-bold mb-2">{title}</h2>
+      </div>
 
       <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-4">
         {options.map((option) => (
