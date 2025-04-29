@@ -98,35 +98,59 @@ export interface AttackRequest {
   query?: string;
   page?: number;
   itemsPerPage?: number;
+  log?: boolean;
 }
-
 export async function fetchAttacks({
   query = "",
   page = 1,
   itemsPerPage = 10,
+  log = false,
 }: AttackRequest): Promise<AttackResponse> {
-  const response = await fetch("http://192.168.5.111:8888/attacks", {
+  const url = "/api/attacks"; // Now use the proxied path
+  const body = {
+    page,
+    items_per_page: itemsPerPage,
+    name: query,
+    platform: query,
+    mitre: query,
+    tactic: query,
+    threat_group: query,
+  };
+
+  const headers = {
+    "Content-Type": "application/json",
+    Key: "BLUEADMIN123",
+  };
+
+  const response = await fetch(url, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Key: "BLUEADMIN123",
-    },
-    body: JSON.stringify({
-      page,
-      items_per_page: itemsPerPage,
-      name: query,
-      platform: query,
-      mitre: query,
-      tactic: query,
-      threat_group: query,
-    }),
-    cache: "no-store", // important for fresh data in Next.js
+    headers,
+    body: JSON.stringify(body),
+    cache: "no-store",
   });
 
+  if (log) {
+    console.log("FETCH Request:");
+    console.log("URL:", url);
+    console.log("Method:", "POST");
+    console.log("Headers:", headers);
+    console.log("Body:", JSON.stringify(body, null, 2));
+    console.log("FETCH Response status:", response.status);
+  }
+
   if (!response.ok) {
-    throw new Error(`Failed to fetch attacks: ${response.statusText}`);
+    const errorText = await response.text();
+    console.error("FETCH Error Response Body:", errorText);
+    throw new Error(
+      `Failed to fetch attacks: ${response.status} ${response.statusText}`
+    );
   }
 
   const data = (await response.json()) as AttackResponse;
+
+  if (log) {
+    console.log("FETCH Response data:", data);
+  }
+
   return data;
 }
