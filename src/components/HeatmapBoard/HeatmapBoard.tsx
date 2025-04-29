@@ -1,24 +1,22 @@
 "use client";
 
 import React, { useMemo } from "react";
-import {
-  tacticsDataMobile,
-  tacticsDataEnterprise,
-  tacticsDataICS,
-  Tactic,
-} from "./tacticsData";
+import { HeatmapEvaluationFramework, Tactic } from "./tacticsData";
 import HeatmapCard from "./HeatmapCard";
 import Legend from "./Legend";
+import { tacticsDataEnterprise } from "./enterprise/enterpriseData";
+import { tacticsDataMobile } from "./mobile/mobileData";
+import { tacticsDataICS } from "./ics/icsData";
 
 interface HeatmapBoardProps {
   selectedTactic: string;
-  framework: string;
+  framework: HeatmapEvaluationFramework;
 }
 
-const frameworkMap: Record<string, Tactic[]> = {
-  Mobile: tacticsDataMobile,
-  Enterprise: tacticsDataEnterprise,
-  ICS: tacticsDataICS,
+const frameworkMap: Record<HeatmapEvaluationFramework, Tactic[]> = {
+  [HeatmapEvaluationFramework.ENTERPRISE]: tacticsDataEnterprise,
+  [HeatmapEvaluationFramework.MOBILE]: tacticsDataMobile,
+  [HeatmapEvaluationFramework.ICS]: tacticsDataICS,
 };
 
 export default function HeatmapBoard({
@@ -40,20 +38,26 @@ export default function HeatmapBoard({
       <Legend />
 
       <div
-        className="grid w-full gap-4 mt-6"
+        className="grid mt-6 justify-around"
         style={{
-          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", // slightly bigger min width
+          gridTemplateColumns: "repeat(auto-fit, minmax(80px, 1fr))",
         }}
       >
         {filteredTactics.map((tactic, idx) => (
-          <div key={idx} className="flex flex-col justify-start rounded-lg p-2">
+          <div
+            key={idx}
+            className="flex flex-col justify-start rounded-lg p-2 min-w-0 max-w-[140px]"
+          >
             {/* Title */}
-            <div className="text-xs font-bold text-neutral-300 text-center mb-2 h-[40px] flex items-center justify-center">
-              {tactic.name}
+            <div className="text-xs font-bold text-neutral-300 text-center mb-2 h-[40px] flex items-center justify-center flex-col space-y-1 min-w-0">
+              <p className="max-w-full">{tactic.name}</p>
+              <p className="font-medium text-gray-50 text-xs">
+                {tactic.techniques.length} Techniques
+              </p>
             </div>
 
             {/* Techniques */}
-            <div className="flex flex-col w-full gap-2">
+            <div className="flex flex-col w-full gap-2 min-w-0">
               {tactic.techniques.map((technique, tIdx) => (
                 <HeatmapCard key={tIdx} technique={technique} />
               ))}

@@ -6,12 +6,15 @@ import ResilienceChart from "@/components/ResilienceChart/ResilienceChart";
 import MetricsBoard from "@/components/MetricsBoard/MetricsBoard"; // 🔥 New one
 import React, { useState } from "react";
 import DrillDownTable from "@/components/DrilldownReportTable/DrilldownReportTable";
+import { HeatmapEvaluationFramework } from "@/components/HeatmapBoard/tacticsData";
 
 export default function Evaluate() {
   const [reportType, setReportType] = useState("Heat Map");
   const [round, setRound] = useState("All Selected (4)");
   const [selectedTactic, setSelectedTactic] = useState("All Selected (4)");
-  const [framework, setFramework] = useState("Mobile");
+  const [framework, setFramework] = useState<HeatmapEvaluationFramework>(
+    HeatmapEvaluationFramework.MOBILE
+  );
 
   return (
     <div className="flex flex-col gap-4 p-6 bg-base-900">

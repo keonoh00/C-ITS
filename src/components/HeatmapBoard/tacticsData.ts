@@ -30,3 +30,12 @@ export interface Tactic {
   name: string;
   techniques: Technique[];
 }
+
+export enum HeatmapEvaluationFramework {
+  ENTERPRISE = "Enterprise",
+  MOBILE = "Mobile",
+  ICS = "ICS",
+}
+
+export type HeatmapEvaluationFrameworkKeyType =
+  keyof typeof HeatmapEvaluationFramework;

@@ -1,56 +1,90 @@
 "use client";
 
-import React from "react";
-import { Technique } from "./tacticsData";
+import React, { useState } from "react";
+import { OutcomeEnum, Technique } from "./tacticsData";
+import { clsx } from "clsx";
 
-const outcomeColors = {
-  "No Test Coverage": "bg-neutral-700",
-  "Outcome TBD": "bg-neutral-500",
-  Weakest: "bg-red-500",
-  Minimal: "bg-orange-400",
-  Lower: "bg-yellow-400",
-  Moderate: "bg-green-400",
-  Strong: "bg-green-600",
-} as const;
+const CustomStyle = {
+  [OutcomeEnum.NoTestCoverage]:
+    "bg-neutral-700 border-dashed border-white text-gray-300",
+  [OutcomeEnum.OutcomeTBD]: "bg-neutral-500 border-gray-500",
+  [OutcomeEnum.Weakest]: "bg-red-500 border-gray-500",
+  [OutcomeEnum.Minimal]: "bg-orange-400 border-gray-500",
+  [OutcomeEnum.Lower]: "bg-yellow-400 border-gray-500",
+  [OutcomeEnum.Moderate]: "bg-green-400 border-gray-500",
+  [OutcomeEnum.Strong]: "bg-green-600 border-gray-500",
+};
 
 interface HeatmapCardProps {
   technique: Technique;
 }
 
 export default function HeatmapCard({ technique }: HeatmapCardProps) {
+  const [expanded, setExpanded] = useState(false);
+  const hasSubtechniques =
+    Array.isArray(technique.subtechniques) &&
+    technique.subtechniques.length > 0;
+
+  const toggleExpand = () => {
+    if (hasSubtechniques) setExpanded((prev) => !prev);
+  };
+
   return (
     <div
-      className={`flex rounded-md overflow-hidden border border-gray-500 ${
-        outcomeColors[technique.outcome]
-      } min-h-[80px] max-h-[140px] max-w-[200px] min-w-[70px]`}
+      className={clsx(
+        "rounded-md border overflow-hidden  w-full min-w-0 flex flex-col",
+        CustomStyle[technique.outcome],
+        hasSubtechniques ? "cursor-pointer" : "cursor-default"
+      )}
+      onClick={toggleExpand}
     >
-      {/* Left Bar */}
-      <div className="flex items-start justify-center w-3 bg-gray-300">
-        <span className="text-black text-[8px] mt-1">{">"}</span>
-      </div>
+      {/* Top Part */}
+      <div className="flex">
+        {/* Left Toggle Bar */}
+        {hasSubtechniques && (
+          <div className="flex flex-col items-center w-3 shrink-0 bg-gray-300 rounded-l">
+            <span className="text-black text-[8px] mt-1 font-extrabold">
+              {expanded ? "v" : ">"}
+            </span>
+          </div>
+        )}
 
-      {/* Main Content */}
-      <div className="flex flex-col justify-between flex-grow p-1 text-[9px] leading-tight overflow-hidden">
-        <div className="flex w-full justify-between items-start">
-          {/* Technique name */}
-          <div className="font-semibold text-gray-900 text-[10px] break-words leading-snug w-[70%]">
-            {technique.name}
+        {/* Main Header */}
+        <div className="flex flex-col flex-grow p-1 min-w-0">
+          <div className="flex justify-between items-start w-full min-w-0">
+            {/* Technique Name */}
+            <div className="text-[10px] font-semibold leading-tight min-w-0">
+              {technique.name}
+            </div>
+
+            {/* Top and Bottom Counters */}
+            <div className="flex flex-col items-center shrink-0 ml-1 gap-0.5">
+              <div className="bg-white text-black rounded px-1 text-[9px] leading-none">
+                {technique.topCount}
+              </div>
+              <div className="bg-white text-black rounded px-1 text-[9px] leading-none">
+                {technique.bottomCount}
+              </div>
+            </div>
           </div>
 
-          {/* Top and Bottom Counter stacked */}
-          <div className="flex flex-col items-center gap-0.5">
-            <div className="bg-white text-black rounded px-1 text-[9px]">
-              {technique.topCount}
-            </div>
-            <div className="bg-white text-black rounded px-1 text-[9px]">
-              {technique.bottomCount}
-            </div>
+          {/* Technique ID */}
+          <div className="text-[9px] text-ellipsis overflow-hidden whitespace-nowrap mt-1">
+            {technique.id}
           </div>
         </div>
-
-        {/* Technique ID */}
-        <div className="text-[9px] text-gray-700 mt-1">{technique.id}</div>
       </div>
+
+      {/* Subtechniques if expanded */}
+      {expanded && hasSubtechniques && (
+        <div className="flex flex-col gap-1 mt-2 pl-5 pr-1 pb-2">
+          {technique.subtechniques?.map((sub, idx) => (
+            <div key={idx} className="text-[8px] text-white truncate font-bold">
+              • {sub.name}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

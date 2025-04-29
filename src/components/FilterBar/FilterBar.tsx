@@ -1,6 +1,10 @@
 "use client";
 
 import React from "react";
+import {
+  HeatmapEvaluationFramework,
+  HeatmapEvaluationFrameworkKeyType,
+} from "../HeatmapBoard/tacticsData";
 
 interface FilterBarProps {
   reportType: string;
@@ -9,8 +13,8 @@ interface FilterBarProps {
   setRound: (value: string) => void;
   tactics: string;
   setTactics: (value: string) => void;
-  framework: string;
-  setFramework: (value: string) => void;
+  framework: HeatmapEvaluationFramework;
+  setFramework: (value: HeatmapEvaluationFramework) => void;
 }
 
 export default function FilterBar({
@@ -77,12 +81,26 @@ export default function FilterBar({
           <select
             className="p-2 bg-base-800 border border-neutral-600 rounded text-sm text-neutral-300"
             value={framework}
-            onChange={(e) => setFramework(e.target.value)}
+            onChange={(e) =>
+              setFramework(e.target.value as HeatmapEvaluationFramework)
+            }
           >
-            <option value="Mobile">Mobile</option>
-            <option value="Web">Web</option>
-            <option value="Enterprise">Enterprise</option>
-            <option value="ICS">ICS</option>
+            {Object.keys(HeatmapEvaluationFramework).map((frameworkKey) => (
+              <option
+                key={frameworkKey}
+                value={
+                  HeatmapEvaluationFramework[
+                    frameworkKey as HeatmapEvaluationFrameworkKeyType
+                  ]
+                }
+              >
+                {
+                  HeatmapEvaluationFramework[
+                    frameworkKey as HeatmapEvaluationFrameworkKeyType
+                  ]
+                }
+              </option>
+            ))}
           </select>
         </div>
       )}
