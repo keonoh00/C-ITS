@@ -1,9 +1,8 @@
 "use client";
 
-import EvaluationuationAssessmentTable from "@/components/RoundTable/RoundTable";
+import RoundTable from "@/components/RoundTable/RoundTable";
 import FilterSidebar from "@/components/FilterSidebar/FilterSidebar";
 import { PlusIcon } from "lucide-react";
-import SearchInput from "@/components/SearchInput/SearchInput";
 
 export default function Round() {
   const onSearchClick = () => {
@@ -17,17 +16,19 @@ export default function Round() {
         <span className="text-gray-400 text-sm">Assessment</span>
       </div>
 
-      <div className="flex flex-row items-center justify-between">
-        <SearchInput onSearch={onSearchClick} />
-
-        <button className="px-4 py-2 bg-purple-300 hover:bg-purple-400 flex flex-row rounded-4xl items-center">
-          <PlusIcon size={20} color="white" />
-          <p className="ml-1 font-bold">Create Scenario</p>
-        </button>
-      </div>
-      <div className="flex flex-4 space-x-10 flex-row mt-4 w-full">
-        <FilterSidebar onChange={onSearchClick} />
-        <EvaluationuationAssessmentTable />
+      <div className="flex flex-5 space-x-4 flex-row mt-4 w-full">
+        <div className="flex flex-1 flex-col space-y-5">
+          <FilterSidebar onChange={onSearchClick} />
+        </div>
+        <div className="flex flex-4 flex-col space-y-5">
+          <div className="flex flex-row items-center justify-end">
+            <button className="px-4 py-2 bg-purple-300 hover:bg-purple-400 flex flex-row rounded-4xl items-center">
+              <PlusIcon size={20} color="white" />
+              <p className="ml-1 font-bold">Create Scenario</p>
+            </button>
+          </div>
+          <RoundTable />
+        </div>
       </div>
     </div>
   );
