@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Play, Pause, StopCircle } from "lucide-react";
+import clsx from "clsx";
 
 export default function MoviePlayer() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
   const handlePlay = () => {
     videoRef.current?.play();
@@ -21,11 +23,53 @@ export default function MoviePlayer() {
     }
   };
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handlePlayEvent = () => setIsPlaying(true);
+    const handlePauseEvent = () => setIsPlaying(false);
+    const handleEndedEvent = () => setIsPlaying(false);
+
+    video.addEventListener("play", handlePlayEvent);
+    video.addEventListener("pause", handlePauseEvent);
+    video.addEventListener("ended", handleEndedEvent);
+
+    return () => {
+      video.removeEventListener("play", handlePlayEvent);
+      video.removeEventListener("pause", handlePauseEvent);
+      video.removeEventListener("ended", handleEndedEvent);
+    };
+  }, []);
+
+  useEffect(() => {});
+
   return (
-    <div className="flex flex-col items-center justify-center p-8 bg-base-900">
-      <div className="w-[60%] aspect-4/3 bg-black flex items-center justify-center">
-        {/* You can replace this with an actual <video> if needed */}
-        <span className="text-neutral-400 text-lg">무비 들어 가는곳</span>
+    <div className="flex flex-col items-center justify-center p-4 bg-base-900">
+      <div className="relative w-[60%] aspect-video bg-black flex items-center justify-center">
+        <video ref={videoRef} width={"100%"}>
+          <source
+            src={
+              "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+            }
+            type="video/mp4"
+          />
+        </video>
+
+        <button
+          className={clsx(
+            "absolute w-full h-full",
+            isPlaying ? "bg-transparent" : "bg-black/50 backdrop-blur-sm"
+          )}
+          onClick={isPlaying ? handlePause : handlePlay}
+        >
+          {isPlaying ? null : (
+            <Play
+              size={56}
+              className="text-white self-center bg-blue w-full text-center"
+            />
+          )}
+        </button>
       </div>
 
       {/* Controls */}
