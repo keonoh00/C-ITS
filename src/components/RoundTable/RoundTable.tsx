@@ -21,7 +21,7 @@ const data: RoundItem[] = [
     outcomeSuccess: 100,
     outcomeFail: 0,
     tag: "Quarterly Testing",
-    link: "/assessment/q1",
+    link: "/properties",
   },
   {
     assessmentName: "Penetration to C-ITS Center (Q2)",
@@ -29,7 +29,7 @@ const data: RoundItem[] = [
     outcomeSuccess: 44,
     outcomeFail: 56,
     tag: "Quarterly Testing",
-    link: "/assessment/q2",
+    link: "/properties",
   },
   {
     assessmentName: "Penetration to C-ITS Center (Q3)",
@@ -37,7 +37,7 @@ const data: RoundItem[] = [
     outcomeSuccess: 72,
     outcomeFail: 28,
     tag: "Quarterly Testing",
-    link: "/assessment/q3",
+    link: "/properties",
   },
   {
     assessmentName: "Penetration to C-ITS Center (Q4)",
@@ -45,7 +45,7 @@ const data: RoundItem[] = [
     outcomeSuccess: 0,
     outcomeFail: 100,
     tag: "Quarterly Testing",
-    link: "/assessment/q4",
+    link: "/properties",
   },
 ];
 
