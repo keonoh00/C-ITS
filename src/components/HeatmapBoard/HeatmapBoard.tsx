@@ -52,43 +52,44 @@ export default function HeatmapBoard({
   }, []);
 
   return (
-    <div className="w-full h-full flex flex-col relative">
+    <div className="w-full h-full flex flex-col">
       <Legend />
+      <div className="relative">
+        {/* Blurs */}
+        {showLeft && (
+          <div className="absolute top-6 left-0 w-30 h-full bg-gradient-to-r from-base-900 to-transparent z-10 pointer-events-none" />
+        )}
+        {showRight && (
+          <div className="absolute top-6 right-0 w-30 h-full bg-gradient-to-l from-base-900 to-transparent z-10 pointer-events-none" />
+        )}
 
-      {/* Blurs */}
-      {showLeft && (
-        <div className="absolute top-0 left-0 w-8 h-full bg-gradient-to-r from-base-900 to-transparent z-10 pointer-events-none" />
-      )}
-      {showRight && (
-        <div className="absolute top-0 right-0 w-8 h-full bg-gradient-to-l from-base-900 to-transparent z-10 pointer-events-none" />
-      )}
+        <div
+          ref={scrollRef}
+          className="flex-1 overflow-x-auto overflow-y-auto mt-6 pb-4"
+        >
+          <div className="flex gap-4 min-w-fit justify-around">
+            {filteredTactics.map((tactic, idx) => (
+              <div
+                key={idx}
+                className="flex-shrink-0 w-[145px] flex flex-col rounded-lg p-2"
+              >
+                <div className="text-xs font-bold text-neutral-300 text-center mb-2 h-[40px] flex flex-col justify-center items-center space-y-1">
+                  <p className="max-w-full break-words whitespace-normal text-center">
+                    {tactic.name}
+                  </p>
+                  <p className="font-medium text-gray-50 text-xs">
+                    {tactic.techniques.length} Techniques
+                  </p>
+                </div>
 
-      <div
-        ref={scrollRef}
-        className="flex-1 overflow-x-auto overflow-y-auto mt-6 pb-4"
-      >
-        <div className="flex gap-4 min-w-fit justify-around">
-          {filteredTactics.map((tactic, idx) => (
-            <div
-              key={idx}
-              className="flex-shrink-0 w-[145px] flex flex-col rounded-lg p-2"
-            >
-              <div className="text-xs font-bold text-neutral-300 text-center mb-2 h-[40px] flex flex-col justify-center items-center space-y-1">
-                <p className="max-w-full break-words whitespace-normal text-center">
-                  {tactic.name}
-                </p>
-                <p className="font-medium text-gray-50 text-xs">
-                  {tactic.techniques.length} Techniques
-                </p>
+                <div className="flex flex-col gap-2">
+                  {tactic.techniques.map((technique, tIdx) => (
+                    <HeatmapCard key={tIdx} technique={technique} />
+                  ))}
+                </div>
               </div>
-
-              <div className="flex flex-col gap-2">
-                {tactic.techniques.map((technique, tIdx) => (
-                  <HeatmapCard key={tIdx} technique={technique} />
-                ))}
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>
