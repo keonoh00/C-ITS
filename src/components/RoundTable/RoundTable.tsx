@@ -90,15 +90,15 @@ const columns: TableColumn<RoundItem>[] = [
   {
     label: "Tags",
     render: (item: RoundItem) => (
-      <span className="px-2 py-1 bg-base-700 text-blue-300 text-xs rounded-full">
+      <span className="px-2 py-1 bg-primary-400 text-white text-xs rounded-full">
         {item.tag}
       </span>
     ),
   },
   {
     label: "Evaluate",
-    render: (item: RoundItem) => (
-      <Link href={item.link} className="flex items-center justify-center">
+    render: () => (
+      <Link href={"/evaluate"} className="flex items-center justify-center">
         <ArrowUpRight size={20} className="text-neutral-400" />
       </Link>
     ),
@@ -107,7 +107,7 @@ const columns: TableColumn<RoundItem>[] = [
 
 export default function RoundTable() {
   return (
-    <div className="flex-3">
+    <div className="flex-3 bg-base-700 rounded p-4">
       <Table data={data} columns={columns} />
     </div>
   );
