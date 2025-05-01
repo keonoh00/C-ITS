@@ -112,7 +112,7 @@ export default function DrillDownTable() {
   ];
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-6">
       <SearchInput onSearch={setSearch} />
 
       <Table<DrillDownItem> data={filteredData} columns={columns} />

@@ -1,5 +1,6 @@
 "use client";
 
+import clsx from "clsx";
 import {
   LineChart,
   Line,
@@ -9,6 +10,7 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
+import { useEffect, useState } from "react";
 
 const data = [
   { month: "Jan-24", score: 10 },
@@ -24,8 +26,19 @@ const data = [
 ];
 
 export default function ResilienceChart() {
+  const [height, setHeight] = useState(400); // fallback default
+
+  useEffect(() => {
+    const updateHeight = () => {
+      setHeight(window.innerHeight * 0.7); // 50% of viewport height
+    };
+    updateHeight(); // initial
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
+  }, []);
+
   return (
-    <div className="bg-white p-4 rounded-md w-full h-[500px]">
+    <div className={clsx("bg-white p-4 rounded-md w-full")} style={{ height }}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="#444" />

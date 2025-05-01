@@ -1,3 +1,7 @@
+import { tacticsDataEnterprise } from "./enterprise/enterpriseData";
+import { tacticsDataICS } from "./ics/icsData";
+import { tacticsDataMobile } from "./mobile/mobileData";
+
 export interface SubTechnique {
   name: string;
   id: string;
@@ -36,6 +40,26 @@ export enum HeatmapEvaluationFramework {
   MOBILE = "Mobile",
   ICS = "ICS",
 }
+
+const _TacticOptions: string[] = Array.from(
+  new Set(
+    [...tacticsDataEnterprise, ...tacticsDataICS, ...tacticsDataMobile].map(
+      (item) => item.name
+    )
+  )
+);
+
+export enum EvaluationReportTypes {
+  RESILIENCETRENDING = "Resilience Trending",
+  HEATMAP = "Heat Map",
+  DRILLDOWNREPORT = "Drilldown Report",
+  METRICS = "Metrics",
+}
+
+export const TacticOptions = [
+  `All Selected (${_TacticOptions.length})`,
+  ..._TacticOptions,
+];
 
 export type HeatmapEvaluationFrameworkKeyType =
   keyof typeof HeatmapEvaluationFramework;

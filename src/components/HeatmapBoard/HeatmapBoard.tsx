@@ -29,7 +29,7 @@ export default function HeatmapBoard({
   );
 
   const filteredTactics: Tactic[] = useMemo(() => {
-    if (selectedTactic === "All Selected (4)") return tacticsData;
+    if (selectedTactic.startsWith("All Selected")) return tacticsData;
     return tacticsData.filter((t) => t.name === selectedTactic);
   }, [selectedTactic, tacticsData]);
 
