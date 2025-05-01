@@ -84,7 +84,12 @@ export default function HeatmapBoard({
 
                 <div className="flex flex-col gap-2">
                   {tactic.techniques.map((technique, tIdx) => (
-                    <HeatmapCard key={tIdx} technique={technique} />
+                    <div
+                      key={tIdx}
+                      className="flex flex-col gap-2 overflow-y-auto"
+                    >
+                      <HeatmapCard technique={technique} />
+                    </div>
                   ))}
                 </div>
               </div>
