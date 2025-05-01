@@ -21,7 +21,7 @@ const data: EvaluationRoundItem[] = [
     lastActivity: "2024-07-05 14:25:31",
     status: "Completed",
     round: 2,
-    reportLink: "/report/1",
+    reportLink: "/round",
   },
   {
     assessmentName: "Penetration to C-ITS Center",
@@ -29,7 +29,7 @@ const data: EvaluationRoundItem[] = [
     lastActivity: "2024-07-05 14:25:31",
     status: "In progress",
     round: 2,
-    reportLink: "/report/2",
+    reportLink: "/round",
   },
   {
     assessmentName: "Command Execute to RSU",
@@ -37,7 +37,7 @@ const data: EvaluationRoundItem[] = [
     lastActivity: "2024-07-05 14:25:31",
     status: "Completed",
     round: 2,
-    reportLink: "/report/3",
+    reportLink: "/round",
   },
   {
     assessmentName: "APT28",
@@ -45,7 +45,7 @@ const data: EvaluationRoundItem[] = [
     lastActivity: "2024-07-05 14:25:31",
     status: "Completed",
     round: 2,
-    reportLink: "/report/4",
+    reportLink: "/round",
   },
 ];
 
