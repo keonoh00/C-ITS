@@ -52,6 +52,7 @@ const data: RoundItem[] = [
 const columns: TableColumn<RoundItem>[] = [
   {
     label: "Assessment Name",
+    className: "py-5",
     render: (item: RoundItem) => (
       <Link
         href={item.link}

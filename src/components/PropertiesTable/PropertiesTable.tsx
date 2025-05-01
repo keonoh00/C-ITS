@@ -44,6 +44,7 @@ const data: PropertiesTechniqueItem[] = [
 const columns: TableColumn<PropertiesTechniqueItem>[] = [
   {
     label: "Technique",
+    className: "py-5",
     render: (item: PropertiesTechniqueItem) => <span>{item.technique}</span>,
   },
   {

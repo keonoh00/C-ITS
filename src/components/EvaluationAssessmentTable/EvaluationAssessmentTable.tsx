@@ -52,6 +52,7 @@ const data: EvaluationRoundItem[] = [
 const columns: TableColumn<EvaluationRoundItem>[] = [
   {
     label: "Assessment Name",
+    className: "py-5",
     render: (item: EvaluationRoundItem) => (
       <Link
         href={item.reportLink}
@@ -98,5 +99,9 @@ const columns: TableColumn<EvaluationRoundItem>[] = [
 ];
 
 export default function EvaluationRoundTable() {
-  return <Table data={data} columns={columns} />;
+  return (
+    <div className="w-full bg-base-800 rounded-lg p-4">
+      <Table data={data} columns={columns} />
+    </div>
+  );
 }
