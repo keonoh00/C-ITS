@@ -1,5 +1,4 @@
 import { proxyFetch } from "..";
-
 export interface OperationPlanner {
   params: Record<string, unknown>;
   allow_repeatable_abilities: boolean;
@@ -7,7 +6,7 @@ export interface OperationPlanner {
   plugin: string;
   name: string;
   id: string;
-  ignore_enforcement_modules: string[];
+  ignore_enforcement_modules: unknown[];
   module: string;
   description: string;
 }
@@ -27,12 +26,38 @@ export interface OperationAdversary {
   description: string;
 }
 
+export interface OperationObjectiveGoal {
+  count: number;
+  target: string;
+  operator: string;
+  achieved: boolean;
+  value: string;
+}
+
+export interface OperationObjective {
+  percentage: number;
+  name: string;
+  goals: OperationObjectiveGoal[];
+  id: string;
+  description: string;
+}
+
+export interface OperationSource {
+  relationships: unknown[];
+  rules: unknown[];
+  adjustments: unknown[];
+  facts: unknown[];
+  name: string;
+  id: string;
+  plugin: string;
+}
+
 export interface OperationAgent {
   trusted: boolean;
   exe_name: string;
   pid: number;
   proxy_receivers: Record<string, unknown>;
-  proxy_chain: string[];
+  proxy_chain: unknown[];
   origin_link_id: string;
   privilege: string;
   host_ip_addrs: string[];
@@ -60,22 +85,12 @@ export interface OperationAgent {
   watchdog: number;
 }
 
-export interface OperationSource {
-  relationships: unknown[];
-  rules: unknown[];
-  adjustments: unknown[];
-  facts: unknown[];
-  name: string;
-  id: string;
-  plugin: string;
-}
-
-export interface OperationResponse {
+export interface OperationItem {
   planner: OperationPlanner;
   adversary: OperationAdversary;
   group: string;
   visibility: number;
-  objective: string;
+  objective: OperationObjective | string;
   autonomous: number;
   use_learning_parsers: boolean;
   start: string;
@@ -90,6 +105,8 @@ export interface OperationResponse {
   chain: unknown[];
 }
 
+export type OperationResponse = OperationItem[];
+
 export async function fetchOperations(log = false): Promise<OperationResponse> {
   const path = "/api/v2/operations";
   const headers = {
@@ -100,6 +117,7 @@ export async function fetchOperations(log = false): Promise<OperationResponse> {
     path,
     method: "GET",
     headers,
+    body: { name: "" },
   });
 
   if (log) {
