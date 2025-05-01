@@ -1,17 +1,43 @@
 "use client";
 
-import AssessmentTable from "@/components/AssessmentTable/AssessmentTable";
-import SearchInput from "@/components/SearchInput/SearchInput";
+import { useEffect, useState, useCallback } from "react";
 import { SaveIcon, Trash2 } from "lucide-react";
+import SearchInput from "@/components/SearchInput/SearchInput";
+import AssessmentTable from "@/components/AssessmentTable/AssessmentTable";
+import { fetchOperations, OperationResponse } from "@/api/defend/assetssment";
+import Loading from "@/components/Loading/Loading";
 
 export default function Assessment() {
-  const onSearchClick = () => {
-    console.log("asdfasdfas");
+  const [data, setData] = useState<OperationResponse>([]);
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const fetchData = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetchOperations();
+      setData(response);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 300); // Slight delay for better UX
+    }
+  }, []);
+
+  const handleSearch = async () => {
+    await fetchData();
   };
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
   return (
     <div className="flex flex-col w-full bg-base-900 p-8 rounded-xl">
       <div className="justify-between flex w-full items-center">
-        <SearchInput onSearch={onSearchClick} />
+        <SearchInput onSearch={handleSearch} />
         <div className="flex-row flex">
           <button className="p-2 bg-primary-300 flex flex-row rounded-sm">
             <SaveIcon color="white" />
@@ -25,7 +51,7 @@ export default function Assessment() {
       </div>
 
       <div className="mt-4">
-        <AssessmentTable />
+        {isLoading ? <Loading /> : <AssessmentTable data={data} />}
       </div>
     </div>
   );
