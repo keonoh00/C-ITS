@@ -74,7 +74,9 @@ export default function HeatmapBoard({
               className="flex-shrink-0 w-[145px] flex flex-col rounded-lg p-2"
             >
               <div className="text-xs font-bold text-neutral-300 text-center mb-2 h-[40px] flex flex-col justify-center items-center space-y-1">
-                <p className="max-w-full truncate">{tactic.name}</p>
+                <p className="max-w-full break-words whitespace-normal text-center">
+                  {tactic.name}
+                </p>
                 <p className="font-medium text-gray-50 text-xs">
                   {tactic.techniques.length} Techniques
                 </p>
