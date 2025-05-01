@@ -1,59 +1,15 @@
 "use client";
 
+import { AbilityDetail, EnrichedAdversary } from "@/api/defend/scenario";
 import { Table, TableColumn } from "@/components/Table/Table";
 import Image from "next/image";
 
-interface ScenarioItem {
-  id: number;
-  name: string;
-  type: string;
-  ttp: string;
-  plugin: string;
-  requires: boolean;
-  unlock: boolean;
+interface ScenarioTableProps {
+  data: EnrichedAdversary[];
 }
 
-const scenarioData: ScenarioItem[] = [
-  {
-    id: 1,
-    name: "Find Unauthorized Process",
-    type: "Detection",
-    ttp: "-",
-    plugin: "Elastic, Shell",
-    requires: true,
-    unlock: true,
-  },
-  {
-    id: 2,
-    name: "Find Unauthorized Process",
-    type: "Detection",
-    ttp: "-",
-    plugin: "Elastic, Shell",
-    requires: false,
-    unlock: true,
-  },
-  {
-    id: 3,
-    name: "Acquire suspicious files",
-    type: "Detection",
-    ttp: "-",
-    plugin: "Elastic, Shell",
-    requires: true,
-    unlock: false,
-  },
-  {
-    id: 4,
-    name: "Enable In/Out bound TCP/UDP firewall rule",
-    type: "Response",
-    ttp: "Uncommonly Used Port",
-    plugin: "MNX, Shell",
-    requires: false,
-    unlock: true,
-  },
-];
-
-export function ScenarioTable() {
-  const columns: TableColumn<ScenarioItem>[] = [
+export const ScenarioTable: React.FC<ScenarioTableProps> = ({ data }) => {
+  const columns: TableColumn<AbilityDetail>[] = [
     {
       label: "Order",
       render: (_item, index) => index + 1,
@@ -64,11 +20,11 @@ export function ScenarioTable() {
     },
     {
       label: "Defend Type",
-      render: (item) => item.type,
+      render: (item) => item.tactic,
     },
     {
       label: "TTP",
-      render: (item) => item.ttp,
+      render: (item) => item.technique_name,
     },
     {
       label: "Plug-In",
@@ -76,31 +32,30 @@ export function ScenarioTable() {
     },
     {
       label: "Pre-Con Requires",
-      render: (item) =>
-        item.requires ? (
-          <button className="bg-black w-[24px] h-[24px] rounded relative">
-            <Image
-              src={"/assets/lock.svg"}
-              alt="lock"
-              className="p-[4px]"
-              fill
-            />
-          </button>
-        ) : null,
+      render: (item, index) => (
+        <button
+          key={index}
+          className="bg-black w-[24px] h-[24px] rounded relative"
+        >
+          <Image src={"/assets/lock.svg"} alt="lock" className="p-[4px]" fill />
+        </button>
+      ),
     },
     {
       label: "Unlock",
-      render: (item) =>
-        item.unlock ? (
-          <button className="bg-black w-[24px] h-[24px] rounded relative">
-            <Image
-              src={"/assets/unlock.svg"}
-              fill
-              alt="unlock"
-              className="p-[4px]"
-            />
-          </button>
-        ) : null,
+      render: (item, index) => (
+        <button
+          key={index}
+          className="bg-black w-[24px] h-[24px] rounded relative"
+        >
+          <Image
+            src={"/assets/unlock.svg"}
+            alt="lock"
+            className="p-[4px]"
+            fill
+          />
+        </button>
+      ),
     },
     {
       label: "-",
@@ -108,5 +63,11 @@ export function ScenarioTable() {
     },
   ];
 
-  return <Table data={scenarioData} columns={columns} />;
-}
+  return data.length > 0 ? (
+    <Table data={data.flatMap((i) => i.atomic_ordering)} columns={columns} />
+  ) : (
+    <div className="flex justify-center py-20">
+      <span className="text-2xl">No data available</span>
+    </div>
+  );
+};

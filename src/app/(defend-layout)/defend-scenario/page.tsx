@@ -1,24 +1,61 @@
 "use client";
 
+import {
+  EnrichedAdversary,
+  fetchAdversariesWithAbilities,
+} from "@/api/defend/scenario";
+import Loading from "@/components/Loading/Loading";
 import { ScenarioTable } from "@/components/ScenarioTable/ScenarioTable";
 import { PlusIcon } from "lucide-react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 export default function DefendScenario() {
+  const [data, setData] = useState<EnrichedAdversary[]>([]);
+  const [tableData, setTableData] = useState<EnrichedAdversary[]>([]);
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const handleDropdownSelection = (e: ChangeEvent<HTMLSelectElement>) => {
+    const filtered = data.filter((val) => val.name === e.currentTarget.value);
+    setTableData(filtered);
+  };
+
+  const fetchData = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const adverRes = await fetchAdversariesWithAbilities();
+      setData(adverRes.filter((element) => element.atomic_ordering.length > 0));
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 300); // Slight delay for better UX
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
   return (
-    <div className="flex flex-col w-full bg-base-900 p-8 rounded-xl">
+    <div className="flex flex-col w-full bg-base-900 p-8 rounded-xl h-full">
       <div className="justify-between flex w-full items-center">
         <div className="flex items-center gap-4">
           <div className="relative min-w-[340px]">
             <select
               defaultValue=""
               className="w-full bg-base-800 border border-base-700 text-neutral-300 px-4 py-2 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
+              onChange={handleDropdownSelection}
             >
               <option value="" disabled hidden>
                 Choose...
               </option>
-              <option value="opt1">Option 1</option>
-              <option value="opt2">Option 2</option>
-              <option value="opt3">Option 3</option>
+              {data.map((opt, index) => (
+                <option key={index} value={opt.name}>
+                  {opt.name}
+                </option>
+              ))}
             </select>
 
             <div className="pointer-events-none absolute right-4 top-1/2 transform -translate-y-1/2 text-neutral-400">
@@ -51,7 +88,7 @@ export default function DefendScenario() {
       </div>
 
       <div className="mt-4">
-        <ScenarioTable />
+        {isLoading ? <Loading /> : <ScenarioTable data={tableData} />}
       </div>
     </div>
   );
