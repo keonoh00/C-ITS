@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import SearchInput from "../SearchInput/SearchInput";
 
@@ -10,28 +10,70 @@ interface SelectedFilter {
 }
 
 interface FilterSideBarProps {
-  onChange: () => void;
+  onChange: (filters: {
+    searchQuery: string;
+    startDate: string | null;
+    endDate: string | null;
+    assessment: string;
+    selectedFilters: SelectedFilter[];
+  }) => void;
 }
 
 export default function FilterSidebar({ onChange }: FilterSideBarProps) {
-  const [selectedFilters, setSelectedFilters] = useState<SelectedFilter[]>([
-    { label: "Assessment", value: "Carbanak APT" },
-    { label: "Last Activity", value: "07-05 ~ 07-13" },
-  ]);
-  const [startDate, setStartDate] = useState("2025-04-27");
-  const [endDate, setEndDate] = useState("2025-04-27");
+  const [selectedFilters, setSelectedFilters] = useState<SelectedFilter[]>([]);
+  const [startDate, setStartDate] = useState<string | null>(null);
+  const [endDate, setEndDate] = useState<string | null>(null);
   const [assessment, setAssessment] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const updateFilter = (label: string, value: string | null) => {
+    setSelectedFilters((prev) => {
+      const without = prev.filter((f) => f.label !== label);
+      return value ? [...without, { label, value }] : without;
+    });
+  };
 
   const handleRemoveFilter = (filterLabel: string) => {
     setSelectedFilters((prev) => prev.filter((f) => f.label !== filterLabel));
+    if (filterLabel === "Assessment") setAssessment("");
+    if (filterLabel === "Start Date") setStartDate(null);
+    if (filterLabel === "End Date") setEndDate(null);
+    if (filterLabel === "Search") setSearchQuery("");
   };
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      const formatted = `${startDate.slice(5)} ~ ${endDate.slice(5)}`;
+      updateFilter("Last Activity", formatted);
+    } else {
+      handleRemoveFilter("Last Activity");
+    }
+  }, [startDate, endDate]);
+
+  useEffect(() => {
+    updateFilter("Assessment", assessment);
+  }, [assessment]);
+
+  useEffect(() => {
+    updateFilter("Search", searchQuery);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    onChange({
+      searchQuery,
+      startDate,
+      endDate,
+      assessment,
+      selectedFilters,
+    });
+  }, [searchQuery, startDate, endDate, assessment, selectedFilters, onChange]);
 
   return (
     <>
-      <SearchInput onSearch={onChange} />
+      <SearchInput onSearch={(q) => setSearchQuery(q)} />
 
-      <div className="flex flex-col bg-base-900 p-4 text-white rounded-md w-full">
-        {selectedFilters && selectedFilters.length > 0 ? (
+      <div className="flex flex-col bg-base-900 p-4 text-white rounded-md w-full h-full">
+        {selectedFilters.length > 0 && (
           <div className="flex flex-col gap-2 rounded mb-4">
             {selectedFilters.map((filter, idx) => (
               <div
@@ -47,22 +89,25 @@ export default function FilterSidebar({ onChange }: FilterSideBarProps) {
               </div>
             ))}
           </div>
-        ) : null}
+        )}
 
         <div className="flex flex-col gap-2 mb-4">
           <span className="text-neutral-400">Last Activity</span>
-          <input
-            type="date"
-            className="p-2 bg-base-800 border border-neutral-600 rounded text-neutral-200"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-          <input
-            type="date"
-            className="p-2 bg-base-800 border border-neutral-600 rounded text-neutral-200"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
+          <div className="flex items-center gap-3">
+            <input
+              type="date"
+              className="p-2 bg-base-800 border border-neutral-600 rounded text-neutral-200 w-full"
+              value={startDate || ""}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+            <span className="text-neutral-200">~</span>
+            <input
+              type="date"
+              className="p-2 bg-base-800 border border-neutral-600 rounded text-neutral-200 w-full"
+              value={endDate || ""}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+          </div>
         </div>
 
         <div className="flex flex-col gap-2">
