@@ -59,17 +59,17 @@ export default function HeatmapCard({ technique }: HeatmapCardProps) {
 
             {/* Top and Bottom Counters */}
             <div className="flex flex-col items-center shrink-0 ml-1 gap-0.5">
-              <div className="bg-white text-black rounded px-1 text-[9px] leading-none">
+              <div className="bg-white text-black rounded px-1 text-[10px] leading-none">
                 {technique.topCount}
               </div>
-              <div className="bg-white text-black rounded px-1 text-[9px] leading-none">
+              <div className="bg-white text-black rounded px-1 text-[10px] leading-none">
                 {technique.bottomCount}
               </div>
             </div>
           </div>
 
           {/* Technique ID */}
-          <div className="text-[9px] text-ellipsis overflow-hidden whitespace-nowrap mt-1">
+          <div className="text-[10px] text-ellipsis overflow-hidden whitespace-nowrap mt-1">
             {technique.id}
           </div>
         </div>
@@ -79,7 +79,7 @@ export default function HeatmapCard({ technique }: HeatmapCardProps) {
       {expanded && hasSubtechniques && (
         <div className="flex flex-col gap-1 mt-2 pl-5 pr-1 pb-2">
           {technique.subtechniques?.map((sub, idx) => (
-            <div key={idx} className="text-[8px] text-white truncate font-bold">
+            <div key={idx} className="text-[9px] text-white font-bold">
               • {sub.name}
             </div>
           ))}
