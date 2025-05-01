@@ -1,48 +1,30 @@
-const DEFAULT_COMMAND = `function getFullList($portList){
-  $final = @();
-  foreach ($p in $portList) {
-    if ($p -like "*-*") {
-      $minimax = $p.Split("-");
-      for ($i = [int]$minimax[0]; $i -lt [int]$minimax[1]; $i++) {
-        $final += ($i -as [string]);
-      }
-    }
-  }
-  return $final;
-}`;
+import { AttackExecutor } from "@/api/defend/defend";
+import { useState } from "react";
 
-export const ExecutorsTab = () => {
+interface InnerContentProps {
+  execData: AttackExecutor;
+  availablePlatforms: string[];
+}
+
+const InnerContent: React.FC<InnerContentProps> = ({
+  execData,
+  availablePlatforms,
+}) => {
   return (
-    <div className="space-y-4">
-      {/* Choose Dropdown */}
-      <div>
-        <select className="w-full bg-base-800 p-2 rounded">
-          <option value="">Choose...</option>
-          <option value="option1">Windows Default</option>
-          <option value="option2">Linux Bash</option>
-          {/* ...add your options here */}
-        </select>
-      </div>
-
+    <>
       {/* Platform Radio */}
       <div className="flex flex-wrap gap-6 items-center">
-        <label className="flex items-center gap-2">
-          <input
-            type="radio"
-            name="platform"
-            defaultChecked
-            className="accent-blue-500"
-          />
-          <span>Windows</span>
-        </label>
-        <label className="flex items-center gap-2">
-          <input type="radio" name="platform" className="accent-blue-500" />
-          <span>Linux</span>
-        </label>
-        <label className="flex items-center gap-2">
-          <input type="radio" name="platform" className="accent-blue-500" />
-          <span>OS X</span>
-        </label>
+        {availablePlatforms.map((platform, index) => (
+          <label key={platform + index} className="flex items-center gap-2">
+            <input
+              type="radio"
+              name="platform"
+              defaultChecked={platform === execData.platform}
+              className="accent-blue-500"
+            />
+            <span>{platform}</span>
+          </label>
+        ))}
       </div>
 
       {/* Executor Radio */}
@@ -61,6 +43,7 @@ export const ExecutorsTab = () => {
           className="bg-base-800 p-2 w-full rounded resize-none"
           placeholder="내용..."
           rows={3}
+          defaultValue={execData.payloads.join("\n")}
         />
       </div>
 
@@ -70,7 +53,7 @@ export const ExecutorsTab = () => {
         <textarea
           className="bg-base-800 p-2 w-full rounded resize-none font-mono text-sm leading-relaxed"
           rows={6}
-          defaultValue={DEFAULT_COMMAND}
+          defaultValue={execData.command}
         />
       </div>
 
@@ -81,7 +64,7 @@ export const ExecutorsTab = () => {
           <input
             type="number"
             className="bg-base-800 p-2 rounded w-full"
-            defaultValue={60}
+            defaultValue={execData.timeout}
           />
         </div>
         <div>
@@ -89,10 +72,44 @@ export const ExecutorsTab = () => {
           <input
             type="number"
             className="bg-base-800 p-2 rounded w-full"
-            defaultValue={60}
+            defaultValue={execData.cleanup}
           />
         </div>
       </div>
+    </>
+  );
+};
+
+interface ExecutorsTabProps {
+  data: AttackExecutor[];
+}
+
+export const ExecutorsTab: React.FC<ExecutorsTabProps> = ({ data }) => {
+  const [executorData, setExecutorData] = useState<AttackExecutor | null>(null);
+
+  return (
+    <div className="space-y-4">
+      {/* Choose Dropdown */}
+      <div>
+        <select
+          className="w-full bg-base-800 p-2 rounded"
+          onChange={(e) => {
+            setExecutorData(data[Number(e.currentTarget.value)]);
+          }}
+        >
+          {data?.map((_, index) => (
+            <option key={index} value={index}>
+              Executor Index: {index}
+            </option>
+          ))}
+        </select>
+      </div>
+      {executorData ? (
+        <InnerContent
+          execData={executorData}
+          availablePlatforms={data.map((it) => it.platform)}
+        />
+      ) : null}
     </div>
   );
 };

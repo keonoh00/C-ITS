@@ -1,7 +1,13 @@
 import { useState } from "react";
+import { HeatmapEvaluationFramework } from "../HeatmapBoard/tacticsData";
+import { AttackDataItem } from "@/api/defend/defend";
 
-export const GeneralTab = () => {
-  const [state, setState] = useState("Enterprise");
+interface GeneralTabProps {
+  data: AttackDataItem;
+}
+
+export const GeneralTab: React.FC<GeneralTabProps> = ({ data }) => {
+  const [state, setState] = useState(data.mitre_domain);
 
   return (
     <div className="space-y-6">
@@ -12,6 +18,7 @@ export const GeneralTab = () => {
           <input
             className="bg-base-800 p-2 rounded border border-base-850"
             placeholder="ID"
+            defaultValue={data.tactic}
           />
         </div>
         <div className="flex flex-col md:col-span-2">
@@ -19,6 +26,7 @@ export const GeneralTab = () => {
           <input
             className="bg-base-800 p-2 rounded border border-base-850"
             placeholder="UID"
+            defaultValue={data.ability_id}
           />
         </div>
         <div className="flex flex-col col-span-1">
@@ -26,6 +34,7 @@ export const GeneralTab = () => {
           <input
             className="bg-base-800 p-2 rounded border border-base-850"
             placeholder="Name"
+            defaultValue={data.name}
           />
         </div>
       </div>
@@ -37,6 +46,7 @@ export const GeneralTab = () => {
           className="bg-base-800 p-2 rounded w-full border border-base-850"
           placeholder="내용..."
           rows={3}
+          defaultValue={data.description}
         />
       </div>
 
@@ -44,7 +54,7 @@ export const GeneralTab = () => {
       <div>
         <label className="text-sm font-bold mb-2 block">State</label>
         <div className="flex gap-6">
-          {["Enterprise", "Mobile", "ICS"].map((val) => (
+          {Object.values(HeatmapEvaluationFramework).map((val) => (
             <label key={val} className="inline-flex items-center space-x-2">
               <input
                 type="radio"
@@ -84,6 +94,7 @@ export const GeneralTab = () => {
         <textarea
           className="bg-base-800 p-2 rounded w-full border border-base-850"
           rows={3}
+          defaultValue={data.threat_group}
         ></textarea>
       </div>
 
@@ -97,6 +108,7 @@ export const GeneralTab = () => {
         <textarea
           className="bg-base-800 p-2 rounded w-full border border-base-850"
           rows={3}
+          defaultValue={data.cve_info}
         ></textarea>
       </div>
     </div>

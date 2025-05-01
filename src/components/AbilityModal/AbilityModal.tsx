@@ -5,6 +5,7 @@ import { RequirementTab } from "./RequirementTab";
 import { ConfigurationTab } from "./ConfigurationTab";
 import { XIcon } from "lucide-react";
 import clsx from "clsx";
+import { AttackDataItem } from "@/api/defend/defend";
 
 enum AbilityModalTabs {
   General = "General",
@@ -13,12 +14,17 @@ enum AbilityModalTabs {
   Configuration = "Configuration",
 }
 
-const TabContent: React.FC<{ tab: AbilityModalTabs }> = ({ tab }) => {
+interface TabContentProps {
+  tab: AbilityModalTabs;
+  tabData: AttackDataItem;
+}
+
+const TabContent: React.FC<TabContentProps> = ({ tab, tabData }) => {
   switch (tab) {
     case AbilityModalTabs.General:
-      return <GeneralTab />;
+      return <GeneralTab data={tabData} />;
     case AbilityModalTabs.Executors:
-      return <ExecutorsTab />;
+      return <ExecutorsTab data={tabData.executors} />;
     case AbilityModalTabs.Requirement:
       return <RequirementTab />;
     case AbilityModalTabs.Configuration:
@@ -32,12 +38,14 @@ interface AbilityModalProps {
   open: boolean;
   onSave: () => void;
   onClose: () => void;
+  modalData: AttackDataItem;
 }
 
 const AbilityModal: React.FC<AbilityModalProps> = ({
   open,
   onClose,
   onSave,
+  modalData,
 }) => {
   const [visible, setVisible] = useState(open);
   const [tab, setTab] = useState<AbilityModalTabs>(AbilityModalTabs.General);
@@ -64,7 +72,7 @@ const AbilityModal: React.FC<AbilityModalProps> = ({
   return (
     <div
       className={clsx(
-        "fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm transition-opacity duration-300 ease-out",
+        "fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm transition-opacity duration-300 ease-out h-screen",
         open ? "opacity-100" : "opacity-0 pointer-events-none"
       )}
       onClick={onClose}
@@ -105,7 +113,7 @@ const AbilityModal: React.FC<AbilityModalProps> = ({
         </div>
 
         {/* Content */}
-        <TabContent tab={tab} />
+        <TabContent tab={tab} tabData={modalData} />
 
         {/* Footer */}
         <div className="flex justify-end space-x-2">

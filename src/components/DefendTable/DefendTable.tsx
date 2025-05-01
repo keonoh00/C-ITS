@@ -10,6 +10,7 @@ interface DefendTableProps {
 }
 
 export function DefendTable({ data }: DefendTableProps) {
+  const [modalData, setModalData] = useState<AttackDataItem | null>(null);
   const [open, setOpen] = useState(false);
 
   const columns: TableColumn<AttackDataItem>[] = [
@@ -23,7 +24,10 @@ export function DefendTable({ data }: DefendTableProps) {
       render: (item) => (
         <span
           className="underline cursor-pointer hover:text-blue-400 transition-colors text-left link"
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setModalData(item);
+            setOpen(true);
+          }}
         >
           {item.name}
         </span>
@@ -58,11 +62,14 @@ export function DefendTable({ data }: DefendTableProps) {
   return (
     <>
       <Table data={data.data} columns={columns} striped />
-      <AbilityModal
-        open={open}
-        onClose={() => setOpen(false)}
-        onSave={() => console.log("Save")}
-      />
+      {modalData ? (
+        <AbilityModal
+          open={open}
+          onClose={() => setOpen(false)}
+          onSave={() => console.log("Save")}
+          modalData={modalData}
+        />
+      ) : null}
     </>
   );
 }
