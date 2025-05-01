@@ -36,15 +36,15 @@ export const tacticsDataEnterprise: Tactic[] = [
     techniques: PersistenceTechniques as Technique[],
   },
   {
-    name: "PrivilegeEscalation",
+    name: "Privilege Escalation",
     techniques: PrivilegeEscalationTechniques as Technique[],
   },
   {
-    name: "DefenseEvasion",
+    name: "Defense Evasion",
     techniques: DefenseEvasionTechniques as Technique[],
   },
   {
-    name: "CredentialAccess",
+    name: "Credential Access",
     techniques: CredentialAccessTechniques as Technique[],
   },
   {
@@ -52,7 +52,7 @@ export const tacticsDataEnterprise: Tactic[] = [
     techniques: DiscoveryTechniques as Technique[],
   },
   {
-    name: "LateralMovement",
+    name: "Lateral Movement",
     techniques: LateralMovementTechniques as Technique[],
   },
   {
@@ -60,7 +60,7 @@ export const tacticsDataEnterprise: Tactic[] = [
     techniques: CollectionTechniques as Technique[],
   },
   {
-    name: "CommandAndControl",
+    name: "Command And Control",
     techniques: CommandAndControlTechniques as Technique[],
   },
   {
