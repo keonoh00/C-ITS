@@ -46,7 +46,7 @@ export default function MoviePlayer() {
 
   return (
     <div className="flex flex-col items-center justify-center p-4 bg-base-900">
-      <div className="relative w-[60%] aspect-video bg-black flex items-center justify-center">
+      <div className="relative w-[50%] aspect-video bg-black flex items-center justify-center">
         <video ref={videoRef} width={"100%"}>
           <source
             src={
