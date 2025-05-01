@@ -15,10 +15,10 @@ export default function AssessmentTable({ data }: AssessmentTableProps) {
       label: "Assessment Name",
       render: (item) => (
         <Link
-          href={"/assessment/123123"}
+          href={`/assessment/${item.id}`}
           className="underline cursor-pointer hover:text-blue-400 transition-colors"
         >
-          {item.name}
+          {item.name || `ID: ${item.id}`}
         </Link>
       ),
     },
