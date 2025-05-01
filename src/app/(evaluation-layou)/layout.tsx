@@ -3,15 +3,17 @@ import Image from "next/image";
 
 function TopBar() {
   return (
-    <div className="ml-26 py-4">
-      <Image
-        src="/assets/logo-light.png"
-        width={120}
-        height={40}
-        alt="KSIGN Logo"
-        className="object-contain"
-      />
-    </div>
+    <Link href={"/"}>
+      <div className="ml-26 py-4">
+        <Image
+          src="/assets/logo-light.png"
+          width={120}
+          height={40}
+          alt="KSIGN Logo"
+          className="object-contain"
+        />
+      </div>
+    </Link>
   );
 }
 
