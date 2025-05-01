@@ -1,3 +1,5 @@
+import { proxyFetch } from "..";
+
 export interface AttackPagination {
   page: number;
   items_per_page: number;
@@ -100,13 +102,15 @@ export interface AttackRequest {
   itemsPerPage?: number;
   log?: boolean;
 }
+
 export async function fetchAttacks({
   query = "",
   page = 1,
   itemsPerPage = 10,
   log = false,
 }: AttackRequest): Promise<AttackResponse> {
-  const url = "/api/attacks"; // Now use the proxied path
+  const path = "/attacks";
+
   const body = {
     page,
     items_per_page: itemsPerPage,
@@ -117,40 +121,25 @@ export async function fetchAttacks({
     threat_group: query,
   };
 
-  const headers = {
-    "Content-Type": "application/json",
+  const headers: Record<string, string> = {
     Key: "BLUEADMIN123",
   };
 
-  const response = await fetch(url, {
+  const response = await proxyFetch({
+    path,
     method: "POST",
     headers,
-    body: JSON.stringify(body),
-    cache: "no-store",
+    body,
   });
 
   if (log) {
-    console.log("FETCH Request:");
-    console.log("URL:", url);
-    console.log("Method:", "POST");
-    console.log("Headers:", headers);
-    console.log("Body:", JSON.stringify(body, null, 2));
-    console.log("FETCH Response status:", response.status);
+    console.log("PROXY FETCH Request:");
+    console.log("→ Path:", path);
+    console.log("→ Method:", "POST");
+    console.log("→ Headers:", headers);
+    console.log("→ Body:", body);
+    console.log("← Response Data:", response);
   }
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error("FETCH Error Response Body:", errorText);
-    throw new Error(
-      `Failed to fetch attacks: ${response.status} ${response.statusText}`
-    );
-  }
-
-  const data = (await response.json()) as AttackResponse;
-
-  if (log) {
-    console.log("FETCH Response data:", data);
-  }
-
-  return data;
+  return response as AttackResponse;
 }

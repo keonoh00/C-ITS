@@ -1,10 +1,12 @@
+import { proxyFetch } from "..";
+
 export interface Agent {
   display_name: string;
   last_seen: string;
   architecture: string;
   pending_contact: string;
   host_ip_addrs: string[];
-  links: unknown[]; // or a better type if you know the link structure
+  links: unknown[]; // Replace with defined type if known
   sleep_min: number;
   executors: string[];
   paw: string;
@@ -19,11 +21,11 @@ export interface Agent {
   host: string;
   watchdog: number;
   privilege: string;
-  proxy_receivers: Record<string, unknown>; // empty object or mapped values
+  proxy_receivers: Record<string, unknown>;
   username: string;
   upstream_dest: string;
   exe_name: string;
-  proxy_chain: unknown[]; // empty array for now
+  proxy_chain: unknown[];
   sleep_max: number;
   ppid: number;
   created: string;
@@ -31,20 +33,25 @@ export interface Agent {
   origin_link_id: string;
 }
 
-export async function getAgents(): Promise<Agent[]> {
-  const res = await fetch("http://192.168.5.111:8888/api/v2/agents", {
+export type AgentResponse = Agent[];
+
+export async function fetchAgents(log = false): Promise<AgentResponse> {
+  const path = "/api/v2/agents";
+
+  const data = await proxyFetch({
+    path,
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
       Key: "BLUEADMIN123",
     },
-    cache: "no-store", // important: always fresh
   });
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch agents");
+  if (log) {
+    console.log("FETCH via proxy:");
+    console.log("Path:", path);
+    console.log("Method: GET");
+    console.log("Response Data:", data);
   }
 
-  const data = await res.json();
-  return data;
+  return data as AgentResponse;
 }
