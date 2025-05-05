@@ -5,7 +5,7 @@ const PORT = 3002;
 const ADMIN_SECRET = "admin";
 
 const server = createServer((req, res) => {
-  if (req.method === "POST" && req.url === "/send") {
+  if (req.method === "POST" && req.url === "/trigger") {
     let body = "";
     req.on("data", (chunk) => (body += chunk));
     req.on("end", () => {
