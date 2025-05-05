@@ -9,20 +9,22 @@ import Loading from "@/components/Loading/Loading";
 
 export default function Assessment() {
   const [data, setData] = useState<OperationResponse>([]);
-
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
+    setError(null);
     try {
       const response = await fetchOperations();
       setData(response);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
+    } catch (err) {
+      setError((err as Error).message || "Failed to load data.");
+      setData([]);
     } finally {
       setTimeout(() => {
         setIsLoading(false);
-      }, 300); // Slight delay for better UX
+      }, 300);
     }
   }, []);
 
@@ -51,7 +53,17 @@ export default function Assessment() {
       </div>
 
       <div className="mt-4">
-        {isLoading ? <Loading /> : <AssessmentTable data={data} />}
+        {isLoading ? (
+          <Loading />
+        ) : error ? (
+          <div className="text-center text-red-400 py-10">{error}</div>
+        ) : data.length === 0 ? (
+          <div className="text-center text-neutral-400 py-10">
+            No assessments found.
+          </div>
+        ) : (
+          <AssessmentTable data={data} />
+        )}
       </div>
     </div>
   );

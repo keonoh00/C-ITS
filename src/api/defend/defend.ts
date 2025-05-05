@@ -90,10 +90,10 @@ export interface AttackFilterCount {
 }
 
 export interface AttackResponse {
-  pagenation: AttackPagination;
-  data: AttackDataItem[];
-  search_keyword: AttackSearchKeyword;
-  filter_count: AttackFilterCount;
+  pagenation?: AttackPagination;
+  data?: AttackDataItem[];
+  search_keyword?: AttackSearchKeyword;
+  filter_count?: AttackFilterCount;
 }
 
 export interface AttackRequest {

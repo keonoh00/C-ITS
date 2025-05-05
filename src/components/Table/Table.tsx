@@ -8,14 +8,20 @@ export interface TableColumn<T> {
 }
 
 export interface TableProps<T> {
-  data: T[];
+  data: T[] | undefined | null;
   columns: TableColumn<T>[];
   striped?: boolean;
 }
 
-export function Table<T>({ data, columns, striped = true }: TableProps<T>) {
+export function Table<T>({
+  data = [],
+  columns,
+  striped = true,
+}: TableProps<T>) {
   const baseHeaderClass = "text-white text-lg font-bold text-center py-3 px-4";
   const baseCellClass = "px-4 py-3 font-medium text-neutral-200 text-center";
+
+  const isEmpty = !Array.isArray(data) || data.length === 0;
 
   return (
     <table className="w-full text-sm text-left text-white">
@@ -29,24 +35,35 @@ export function Table<T>({ data, columns, striped = true }: TableProps<T>) {
         </tr>
       </thead>
       <tbody>
-        {data.map((item, rowIdx) => (
-          <tr
-            key={rowIdx}
-            className={
-              striped && rowIdx % 2 === 0
-                ? "bg-base-700"
-                : striped
-                ? "bg-base-800"
-                : ""
-            }
-          >
-            {columns.map((col, colIdx) => (
-              <td key={colIdx} className={clsx(baseCellClass, col.className)}>
-                {col.render(item, rowIdx)}
-              </td>
-            ))}
+        {isEmpty ? (
+          <tr>
+            <td
+              colSpan={columns.length}
+              className="text-center text-neutral-500 py-6"
+            >
+              No data available
+            </td>
           </tr>
-        ))}
+        ) : (
+          data.map((item, rowIdx) => (
+            <tr
+              key={rowIdx}
+              className={
+                striped && rowIdx % 2 === 0
+                  ? "bg-base-700"
+                  : striped
+                  ? "bg-base-800"
+                  : ""
+              }
+            >
+              {columns.map((col, colIdx) => (
+                <td key={colIdx} className={clsx(baseCellClass, col.className)}>
+                  {col.render(item, rowIdx)}
+                </td>
+              ))}
+            </tr>
+          ))
+        )}
       </tbody>
     </table>
   );

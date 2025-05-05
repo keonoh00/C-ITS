@@ -61,7 +61,11 @@ export function DefendTable({ data }: DefendTableProps) {
 
   return (
     <>
-      <Table data={data.data} columns={columns} striped />
+      {data.data ? (
+        <Table data={data.data} columns={columns} striped />
+      ) : (
+        <span className="text-center">No Data Available</span>
+      )}
       {modalData ? (
         <AbilityModal
           open={open}

@@ -16,18 +16,19 @@ export default function Defend() {
 
   const totalPages = data
     ? Math.ceil(
-        Number(data.pagenation.total_items) /
-          Number(data.pagenation.items_per_page)
+        Number(data.pagenation?.total_items) /
+          Number(data.pagenation?.items_per_page)
       )
     : 1;
 
   const fetchData = useCallback(async (page = 1, search = "") => {
     setIsLoading(true);
     try {
-      const response = await fetchAttacks({ page, query: search, log: true });
+      const response = await fetchAttacks({ page, query: search });
       setData(response);
     } catch (error) {
       console.error("Failed to fetch data:", error);
+      setData(undefined);
     } finally {
       setTimeout(() => {
         setIsLoading(false);
