@@ -22,8 +22,8 @@ export function DefendClientComponent({
 
   const totalPages = data
     ? Math.ceil(
-        Number(data.pagenation.total_items) /
-          Number(data.pagenation.items_per_page)
+        Number(data.pagenation?.total_items) /
+          Number(data.pagenation?.items_per_page)
       )
     : 1;
 
