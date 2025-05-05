@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "concurrently \"npm run start:server:dev\" \"next dev --turbo\"",
     "build": "next build",
-    "start": "concurrently \"npx ts-node --project tsconfig.server.json server/index.ts\" \"next start -p 1111 -H 0.0.0.0\"",
+    "start": "npm run build && concurrently \"npx ts-node --project tsconfig.server.json server/index.ts\" \"next start -p 1111 -H 0.0.0.0\"",
     "lint": "next lint",
     "start:server:dev": "nodemon server/index.ts"
   },
