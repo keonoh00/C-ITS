@@ -87,6 +87,39 @@ export const InfoModal: React.FC<InfoModalProps> = ({
               }}
             />
           </div>
+          <div className="flex flex-col gap-2">
+            <label>Attack Result</label>
+
+            <div className="flex flex-row gap-6">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name={"Success"}
+                  className="form-checkbox"
+                  checked
+                />
+                <span>{"Success"}</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name={"Failed"}
+                  className="form-checkbox"
+                  checked={false}
+                />
+                <span>{"Failed"}</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name={"None"}
+                  className="form-checkbox"
+                  checked={false}
+                />
+                <span>{"None"}</span>
+              </label>
+            </div>
+          </div>
 
           <div className="flex flex-col gap-2">
             <label>Outcome</label>
