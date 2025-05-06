@@ -1,9 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, TableColumn } from "@/components/Table/Table";
 import { ArrowUpRight } from "lucide-react";
 import { InfoModal, InfoModalData, InfoModalOutcomeEnum } from "./InfoModal";
+import {
+  AttackRoleGroup,
+  fetchAttackGraphConfiguration,
+} from "@/api/defend/graph";
 
 export interface PropertiesTechniqueItem {
   technique: string;
@@ -67,7 +71,6 @@ const columns: TableColumn<PropertiesTechniqueItem>[] = [
   },
   {
     label: "Info",
-
     render: (item: PropertiesTechniqueItem) => (
       <button onClick={item.onClick}>
         <div className="flex p-3 bg-base-900 rounded hover:bg-neutral-500 cursor-pointer">
@@ -78,59 +81,57 @@ const columns: TableColumn<PropertiesTechniqueItem>[] = [
   },
 ];
 
-const SAMPLE_MODAL_DATA: InfoModalData = {
-  defenses: "Detect Carbank APT",
-  description: "Detection to Scan Port",
-  detectionTime: new Date(),
-  tags: ["Content Dev", "Engineering"],
-  outcome: [
-    "Blocked" as InfoModalOutcomeEnum,
-    "Logged" as InfoModalOutcomeEnum,
-  ],
-};
-
 export default function PropertiesTechniqueTable() {
   const [infoModalData, setInfoModalData] = useState<InfoModalData | null>(
     null
   );
-
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [data, setData] = useState<PropertiesTechniqueItem[]>([]);
 
-  const data: PropertiesTechniqueItem[] = [
-    {
-      technique: "Find Unauthorized Process",
-      target: "Employee",
-      status: "Complete",
-      outcome: "Quarterly Testing",
-      tag: "Content Dev",
-      onClick: () => {
-        setInfoModalData(SAMPLE_MODAL_DATA);
-        setIsOpen(true);
-      },
-    },
-    {
-      technique: "Find atypical open ports",
-      target: "Employee",
-      status: "Complete",
-      outcome: "Not Alerted",
-      tag: "Engineering",
-      onClick: () => {
-        setInfoModalData(SAMPLE_MODAL_DATA);
-        setIsOpen(true);
-      },
-    },
-    {
-      technique: "Hunt for known suspicious files",
-      target: "AD Server",
-      status: "In progress",
-      outcome: "None",
-      tag: "Engineering",
-      onClick: () => {
-        setInfoModalData(SAMPLE_MODAL_DATA);
-        setIsOpen(true);
-      },
-    },
-  ];
+  useEffect(() => {
+    async function loadData() {
+      const graph: AttackRoleGroup[] = await fetchAttackGraphConfiguration(
+        "f82082d7-0cb7-41ec-a767-7d5c918a2310"
+      );
+
+      console.log(graph);
+
+      const parsed: PropertiesTechniqueItem[] = graph.flatMap((roleBlock) =>
+        roleBlock.data.map((attack) => ({
+          technique: attack.technique_name,
+          target: roleBlock.role,
+          status: (attack.requirements.length > 0
+            ? "In progress"
+            : "Complete") as "In progress" | "Complete",
+          outcome: (attack.requirements.length > 0
+            ? "Not Alerted"
+            : "Quarterly Testing") as
+            | "Not Alerted"
+            | "Quarterly Testing"
+            | "None",
+          tag: "Engineering",
+          onClick: () => {
+            setInfoModalData({
+              defenses: "Detect Carbank APT",
+              description: attack.attack_name,
+              detectionTime: new Date(),
+              tags: ["Content Dev", "Engineering"],
+              outcome: [
+                "Blocked" as InfoModalOutcomeEnum,
+                "Logged" as InfoModalOutcomeEnum,
+              ],
+            });
+            setIsOpen(true);
+          },
+        }))
+      );
+
+      setData(parsed);
+    }
+
+    loadData();
+  }, []);
+
   return (
     <div>
       <Table data={data} columns={columns} />
