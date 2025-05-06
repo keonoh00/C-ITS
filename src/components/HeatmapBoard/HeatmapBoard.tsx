@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo, useRef, useState, useEffect } from "react";
-import { HeatmapEvaluationFramework, Tactic } from "./tacticsData";
+import { HeatmapEvaluationFramework, Tactic, Technique } from "./tacticsData";
 import HeatmapCard from "./HeatmapCard";
 import Legend from "./Legend";
 import { tacticsDataEnterprise } from "./enterprise/enterpriseData";
@@ -11,6 +11,7 @@ import { tacticsDataICS } from "./ics/icsData";
 interface HeatmapBoardProps {
   selectedTactic: string;
   framework: HeatmapEvaluationFramework;
+  sortType: "alphabetical" | "impact";
 }
 
 const frameworkMap: Record<HeatmapEvaluationFramework, Tactic[]> = {
@@ -19,9 +20,19 @@ const frameworkMap: Record<HeatmapEvaluationFramework, Tactic[]> = {
   [HeatmapEvaluationFramework.ICS]: tacticsDataICS,
 };
 
+const impactOrder: Record<string, number> = {
+  Weakest: 6,
+  Minimal: 5,
+  Lower: 4,
+  Moderate: 3,
+  Strong: 2,
+  "Outcome TBD": 1,
+  "No Test Coverage": 0,
+};
 export default function HeatmapBoard({
   selectedTactic,
   framework,
+  sortType,
 }: HeatmapBoardProps) {
   const tacticsData: Tactic[] = useMemo(
     () => frameworkMap[framework] ?? [],
@@ -46,16 +57,29 @@ export default function HeatmapBoard({
       setShowRight(el.scrollLeft + el.clientWidth < el.scrollWidth);
     };
 
-    handleScroll(); // initial check
+    handleScroll();
     el.addEventListener("scroll", handleScroll);
     return () => el.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const sortedTechniques = (techniques: Technique[]): Technique[] => {
+    return [...techniques].sort((a, b) => {
+      if (sortType === "alphabetical") {
+        return a.name.localeCompare(b.name);
+      } else if (sortType === "impact") {
+        const aImpact = impactOrder[a.outcome ?? "No Test Coverage"] ?? 0;
+        const bImpact = impactOrder[b.outcome ?? "No Test Coverage"] ?? 0;
+        return bImpact - aImpact; // Higher impact first (i.e., 0 > 6)
+      } else {
+        return a.name.localeCompare(b.name);
+      }
+    });
+  };
 
   return (
     <div className="w-full h-full flex flex-col">
       <Legend />
       <div className="relative">
-        {/* Blurs */}
         {showLeft && (
           <div className="absolute top-6 left-0 w-30 h-full bg-gradient-to-r from-base-900 to-transparent z-10 pointer-events-none" />
         )}
@@ -83,14 +107,16 @@ export default function HeatmapBoard({
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  {tactic.techniques.map((technique, tIdx) => (
-                    <div
-                      key={tIdx}
-                      className="flex flex-col gap-2 overflow-y-auto"
-                    >
-                      <HeatmapCard technique={technique} />
-                    </div>
-                  ))}
+                  {sortedTechniques(tactic.techniques).map(
+                    (technique, tIdx) => (
+                      <div
+                        key={tIdx}
+                        className="flex flex-col gap-2 overflow-y-auto"
+                      >
+                        <HeatmapCard technique={technique} />
+                      </div>
+                    )
+                  )}
                 </div>
               </div>
             ))}

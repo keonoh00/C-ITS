@@ -54,7 +54,11 @@ export default function Evaluate() {
       <div className="flex flex-col gap-4 p-6 bg-base-900">
         {/* Main Content */}
         {reportType === "Heat Map" && (
-          <HeatmapBoard selectedTactic={selectedTactic} framework={framework} />
+          <HeatmapBoard
+            selectedTactic={selectedTactic}
+            framework={framework}
+            sortType={"impact"}
+          />
         )}
 
         {reportType === "Resilience Trending" && <ResilienceChart />}
