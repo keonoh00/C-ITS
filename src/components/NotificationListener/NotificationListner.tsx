@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useToast } from "@/components/ToastProvider/ToastProvider";
+import { Toast, useToast } from "@/components/ToastProvider/ToastProvider";
 
 export default function NotificationListener() {
   const showToast = useToast();
@@ -15,12 +15,12 @@ export default function NotificationListener() {
 
     socket.onmessage = (event) => {
       try {
-        const { message, type } = JSON.parse(event.data);
+        const { message, type, duration } = JSON.parse(event.data) as Toast;
 
         if (typeof message === "string") {
           showToast(message, {
             type: type || "info",
-            duration: 3000,
+            duration: duration || 3000,
           });
         }
       } catch (err) {
