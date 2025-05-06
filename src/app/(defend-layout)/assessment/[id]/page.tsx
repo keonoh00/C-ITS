@@ -1,8 +1,36 @@
 "use client";
 
+import { fetchOperations, OperationResponse } from "@/api/defend/assetssment";
 import AssessmentDetailsTable from "@/components/AssessmentDetailsTable/AssessmentDetailsTable";
+import AssessmentTable from "@/components/AssessmentTable/AssessmentTable";
+import Loading from "@/components/Loading/Loading";
+import { useCallback, useEffect, useState } from "react";
 
 export default function Assessment() {
+  const [data, setData] = useState<OperationResponse>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const fetchData = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetchOperations();
+      setData(response);
+    } catch (err) {
+      setError((err as Error).message || "Failed to load data.");
+      setData([]);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 300);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
   return (
     <div className="flex flex-col w-full bg-base-900 p-8 rounded-xl">
       <div className="flex items-center gap-4">
@@ -43,6 +71,31 @@ export default function Assessment() {
       </div>
 
       <div className="mt-4">
+        {/* Temp spacer */}
+        <div>
+          <div className="h-6" />
+        </div>
+
+        <div>
+          {isLoading ? (
+            <Loading />
+          ) : error ? (
+            <div className="text-center text-red-400 py-10">{error}</div>
+          ) : data.length === 0 ? (
+            <div className="text-center text-neutral-400 py-10">
+              No assessments found.
+            </div>
+          ) : (
+            <AssessmentTable data={data} />
+          )}
+        </div>
+
+        {/* Temp spacer */}
+        <div>
+          <div className="h-12" />
+          <div className="h-12" />
+        </div>
+
         <AssessmentDetailsTable />
       </div>
     </div>
