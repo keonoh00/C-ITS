@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Table, TableColumn } from "@/components/Table/Table";
 import { ArrowUpRight } from "lucide-react";
-import Link from "next/link";
+import { InfoModal, InfoModalData, InfoModalOutcomeEnum } from "./InfoModal";
 
 export interface PropertiesTechniqueItem {
   technique: string;
@@ -11,35 +11,8 @@ export interface PropertiesTechniqueItem {
   status: "Complete" | "In progress";
   outcome: "Quarterly Testing" | "Not Alerted" | "None";
   tag: string;
-  infoLink: string;
+  onClick: () => void;
 }
-
-const data: PropertiesTechniqueItem[] = [
-  {
-    technique: "Find Unauthorized Process",
-    target: "Employee",
-    status: "Complete",
-    outcome: "Quarterly Testing",
-    tag: "Content Dev",
-    infoLink: "/info/1",
-  },
-  {
-    technique: "Find atypical open ports",
-    target: "Employee",
-    status: "Complete",
-    outcome: "Not Alerted",
-    tag: "Engineering",
-    infoLink: "/info/2",
-  },
-  {
-    technique: "Hunt for known suspicious files",
-    target: "AD Server",
-    status: "In progress",
-    outcome: "None",
-    tag: "Engineering",
-    infoLink: "/info/3",
-  },
-];
 
 const columns: TableColumn<PropertiesTechniqueItem>[] = [
   {
@@ -87,25 +60,88 @@ const columns: TableColumn<PropertiesTechniqueItem>[] = [
   {
     label: "Tags",
     render: (item: PropertiesTechniqueItem) => (
-      <span className="px-2 py-1 bg-base-700 text-neutral-300 text-xs rounded-full">
+      <span className="px-2 py-1 bg-neutral-500 text-white text-xs rounded-full">
         {item.tag}
       </span>
     ),
   },
   {
     label: "Info",
+
     render: (item: PropertiesTechniqueItem) => (
-      <Link href={item.infoLink} className="flex items-center justify-center">
-        <ArrowUpRight size={20} className="text-neutral-400" />
-      </Link>
+      <button onClick={item.onClick}>
+        <div className="flex p-3 bg-base-900 rounded hover:bg-neutral-500 cursor-pointer">
+          <ArrowUpRight size={20} className="text-white" />
+        </div>
+      </button>
     ),
   },
 ];
 
+const SAMPLE_MODAL_DATA: InfoModalData = {
+  defenses: "Detect Carbank APT",
+  description: "Detection to Scan Port",
+  detectionTime: new Date(),
+  tags: ["Content Dev", "Engineering"],
+  outcome: [
+    "Blocked" as InfoModalOutcomeEnum,
+    "Logged" as InfoModalOutcomeEnum,
+  ],
+};
+
 export default function PropertiesTechniqueTable() {
+  const [infoModalData, setInfoModalData] = useState<InfoModalData | null>(
+    null
+  );
+
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const data: PropertiesTechniqueItem[] = [
+    {
+      technique: "Find Unauthorized Process",
+      target: "Employee",
+      status: "Complete",
+      outcome: "Quarterly Testing",
+      tag: "Content Dev",
+      onClick: () => {
+        setInfoModalData(SAMPLE_MODAL_DATA);
+        setIsOpen(true);
+      },
+    },
+    {
+      technique: "Find atypical open ports",
+      target: "Employee",
+      status: "Complete",
+      outcome: "Not Alerted",
+      tag: "Engineering",
+      onClick: () => {
+        setInfoModalData(SAMPLE_MODAL_DATA);
+        setIsOpen(true);
+      },
+    },
+    {
+      technique: "Hunt for known suspicious files",
+      target: "AD Server",
+      status: "In progress",
+      outcome: "None",
+      tag: "Engineering",
+      onClick: () => {
+        setInfoModalData(SAMPLE_MODAL_DATA);
+        setIsOpen(true);
+      },
+    },
+  ];
   return (
     <div>
       <Table data={data} columns={columns} />
+      {isOpen && infoModalData ? (
+        <InfoModal
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+          onSave={() => console.log("saved")}
+          modalData={infoModalData}
+        />
+      ) : null}
     </div>
   );
 }
