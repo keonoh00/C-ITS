@@ -36,6 +36,137 @@ const impactOrder: Record<string, number> = {
   "No Test Coverage": 0,
 };
 
+function replaceTechniquesByIds(
+  data: Tactic[],
+  replacements: { id: string; newTechnique: Partial<Technique> }[]
+): Tactic[] {
+  const replacementMap = new Map(
+    replacements.map((r) => [r.id, r.newTechnique])
+  );
+
+  return data.map((tactic) => ({
+    ...tactic,
+    techniques: tactic.techniques.map((tech) => {
+      const replacement = replacementMap.get(tech.id);
+      return replacement ? { ...tech, ...replacement } : tech;
+    }),
+  }));
+}
+
+const Replace1 = [
+  {
+    id: "T1018",
+    newTechnique: {
+      id: "T1018",
+      outcome: OutcomeEnum.Moderate,
+      topCount: 2,
+      bottomCount: 2,
+    },
+  },
+  {
+    id: "T1021",
+    newTechnique: {
+      id: "T1021",
+      outcome: OutcomeEnum.Moderate,
+      topCount: 4,
+      bottomCount: 4,
+    },
+  },
+  {
+    id: "T1569",
+    newTechnique: {
+      id: "T1569",
+      outcome: OutcomeEnum.Moderate,
+      topCount: 3,
+      bottomCount: 3,
+    },
+  },
+  {
+    id: "T1087",
+    newTechnique: {
+      id: "T1087",
+      outcome: OutcomeEnum.Minimal,
+      topCount: 1,
+      bottomCount: 1,
+    },
+  },
+  {
+    id: "T1003",
+    newTechnique: {
+      id: "T1003",
+      outcome: OutcomeEnum.Weakest,
+      topCount: 2,
+      bottomCount: 2,
+    },
+  },
+  {
+    id: "T1110",
+    newTechnique: {
+      id: "T1110",
+      outcome: OutcomeEnum.Weakest,
+      topCount: 1,
+      bottomCount: 1,
+    },
+  },
+];
+
+const Replace2 = [
+  {
+    id: "T1018",
+    newTechnique: {
+      id: "T1018",
+      outcome: OutcomeEnum.Moderate,
+      topCount: 2,
+      bottomCount: 2,
+    },
+  },
+  {
+    id: "T1021",
+    newTechnique: {
+      id: "T1021",
+      outcome: OutcomeEnum.Moderate,
+      topCount: 4,
+      bottomCount: 4,
+    },
+  },
+  {
+    id: "T1569",
+    newTechnique: {
+      id: "T1569",
+      outcome: OutcomeEnum.Moderate,
+      topCount: 3,
+      bottomCount: 3,
+    },
+  },
+  {
+    id: "T1087",
+    newTechnique: {
+      id: "T1087",
+      outcome: OutcomeEnum.Moderate,
+      topCount: 1,
+      bottomCount: 1,
+    },
+  },
+  {
+    id: "T1003",
+    newTechnique: {
+      id: "T1003",
+      outcome: OutcomeEnum.Moderate,
+      topCount: 2,
+      bottomCount: 2,
+    },
+  },
+  {
+    id: "T1110",
+    newTechnique: {
+      id: "T1110",
+      outcome: OutcomeEnum.Moderate,
+      topCount: 1,
+      bottomCount: 1,
+    },
+  },
+];
+
 export default function HeatmapBoard({
   selectedTactic,
   framework,
@@ -45,20 +176,13 @@ export default function HeatmapBoard({
   const tacticsData: Tactic[] = useMemo(() => {
     const original = frameworkMap[framework] ?? [];
 
-    // If Q1, clone and override all technique outcomes to "Strong"
-    if (round === "Penetration to C-ITS Center (Q1)") {
-      return original.map((t) => ({
-        ...t,
-        techniques: t.techniques.map((tech) => ({
-          ...tech,
-          outcome: OutcomeEnum.Strong,
-          topCount: 6,
-          bottomCount: 6,
-        })),
-      }));
-    }
+    // Dummy replacement (you can later replace this with actual input)
+    const dummyReplaced = replaceTechniquesByIds(
+      original,
+      round == "Penetration to C-ITS Center (Q1)" ? Replace2 : Replace1
+    );
 
-    return original;
+    return dummyReplaced;
   }, [framework, round]);
 
   const filteredTactics: Tactic[] = useMemo(() => {
