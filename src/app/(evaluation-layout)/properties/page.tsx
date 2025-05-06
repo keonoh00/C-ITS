@@ -1,10 +1,35 @@
+"use client";
+
+import { Dropdown } from "@/components/Dropdown/Dropdown";
 import PropertiesTechniqueTable from "@/components/PropertiesTable/PropertiesTable";
+import { useState } from "react";
+
+const OPTIONS = [
+  "Option1",
+  "Option2",
+  "Option3",
+  "Option4",
+  "Option5",
+  "Option6",
+  "Option7",
+];
 
 export default function Properties() {
+  const [selectedOption, setSelectedOption] = useState<string>(OPTIONS[0]);
   return (
     <div>
       <div className="flex flex-row items-center justify-between mb-6">
-        <h1 className="text-xl">Penetration to C-ITS Center (Q1)</h1>
+        <div className="flex flex-row items-center gap-4 w-full">
+          <h1 className="text-xl">Penetration to C-ITS Center (Q1)</h1>
+          <div className="w-40 text-xs">
+            <Dropdown
+              selected={selectedOption}
+              options={OPTIONS}
+              onChange={(value) => setSelectedOption(value)}
+            />
+          </div>
+        </div>
+
         <div className="flex flex-row gap-3">
           <span className="text-gray-300 text-sm">Assessment</span>
           <span className="text-gray-300 text-sm">{">"}</span>
