@@ -70,7 +70,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({
         )}
       >
         {/* Header */}
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center border-b-1 border-neutral-500 pb-6">
           <div className="text-lg font-semibold">Find atypical open ports</div>
           <button onClick={onClose} className="text-xl">
             <XIcon className="w-5 h-5" />
@@ -93,10 +93,20 @@ export const InfoModal: React.FC<InfoModalProps> = ({
 
             <div className="flex flex-row gap-6">
               {Object.keys(InfoModalOutcomeEnum).map((key) => (
-                <div className="flex items-center gap-2" key={key}>
-                  <input type={"checkbox"} name={key} checked />
-                  <label>{key}</label>
-                </div>
+                <label
+                  key={key}
+                  className="flex items-center gap-2 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    name={key}
+                    className="form-checkbox"
+                    defaultChecked={modalData.outcome.includes(
+                      key as InfoModalOutcomeEnum
+                    )}
+                  />
+                  <span>{key}</span>
+                </label>
               ))}
             </div>
           </div>
