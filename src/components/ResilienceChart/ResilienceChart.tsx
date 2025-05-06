@@ -1,18 +1,30 @@
+// components/ResilienceChart.tsx
 "use client";
 
-import clsx from "clsx";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
   Tooltip,
-  CartesianGrid,
-  ResponsiveContainer,
-} from "recharts";
+  Filler,
+  ChartOptions,
+  ChartData,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
 import { useEffect, useState } from "react";
 
-const data = [
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Filler
+);
+
+const rawData = [
   { month: "Jan-24", score: 10 },
   { month: "Feb-24", score: 20 },
   { month: "Mar-24", score: 30 },
@@ -25,35 +37,68 @@ const data = [
   { month: "Oct-24", score: 73 },
 ];
 
+const visibleIndices = new Set([1, 3, 5, 7]);
+
+const getCustomPointRadius = (index: number): number => {
+  return visibleIndices.has(index) ? 5 : 0;
+};
+
 export default function ResilienceChart() {
-  const [height, setHeight] = useState(400); // fallback default
+  const [height, setHeight] = useState<number>(400);
 
   useEffect(() => {
-    const updateHeight = () => {
-      setHeight(window.innerHeight * 0.7); // 50% of viewport height
-    };
-    updateHeight(); // initial
+    const updateHeight = () => setHeight(window.innerHeight * 0.6);
+    updateHeight();
     window.addEventListener("resize", updateHeight);
     return () => window.removeEventListener("resize", updateHeight);
   }, []);
 
+  const data: ChartData<"line"> = {
+    labels: rawData.map((d) => d.month),
+    datasets: [
+      {
+        label: "Resilience Score",
+        data: rawData.map((d) => d.score),
+        borderColor: "#5fa8f6",
+        backgroundColor: "#5fa8f6",
+        pointRadius: rawData.map((_, idx) => getCustomPointRadius(idx)),
+        pointHoverRadius: rawData.map((_, idx) => getCustomPointRadius(idx)),
+        pointHitRadius: rawData.map((_, idx) => getCustomPointRadius(idx)),
+        borderWidth: 2,
+        fill: false,
+        tension: 0.4,
+      },
+    ],
+  };
+
+  const options: ChartOptions<"line"> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      mode: "nearest",
+      axis: "x",
+      intersect: false,
+    },
+    plugins: {
+      tooltip: {
+        filter: (tooltipItem) => visibleIndices.has(tooltipItem.dataIndex),
+      },
+    },
+    scales: {
+      x: {
+        ticks: { color: "#aaa" },
+        grid: { color: "#444" },
+      },
+      y: {
+        ticks: { color: "#aaa" },
+        grid: { color: "#444" },
+      },
+    },
+  };
+
   return (
-    <div className={clsx("bg-white p-4 rounded-md w-full")} style={{ height }}>
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-          <XAxis dataKey="month" stroke="#aaa" />
-          <YAxis stroke="#aaa" />
-          <Tooltip />
-          <Line
-            type="monotone"
-            dataKey="score"
-            stroke="#5fa8f6"
-            strokeWidth={3}
-            dot={false}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+    <div className="w-full bg-white p-4 rounded-md" style={{ height }}>
+      <Line data={data} options={options} />
     </div>
   );
 }

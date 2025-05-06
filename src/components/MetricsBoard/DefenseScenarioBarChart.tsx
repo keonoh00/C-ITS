@@ -1,19 +1,19 @@
 "use client";
 
-import React from "react";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
+  Chart as ChartJS,
+  BarElement,
+  CategoryScale,
+  LinearScale,
   Tooltip,
-  LabelList,
-  ResponsiveContainer,
   Legend,
-  Text,
-  Layer,
-} from "recharts";
+  ChartData,
+  ChartOptions,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
+import React from "react";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 type DataEntry = {
   name: string;
@@ -39,65 +39,56 @@ const COLORS: Record<keyof Omit<DataEntry, "name">, string> = {
 
 const keys = ["Blocked", "Alerted", "Logged", "None"] as const;
 
-export default function DefenseScenarioBarChart() {
-  const getTotal = (entry: DataEntry): number =>
-    keys.reduce((sum, key) => sum + (entry[key] ?? 0), 0);
+const chartData: ChartData<"bar"> = {
+  labels: data.map((d) => d.name),
+  datasets: keys.map((key) => ({
+    label: key,
+    data: data.map((d) => d[key]),
+    backgroundColor: COLORS[key],
+    stack: "defense",
+  })),
+};
 
+const options: ChartOptions<"bar"> = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      labels: {
+        color: "#333",
+        font: { size: 12 },
+      },
+    },
+    tooltip: {
+      backgroundColor: "#2d2d2d",
+      titleColor: "#fff",
+      bodyColor: "#fff",
+      borderColor: "transparent",
+    },
+  },
+  scales: {
+    x: {
+      stacked: true,
+      ticks: { color: "#666" },
+      grid: { display: false },
+    },
+    y: {
+      stacked: true,
+      ticks: {
+        color: "#666",
+        precision: 0,
+      },
+      grid: {
+        color: "#aaa",
+      },
+    },
+  },
+};
+
+export default function DefenseScenarioBarChart() {
   return (
     <div className="w-full h-[400px] bg-white p-4 rounded-md">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart
-          data={data}
-          margin={{ top: 60, right: 30, left: 20, bottom: 40 }}
-          barCategoryGap={30}
-        >
-          <CartesianGrid vertical={false} stroke="#aaa" />
-          <XAxis dataKey="name" stroke="#aaa" />
-          <YAxis stroke="#aaa" allowDecimals={false} />
-          <Tooltip
-            contentStyle={{ backgroundColor: "#2d2d2d", border: "none" }}
-            itemStyle={{ color: "#ffffff" }}
-            cursor={{ fill: "transparent" }}
-          />
-          <Legend
-            formatter={(value) => (
-              <span style={{ color: "black", fontSize: "12px" }}>{value}</span>
-            )}
-          />
-
-          {/* Stacked Bars */}
-          {keys.map((key) => (
-            <Bar key={key} dataKey={key} stackId="a" fill={COLORS[key]}>
-              <LabelList
-                dataKey={key}
-                position="center"
-                fill="#fff"
-                fontSize={12}
-                formatter={(value: number | string) =>
-                  Number(value) > 0 ? `${value}` : ""
-                }
-              />
-            </Bar>
-          ))}
-
-          {/* Top Total Numbers */}
-          <Layer>
-            {data.map((entry, index) => (
-              <Text
-                key={`total-${index}`}
-                x={(index + 0.5) * (100 / data.length) + "%"}
-                y={10}
-                textAnchor="middle"
-                fill="#ffffff"
-                fontSize={14}
-                fontWeight={700}
-              >
-                {getTotal(entry)}
-              </Text>
-            ))}
-          </Layer>
-        </BarChart>
-      </ResponsiveContainer>
+      <Bar data={chartData} options={options} />
     </div>
   );
 }
