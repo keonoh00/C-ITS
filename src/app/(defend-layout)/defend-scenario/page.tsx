@@ -11,14 +11,19 @@ import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 export default function DefendScenario() {
   const [data, setData] = useState<EnrichedAdversary[]>([]);
+  const [dropdownOption, setDropdownOption] = useState<string>("");
   const [tableData, setTableData] = useState<EnrichedAdversary[]>([]);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const handleDropdownSelection = (e: ChangeEvent<HTMLSelectElement>) => {
-    const filtered = data.filter((val) => val.name === e.currentTarget.value);
-    setTableData(filtered);
+    setDropdownOption(e.currentTarget.value);
   };
+
+  useEffect(() => {
+    const filtered = data.filter((val) => val.name === dropdownOption);
+    setTableData(filtered);
+  }, [data, dropdownOption]);
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
@@ -88,7 +93,15 @@ export default function DefendScenario() {
       </div>
 
       <div className="mt-4">
-        {isLoading ? <Loading /> : <ScenarioTable data={tableData} />}
+        {isLoading ? (
+          <Loading />
+        ) : dropdownOption === "" ? (
+          <div className="p-12">
+            <p className="text-xl text-center">Please select your scenario</p>
+          </div>
+        ) : (
+          <ScenarioTable data={tableData} />
+        )}
       </div>
     </div>
   );
