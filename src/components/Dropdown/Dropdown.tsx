@@ -10,7 +10,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   onChange,
 }) => {
   return (
-    <div style={{ position: "relative", width: "340px" }}>
+    <div style={{ width: "100%", position: "relative" }}>
       <select
         value={selected}
         onChange={(e) => onChange(e.target.value)}
@@ -18,6 +18,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
           width: "100%",
           padding: "8px 40px 8px 16px",
           borderRadius: "8px",
+          backgroundColor: "#1f1f1f",
           color: "#d1d5db",
           border: "1px solid #3f3f46",
           appearance: "none",
