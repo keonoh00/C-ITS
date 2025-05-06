@@ -9,20 +9,19 @@ export default function MoviePlayer() {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
   const handlePlay = () => {
-    // videoRef.current?.play();
+    videoRef.current?.play();
     setIsPlaying(true);
   };
 
   const handlePause = () => {
-    // videoRef.current?.pause();
-    setIsPlaying(false);
+    videoRef.current?.pause();
   };
 
   const handleStop = () => {
-    // if (videoRef.current) {
-    //   videoRef.current.pause();
-    //   videoRef.current.currentTime = 0;
-    // }
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
   };
 
   useEffect(() => {
@@ -47,20 +46,14 @@ export default function MoviePlayer() {
   return (
     <div className="flex flex-col items-center justify-center p-4 bg-base-900">
       <div className="relative w-[50%] aspect-video bg-black flex items-center justify-center">
-        {/* <video ref={videoRef} width={"100%"}>
+        <video ref={videoRef} width={"100%"}>
           <source
             src={
               "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
             }
             type="video/mp4"
           />
-        </video> */}
-        <embed
-          type={"text/html"}
-          src="http://192.168.5.111:1111/graph?id=f0277a5c-2304-4af5-b4e7-b950d3e41807&type=result"
-          width={"100%"}
-          height={"100%"}
-        />
+        </video>
 
         <button
           className={clsx(
