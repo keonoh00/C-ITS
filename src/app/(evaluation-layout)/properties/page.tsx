@@ -5,13 +5,10 @@ import PropertiesTechniqueTable from "@/components/PropertiesTable/PropertiesTab
 import { useState } from "react";
 
 const OPTIONS = [
-  "Option1",
-  "Option2",
-  "Option3",
-  "Option4",
-  "Option5",
-  "Option6",
-  "Option7",
+  "465e4284-92e8-40a1-b764-2a70866ef1de",
+  "876def0d-dc63-48c9-9ba9-3d83ef31bfed",
+  "5867a04f-a6dc-493b-afe0-dd0c273ace9a",
+  "f0277a5c-2304-4af5-b4e7-b950d3e41807",
 ];
 
 export default function Properties() {
@@ -21,7 +18,7 @@ export default function Properties() {
       <div className="flex flex-row items-center justify-between mb-6">
         <div className="flex flex-row items-center gap-4 w-full">
           <h1 className="text-xl">Penetration to C-ITS Center (Q1)</h1>
-          <div className="w-40 text-xs">
+          <div className="w-[15%] text-xs">
             <Dropdown
               selected={selectedOption}
               options={OPTIONS}
