@@ -8,6 +8,7 @@ import {
   AttackRoleGroup,
   fetchAttackGraphConfiguration,
 } from "@/api/defend/graph";
+import { Pagination } from "../Pagination/Pagination";
 
 export interface PropertiesTechniqueItem {
   technique: string;
@@ -22,15 +23,15 @@ const columns: TableColumn<PropertiesTechniqueItem>[] = [
   {
     label: "Technique",
     className: "py-5",
-    render: (item: PropertiesTechniqueItem) => <span>{item.technique}</span>,
+    render: (item) => <span>{item.technique}</span>,
   },
   {
     label: "Target",
-    render: (item: PropertiesTechniqueItem) => <span>{item.target}</span>,
+    render: (item) => <span>{item.target}</span>,
   },
   {
     label: "Status",
-    render: (item: PropertiesTechniqueItem) => (
+    render: (item) => (
       <span
         className={
           item.status === "Complete"
@@ -44,7 +45,7 @@ const columns: TableColumn<PropertiesTechniqueItem>[] = [
   },
   {
     label: "Outcome",
-    render: (item: PropertiesTechniqueItem) => {
+    render: (item) => {
       const outcomeColor =
         item.outcome === "Quarterly Testing"
           ? "bg-blue-400"
@@ -63,7 +64,7 @@ const columns: TableColumn<PropertiesTechniqueItem>[] = [
   },
   {
     label: "Tags",
-    render: (item: PropertiesTechniqueItem) => (
+    render: (item) => (
       <span className="px-2 py-1 bg-neutral-500 text-white text-xs rounded-full">
         {item.tag}
       </span>
@@ -71,7 +72,7 @@ const columns: TableColumn<PropertiesTechniqueItem>[] = [
   },
   {
     label: "Info",
-    render: (item: PropertiesTechniqueItem) => (
+    render: (item) => (
       <button onClick={item.onClick}>
         <div className="flex p-3 bg-base-900 rounded hover:bg-neutral-500 cursor-pointer">
           <ArrowUpRight size={20} className="text-white" />
@@ -85,16 +86,26 @@ export default function PropertiesTechniqueTable() {
   const [infoModalData, setInfoModalData] = useState<InfoModalData | null>(
     null
   );
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [data, setData] = useState<PropertiesTechniqueItem[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 4;
+
+  const paginatedData = data.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+  const totalPages = Math.ceil(data.length / pageSize);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   useEffect(() => {
     async function loadData() {
       const graph: AttackRoleGroup[] = await fetchAttackGraphConfiguration(
         "f82082d7-0cb7-41ec-a767-7d5c918a2310"
       );
-
-      console.log(graph);
 
       const parsed: PropertiesTechniqueItem[] = graph.flatMap((roleBlock) =>
         roleBlock.data.map((attack) => ({
@@ -134,7 +145,12 @@ export default function PropertiesTechniqueTable() {
 
   return (
     <div>
-      <Table data={data} columns={columns} />
+      <Table data={paginatedData} columns={columns} />
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
       {isOpen && infoModalData ? (
         <InfoModal
           open={isOpen}
