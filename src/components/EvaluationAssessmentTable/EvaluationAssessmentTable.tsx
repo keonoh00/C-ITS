@@ -100,7 +100,7 @@ const columns: TableColumn<EvaluationRoundItem>[] = [
 
 export default function EvaluationRoundTable() {
   return (
-    <div className="w-full bg-base-800 rounded-lg p-4">
+    <div className="w-full bg-base-800 rounded-lg p-4 overflow-scroll">
       <Table data={data} columns={columns} />
     </div>
   );
