@@ -12,16 +12,24 @@ import {
   TacticOptions,
 } from "@/components/HeatmapBoard/tacticsData";
 
+const DUMMY_ROUND_OPTIONS = [
+  "All Selected (4)",
+  "Penetration to C-ITS Center (Q1)",
+  "Penetration to C-ITS Center (Q2)",
+  "Penetration to C-ITS Center (Q3)",
+  "Penetration to C-ITS Center (Q4)",
+];
+
 export default function Evaluate() {
   const [reportType, setReportType] = useState<EvaluationReportTypes>(
     EvaluationReportTypes.HEATMAP
   );
-  const [round, setRound] = useState("All Selected (4)");
+  const [round, setRound] = useState(DUMMY_ROUND_OPTIONS[0]);
   const [selectedTactic, setSelectedTactic] = useState(
     TacticOptions.filter((item) => item.startsWith("All Selected"))[0]
   );
   const [framework, setFramework] = useState<HeatmapEvaluationFramework>(
-    HeatmapEvaluationFramework.MOBILE
+    HeatmapEvaluationFramework.ENTERPRISE
   );
 
   return (
@@ -37,13 +45,7 @@ export default function Evaluate() {
         reportOptions={Object.values(EvaluationReportTypes)}
         reportType={reportType}
         setReportType={setReportType}
-        roundOptions={[
-          "All (4)",
-          "Penetration to C-ITS Center (Q1)",
-          "Penetration to C-ITS Center (Q2)",
-          "Penetration to C-ITS Center (Q3)",
-          "Penetration to C-ITS Center (Q4)",
-        ]}
+        roundOptions={DUMMY_ROUND_OPTIONS}
         round={round}
         setRound={setRound}
         tactics={selectedTactic}
