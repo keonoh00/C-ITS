@@ -162,8 +162,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({
             <label>Defenses</label>
             <input
               className="p-2 border border-neutral-500 text-neutral-300 rounded-sm bg-base-800"
-              disabled
-              value={modalData.defenses}
+              defaultValue={modalData.defenses}
             />
           </div>
 
@@ -171,8 +170,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({
             <label>Detection Time</label>
             <input
               className="p-2 border border-neutral-500 text-neutral-300 rounded-sm bg-base-800"
-              disabled
-              value={modalData.detectionTime.toISOString()}
+              defaultValue={modalData.detectionTime.toISOString()}
             />
           </div>
 
