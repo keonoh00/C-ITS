@@ -5,7 +5,6 @@ import {
   EvaluationReportTypes,
   HeatmapEvaluationFramework,
   HeatmapEvaluationFrameworkKeyType,
-  TacticOptions,
 } from "../HeatmapBoard/tacticsData";
 
 interface FilterBarProps {
@@ -16,6 +15,7 @@ interface FilterBarProps {
   round: string;
   setRound: (value: string) => void;
   tactics: string;
+  tacticOptions: string[];
   setTactics: (value: string) => void;
   framework: HeatmapEvaluationFramework;
   setFramework: (value: HeatmapEvaluationFramework) => void;
@@ -29,6 +29,7 @@ export default function FilterBar({
   round,
   setRound,
   tactics,
+  tacticOptions,
   setTactics,
   framework,
   setFramework,
@@ -79,7 +80,7 @@ export default function FilterBar({
               value={tactics}
               onChange={(e) => setTactics(e.target.value)}
             >
-              {TacticOptions.map((option) => (
+              {tacticOptions.map((option) => (
                 <option key={option}>{option}</option>
               ))}
             </select>

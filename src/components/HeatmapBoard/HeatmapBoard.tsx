@@ -20,7 +20,7 @@ interface HeatmapBoardProps {
   sortType: "alphabetical" | "impact";
 }
 
-const frameworkMap: Record<HeatmapEvaluationFramework, Tactic[]> = {
+export const frameworkMap: Record<HeatmapEvaluationFramework, Tactic[]> = {
   [HeatmapEvaluationFramework.ENTERPRISE]: tacticsDataEnterprise,
   [HeatmapEvaluationFramework.MOBILE]: tacticsDataMobile,
   [HeatmapEvaluationFramework.ICS]: tacticsDataICS,

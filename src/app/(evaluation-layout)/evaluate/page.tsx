@@ -1,7 +1,9 @@
 "use client";
 
 import FilterBar from "@/components/FilterBar/FilterBar";
-import HeatmapBoard from "@/components/HeatmapBoard/HeatmapBoard";
+import HeatmapBoard, {
+  frameworkMap,
+} from "@/components/HeatmapBoard/HeatmapBoard";
 import ResilienceChart from "@/components/ResilienceChart/ResilienceChart";
 import MetricsBoard from "@/components/MetricsBoard/MetricsBoard"; // 🔥 New one
 import React, { useState } from "react";
@@ -9,7 +11,6 @@ import DrillDownTable from "@/components/DrilldownReportTable/DrilldownReportTab
 import {
   EvaluationReportTypes,
   HeatmapEvaluationFramework,
-  TacticOptions,
 } from "@/components/HeatmapBoard/tacticsData";
 
 const DUMMY_ROUND_OPTIONS = [
@@ -21,16 +22,19 @@ const DUMMY_ROUND_OPTIONS = [
 ];
 
 export default function Evaluate() {
+  const [framework, setFramework] = useState<HeatmapEvaluationFramework>(
+    HeatmapEvaluationFramework.ENTERPRISE
+  );
+  const tacticOptions = [
+    { name: `All Selected (${frameworkMap[framework].length})` },
+    ...frameworkMap[framework],
+  ].map((option) => option.name);
   const [reportType, setReportType] = useState<EvaluationReportTypes>(
     EvaluationReportTypes.HEATMAP
   );
   const [round, setRound] = useState(DUMMY_ROUND_OPTIONS[0]);
-  const [selectedTactic, setSelectedTactic] = useState(
-    TacticOptions.filter((item) => item.startsWith("All Selected"))[0]
-  );
-  const [framework, setFramework] = useState<HeatmapEvaluationFramework>(
-    HeatmapEvaluationFramework.ENTERPRISE
-  );
+
+  const [selectedTactic, setSelectedTactic] = useState(tacticOptions[0]);
 
   return (
     <div className="flex flex-col gap-5">
@@ -49,6 +53,7 @@ export default function Evaluate() {
         round={round}
         setRound={setRound}
         tactics={selectedTactic}
+        tacticOptions={tacticOptions}
         setTactics={setSelectedTactic}
         framework={framework}
         setFramework={setFramework}
