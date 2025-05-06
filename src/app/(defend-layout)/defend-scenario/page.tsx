@@ -29,7 +29,13 @@ export default function DefendScenario() {
     setIsLoading(true);
     try {
       const adverRes = await fetchAdversariesWithAbilities();
-      setData(adverRes.filter((element) => element.atomic_ordering.length > 0));
+      const filtered = adverRes.filter(
+        (element) => element.atomic_ordering.length > 0
+      );
+      setData(filtered);
+      if (filtered.length > 0) {
+        setDropdownOption(filtered[0].name);
+      }
     } catch (error) {
       console.error("Failed to fetch data:", error);
     } finally {
@@ -49,13 +55,10 @@ export default function DefendScenario() {
         <div className="flex items-center gap-4">
           <div className="relative min-w-[340px]">
             <select
-              defaultValue=""
+              defaultValue={dropdownOption}
               className="w-full bg-base-800 border border-base-700 text-neutral-300 px-4 py-2 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
               onChange={handleDropdownSelection}
             >
-              <option value="" disabled hidden>
-                Choose...
-              </option>
               {data.map((opt, index) => (
                 <option key={index} value={opt.name}>
                   {opt.name}
