@@ -39,7 +39,9 @@ export default function Assessment() {
   return (
     <div className="flex flex-col w-full bg-base-900 p-8 rounded-xl">
       <div className="justify-between flex w-full items-center">
-        <SearchInput onSearch={handleSearch} />
+        <div className="w-120">
+          <SearchInput onSearch={handleSearch} />
+        </div>
         <div className="flex-row flex">
           <button className="p-2 bg-primary-300 flex flex-row rounded-sm">
             <SaveIcon color="white" />

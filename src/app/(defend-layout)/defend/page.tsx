@@ -54,7 +54,9 @@ export default function Defend() {
     <div className="flex flex-col w-full bg-base-900 p-8 rounded-xl">
       {/* Top Controls */}
       <div className="flex justify-between w-full items-center">
-        <SearchInput onSearch={handleSearch} />
+        <div className="w-120">
+          <SearchInput onSearch={handleSearch} />
+        </div>
 
         <div className="flex space-x-2">
           <button className="p-2 bg-primary-300 flex items-center rounded-sm hover:bg-primary-400 transition">
