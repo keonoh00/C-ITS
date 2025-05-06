@@ -37,7 +37,13 @@ export default function Evaluate() {
         reportOptions={Object.values(EvaluationReportTypes)}
         reportType={reportType}
         setReportType={setReportType}
-        roundOptions={["-----------------"]}
+        roundOptions={[
+          "All (4)",
+          "Penetration to C-ITS Center (Q1)",
+          "Penetration to C-ITS Center (Q2)",
+          "Penetration to C-ITS Center (Q3)",
+          "Penetration to C-ITS Center (Q4)",
+        ]}
         round={round}
         setRound={setRound}
         tactics={selectedTactic}
