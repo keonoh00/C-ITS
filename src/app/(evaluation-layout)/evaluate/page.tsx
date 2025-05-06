@@ -58,6 +58,7 @@ export default function Evaluate() {
             selectedTactic={selectedTactic}
             framework={framework}
             sortType={"impact"}
+            round={round}
           />
         )}
 

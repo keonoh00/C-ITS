@@ -1,7 +1,12 @@
 "use client";
 
 import React, { useMemo, useRef, useState, useEffect } from "react";
-import { HeatmapEvaluationFramework, Tactic, Technique } from "./tacticsData";
+import {
+  HeatmapEvaluationFramework,
+  OutcomeEnum,
+  Tactic,
+  Technique,
+} from "./tacticsData";
 import HeatmapCard from "./HeatmapCard";
 import Legend from "./Legend";
 import { tacticsDataEnterprise } from "./enterprise/enterpriseData";
@@ -11,6 +16,7 @@ import { tacticsDataICS } from "./ics/icsData";
 interface HeatmapBoardProps {
   selectedTactic: string;
   framework: HeatmapEvaluationFramework;
+  round: string;
   sortType: "alphabetical" | "impact";
 }
 
@@ -29,15 +35,31 @@ const impactOrder: Record<string, number> = {
   "Outcome TBD": 1,
   "No Test Coverage": 0,
 };
+
 export default function HeatmapBoard({
   selectedTactic,
   framework,
+  round,
   sortType,
 }: HeatmapBoardProps) {
-  const tacticsData: Tactic[] = useMemo(
-    () => frameworkMap[framework] ?? [],
-    [framework]
-  );
+  const tacticsData: Tactic[] = useMemo(() => {
+    const original = frameworkMap[framework] ?? [];
+
+    // If Q1, clone and override all technique outcomes to "Strong"
+    if (round === "Penetration to C-ITS Center (Q1)") {
+      return original.map((t) => ({
+        ...t,
+        techniques: t.techniques.map((tech) => ({
+          ...tech,
+          outcome: OutcomeEnum.Strong,
+          topCount: 6,
+          bottomCount: 6,
+        })),
+      }));
+    }
+
+    return original;
+  }, [framework, round]);
 
   const filteredTactics: Tactic[] = useMemo(() => {
     if (selectedTactic.startsWith("All Selected")) return tacticsData;
@@ -69,10 +91,9 @@ export default function HeatmapBoard({
       } else if (sortType === "impact") {
         const aImpact = impactOrder[a.outcome ?? "No Test Coverage"] ?? 0;
         const bImpact = impactOrder[b.outcome ?? "No Test Coverage"] ?? 0;
-        return bImpact - aImpact; // Higher impact first (i.e., 0 > 6)
-      } else {
-        return a.name.localeCompare(b.name);
+        return bImpact - aImpact;
       }
+      return 0;
     });
   };
 
