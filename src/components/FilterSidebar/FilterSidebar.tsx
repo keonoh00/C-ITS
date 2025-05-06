@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
-import SearchInput from "../SearchInput/SearchInput";
 
 interface SelectedFilter {
   label: string;
@@ -69,10 +68,8 @@ export default function FilterSidebar({ onChange }: FilterSideBarProps) {
   }, [searchQuery, startDate, endDate, assessment, selectedFilters, onChange]);
 
   return (
-    <>
-      <SearchInput onSearch={(q) => setSearchQuery(q)} />
-
-      <div className="flex flex-col bg-base-900 p-4 text-white rounded-md w-full h-full">
+    <div className="flex flex-col space-y-4">
+      <div className="flex flex-col bg-base-900 p-6 text-white rounded-md w-full h-full">
         {selectedFilters.length > 0 && (
           <div className="flex flex-col gap-2 rounded mb-4">
             {selectedFilters.map((filter, idx) => (
@@ -124,6 +121,6 @@ export default function FilterSidebar({ onChange }: FilterSideBarProps) {
           </select>
         </div>
       </div>
-    </>
+    </div>
   );
 }
