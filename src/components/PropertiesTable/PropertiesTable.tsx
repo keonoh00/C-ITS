@@ -89,13 +89,13 @@ export default function PropertiesTechniqueTable() {
   const [isOpen, setIsOpen] = useState(false);
   const [data, setData] = useState<PropertiesTechniqueItem[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 4;
 
+  const pageSize = 4;
+  const totalPages = Math.ceil(data.length / pageSize);
   const paginatedData = data.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
-  const totalPages = Math.ceil(data.length / pageSize);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -109,17 +109,16 @@ export default function PropertiesTechniqueTable() {
 
       const parsed: PropertiesTechniqueItem[] = graph.flatMap((roleBlock) =>
         roleBlock.data.map((attack) => ({
-          technique: attack.technique_name,
+          technique: attack.attack_name,
           target: roleBlock.role,
-          status: (attack.requirements.length > 0
-            ? "In progress"
-            : "Complete") as "In progress" | "Complete",
-          outcome: (attack.requirements.length > 0
-            ? "Not Alerted"
-            : "Quarterly Testing") as
-            | "Not Alerted"
-            | "Quarterly Testing"
-            | "None",
+          status:
+            attack.requirements && Object.keys(attack.requirements).length > 0
+              ? "In progress"
+              : "Complete",
+          outcome:
+            attack.requirements && Object.keys(attack.requirements).length > 0
+              ? "Not Alerted"
+              : "Quarterly Testing",
           tag: "Engineering",
           onClick: () => {
             setInfoModalData({
@@ -151,14 +150,14 @@ export default function PropertiesTechniqueTable() {
         totalPages={totalPages}
         onPageChange={handlePageChange}
       />
-      {isOpen && infoModalData ? (
+      {isOpen && infoModalData && (
         <InfoModal
           open={isOpen}
           onClose={() => setIsOpen(false)}
           onSave={() => console.log("saved")}
           modalData={infoModalData}
         />
-      ) : null}
+      )}
     </div>
   );
 }
