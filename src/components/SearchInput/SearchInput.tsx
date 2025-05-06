@@ -1,6 +1,6 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import React, { useState } from "react";
 
 interface SearchInputProps {
@@ -20,21 +20,31 @@ export default function SearchInput({
     }
   };
 
-  const handleButtonClick = () => {
+  const handleSearch = () => {
     onSearch(value);
   };
 
+  const clearInput = () => {
+    setValue("");
+    onSearch("");
+  };
+
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 w-full">
       <input
         type="text"
         placeholder={placeholder}
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
-        className="p-2 w-120 border border-neutral-500 text-neutral-300 rounded-sm bg-base-800"
+        className="p-2 flex-1 border border-neutral-500 text-neutral-300 rounded-sm bg-base-800"
       />
-      <button className="p-2" onClick={handleButtonClick}>
+      {value && (
+        <button onClick={clearInput} aria-label="Clear search">
+          <X size={18} className="text-neutral-500" />
+        </button>
+      )}
+      <button onClick={handleSearch} aria-label="Search">
         <Search size={18} className="text-neutral-400" />
       </button>
     </div>
