@@ -115,10 +115,10 @@ export async function fetchAttacks({
     page,
     items_per_page: itemsPerPage,
     name: query,
-    platform: query,
-    mitre: query,
-    tactic: query,
-    threat_group: query,
+    platform: "",
+    mitre: "",
+    tactic: "",
+    threat_group: "",
   };
 
   const headers: Record<string, string> = {
