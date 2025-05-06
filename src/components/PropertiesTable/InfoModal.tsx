@@ -112,6 +112,20 @@ export const InfoModal: React.FC<InfoModalProps> = ({
           </div>
 
           <div className="flex flex-col gap-2">
+            <label>Tags</label>
+            <div className="flex flex-wrap gap-2 p-2 border border-neutral-500 rounded-sm bg-base-800 min-h-[48px]">
+              {modalData.tags.map((tag, idx) => (
+                <span
+                  key={idx}
+                  className="bg-neutral-600 text-white text-sm px-3 py-1 rounded-md"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
             <label>Defenses</label>
             <input
               className="p-2 border border-neutral-500 text-neutral-300 rounded-sm bg-base-800"
