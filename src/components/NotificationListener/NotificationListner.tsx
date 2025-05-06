@@ -7,7 +7,7 @@ export default function NotificationListener() {
   const showToast = useToast();
 
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:3002");
+    const socket = new WebSocket(`ws://${window.location.hostname}:3002`);
 
     socket.onopen = () => {
       console.log("WebSocket connected");
