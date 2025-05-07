@@ -45,7 +45,7 @@ export function DefendTable({ data }: DefendTableProps) {
     },
     {
       label: "ATT&CK Tactics",
-      render: (item) => item.technique_name,
+      render: (item) => item.tactic,
     },
     {
       label: "Technique",
