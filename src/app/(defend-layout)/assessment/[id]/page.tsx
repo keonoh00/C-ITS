@@ -5,8 +5,10 @@ import AssessmentDetailsTable from "@/components/AssessmentDetailsTable/Assessme
 import AssessmentTable from "@/components/AssessmentTable/AssessmentTable";
 import Loading from "@/components/common/Loading/Loading";
 import { useCallback, useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
 export default function Assessment() {
+  const params = useParams<{ id: string }>();
   const [data, setData] = useState<OperationResponse>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -16,7 +18,7 @@ export default function Assessment() {
     setError(null);
     try {
       const response = await fetchOperations();
-      setData(response);
+      setData(response.filter((item) => item.id === params.id));
     } catch (err) {
       setError((err as Error).message || "Failed to load data.");
       setData([]);
@@ -25,7 +27,7 @@ export default function Assessment() {
         setIsLoading(false);
       }, 300);
     }
-  }, []);
+  }, [params.id]);
 
   useEffect(() => {
     fetchData();
@@ -86,17 +88,18 @@ export default function Assessment() {
               No assessments found.
             </div>
           ) : (
-            <AssessmentTable data={data} />
+            <>
+              <AssessmentTable data={data} />
+              {/* Temp spacer */}
+              <div>
+                <div className="h-12" />
+                <div className="h-12" />
+              </div>
+
+              <AssessmentDetailsTable />
+            </>
           )}
         </div>
-
-        {/* Temp spacer */}
-        <div>
-          <div className="h-12" />
-          <div className="h-12" />
-        </div>
-
-        <AssessmentDetailsTable />
       </div>
     </div>
   );
