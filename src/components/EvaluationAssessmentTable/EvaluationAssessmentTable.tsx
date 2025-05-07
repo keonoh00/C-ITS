@@ -4,6 +4,7 @@ import React from "react";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { Table, TableColumn } from "@/components/Table/Table";
+import clsx from "clsx";
 
 export interface EvaluationRoundItem {
   assessmentName: string;
@@ -100,7 +101,7 @@ const columns: TableColumn<EvaluationRoundItem>[] = [
 
 export default function EvaluationRoundTable() {
   return (
-    <div className="w-full bg-base-800 rounded-lg p-4 overflow-scroll">
+    <div className={clsx("w-full bg-base-800 rounded-lg p-4 overflow-auto")}>
       <Table data={data} columns={columns} />
     </div>
   );
