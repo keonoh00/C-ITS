@@ -40,6 +40,7 @@ function replaceTechniquesByIds(
   data: Tactic[],
   replacements: { id: string; newTechnique: Partial<Technique> }[]
 ): Tactic[] {
+  if (!replacements || replacements.length < 1) return data;
   const replacementMap = new Map(
     replacements.map((r) => [r.id, r.newTechnique])
   );
