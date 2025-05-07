@@ -59,7 +59,7 @@ export function DefendTable({ data }: DefendTableProps) {
     },
     {
       label: "Technique",
-      render: (item) => item.technique_id,
+      render: (item) => (item.technique_id === "x" ? "-" : item.technique_id),
     },
     {
       label: "Last Updated",

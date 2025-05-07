@@ -59,7 +59,7 @@ export const ScenarioTable: React.FC<ScenarioTableProps> = ({ data }) => {
     },
     {
       label: "-",
-      render: () => "x",
+      render: () => "-",
     },
   ];
 
