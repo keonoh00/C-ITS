@@ -1,6 +1,7 @@
 import React from "react";
 import { Table, TableColumn } from "@/components/Table/Table";
 import { Agent } from "@/api/defend/assets";
+import { Tag } from "../Tag/Tag";
 
 const assetColumns: TableColumn<Agent>[] = [
   {
@@ -41,15 +42,10 @@ const assetColumns: TableColumn<Agent>[] = [
   {
     label: "Status",
     render: (item) => (
-      <span
-        className={`px-2 py-1 rounded-full text-xs ${
-          item.deadman_enabled
-            ? "bg-green-500 text-white"
-            : "bg-red-500 text-white"
-        }`}
-      >
-        {item.deadman_enabled ? "Alive" : "Disconnected"}
-      </span>
+      <Tag
+        label={item.deadman_enabled ? "Alive" : "Disconnected"}
+        color={item.deadman_enabled ? "green" : "red"}
+      />
     ),
   },
 ];
