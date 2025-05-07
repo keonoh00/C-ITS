@@ -22,12 +22,14 @@ interface InfoModalProps {
   open: boolean;
   onClose: () => void;
   modalData: InfoModalData;
+  onSave: () => void;
 }
 
 export const InfoModal: React.FC<InfoModalProps> = ({
   open,
   onClose,
   modalData,
+  // onSave,
 }) => {
   const footer = (
     <div className="flex justify-end space-x-2">
