@@ -7,7 +7,6 @@ interface RequestInterface {
   duration?: number;
   type?: "info" | "success" | "error" | "warning";
   className?: string;
-  key: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -52,6 +51,14 @@ const ADMIN_SECRET = "admin";
 
 const server = createServer((req, res) => {
   if (req.method === "POST" && req.url === "/trigger") {
+    const apiKey = req.headers["x-api-key"] || req.headers["Key"];
+
+    if (apiKey !== ADMIN_SECRET) {
+      log("UnauthorizedAttempt", { ip: req.socket.remoteAddress }, "warn");
+      res.writeHead(401, { "Content-Type": "application/json" });
+      return res.end(JSON.stringify({ error: "Unauthorized" }));
+    }
+
     let body = "";
     req.on("data", (chunk) => (body += chunk));
     req.on("end", () => {
@@ -60,39 +67,36 @@ const server = createServer((req, res) => {
 
         if (!isValidRequest(parsed)) {
           log("InvalidStructure", { body: parsed }, "warn");
-          res.writeHead(400);
-          return res.end("Invalid toast message structure");
+          res.writeHead(400, { "Content-Type": "application/json" });
+          return res.end(
+            JSON.stringify({ error: "Invalid toast message structure" })
+          );
         }
 
-        if (parsed.key !== ADMIN_SECRET) {
-          log("UnauthorizedAttempt");
-          res.writeHead(401);
-          return res.end("Unauthorized");
-        }
-
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { key, ...toast } = parsed;
-        log("BroadcastingMessage", toast);
+        log(
+          "BroadcastingMessage",
+          parsed as unknown as Record<string, unknown>
+        );
 
         wss.clients.forEach((client) => {
           if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify(toast));
+            client.send(JSON.stringify(parsed));
           }
         });
 
-        res.writeHead(200);
-        return res.end("Broadcast sent");
+        res.writeHead(200, { "Content-Type": "application/json" });
+        return res.end(JSON.stringify({ message: "Broadcast sent" }));
       } catch (err) {
         log("MalformedJSON", { error: String(err) }, "error");
-        res.writeHead(400);
-        return res.end("Malformed JSON");
+        res.writeHead(400, { "Content-Type": "application/json" });
+        return res.end(JSON.stringify({ error: "Malformed JSON" }));
       }
     });
     return;
   }
 
-  res.writeHead(404);
-  res.end("Not Found");
+  res.writeHead(404, { "Content-Type": "application/json" });
+  res.end(JSON.stringify({ error: "Not Found" }));
 });
 
 const wss = new WebSocketServer({ server });
