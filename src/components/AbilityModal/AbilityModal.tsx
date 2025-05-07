@@ -39,12 +39,14 @@ interface AbilityModalProps {
   open: boolean;
   onClose: () => void;
   modalData: AttackDataItem;
+  onSave: () => void;
 }
 
 const AbilityModal: React.FC<AbilityModalProps> = ({
   open,
   onClose,
   modalData,
+  onSave,
 }) => {
   const [tab, setTab] = useState<AbilityModalTabs>(AbilityModalTabs.General);
 
@@ -57,7 +59,7 @@ const AbilityModal: React.FC<AbilityModalProps> = ({
         <div className="flex justify-end space-x-2">
           <button
             className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded"
-            onClick={() => console.log("Saved")}
+            onClick={onSave}
           >
             저장
           </button>
