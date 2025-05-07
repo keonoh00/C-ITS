@@ -180,7 +180,11 @@ export default function HeatmapBoard({
     // Dummy replacement (you can later replace this with actual input)
     const dummyReplaced = replaceTechniquesByIds(
       original,
-      round == "Penetration to C-ITS Center (Q1)" ? Replace2 : Replace1
+      round == "Penetration to C-ITS Center (Q2)"
+        ? Replace1
+        : round == "Penetration to C-ITS Center (Q4)"
+        ? Replace2
+        : []
     );
 
     return dummyReplaced;
