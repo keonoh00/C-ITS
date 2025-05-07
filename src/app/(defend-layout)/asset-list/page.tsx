@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Agent, fetchAgents } from "@/api/defend/assets";
 import AssetListTable from "@/components/AssetListTable/AssetListTable";
-import Loading from "@/components/Loading/Loading";
+import Loading from "@/components/common/Loading/Loading";
 
 export default function AssetsList() {
   const [agents, setAgents] = useState<Agent[]>([]);

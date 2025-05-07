@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Table, TableColumn } from "@/components/Table/Table";
+import { Table, TableColumn } from "@/components/common/Table/Table";
 import { ArrowUpRight } from "lucide-react";
 import { InfoModal, InfoModalData, InfoModalOutcomeEnum } from "./InfoModal";
 import {
   AttackRoleGroup,
   fetchAttackGraphConfiguration,
 } from "@/api/defend/graph";
-import { Pagination } from "../Pagination/Pagination";
-import { Tag } from "../Tag/Tag";
+import { Pagination } from "../common/Pagination/Pagination";
+import { Tag } from "../common/Tag/Tag";
 
 export interface PropertiesTechniqueItem {
   technique: string;

@@ -4,9 +4,9 @@ import { useEffect, useState, useCallback } from "react";
 import { SaveIcon, Trash2 } from "lucide-react";
 import { DefendTable } from "@/components/DefendTable/DefendTable";
 import { AttackResponse, fetchAttacks } from "@/api/defend/defend";
-import SearchInput from "@/components/SearchInput/SearchInput";
-import { Pagination } from "../Pagination/Pagination";
-import Loading from "../Loading/Loading";
+import SearchInput from "@/components/common/SearchInput/SearchInput";
+import { Pagination } from "../common/Pagination/Pagination";
+import Loading from "../common/Loading/Loading";
 
 interface DefendClientComponentProps {
   initialData?: AttackResponse;

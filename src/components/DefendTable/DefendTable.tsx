@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Table, TableColumn } from "@/components/Table/Table";
+import { Table, TableColumn } from "@/components/common/Table/Table";
 import AbilityModal from "@/components/AbilityModal/AbilityModal";
 import { AttackDataItem, AttackResponse } from "@/api/defend/defend";
 

@@ -1,7 +1,7 @@
 import React from "react";
-import { Table, TableColumn } from "@/components/Table/Table";
+import { Table, TableColumn } from "@/components/common/Table/Table";
 import { Agent } from "@/api/defend/assets";
-import { Tag } from "../Tag/Tag";
+import { Tag } from "../common/Tag/Tag";
 
 const assetColumns: TableColumn<Agent>[] = [
   {

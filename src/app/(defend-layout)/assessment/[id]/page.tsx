@@ -3,7 +3,7 @@
 import { fetchOperations, OperationResponse } from "@/api/defend/assetssment";
 import AssessmentDetailsTable from "@/components/AssessmentDetailsTable/AssessmentDetailsTable";
 import AssessmentTable from "@/components/AssessmentTable/AssessmentTable";
-import Loading from "@/components/Loading/Loading";
+import Loading from "@/components/common/Loading/Loading";
 import { useCallback, useEffect, useState } from "react";
 
 export default function Assessment() {

@@ -1,6 +1,6 @@
 "use client";
 
-import { Dropdown } from "@/components/Dropdown/Dropdown";
+import { Dropdown } from "@/components/common/Dropdown/Dropdown";
 import PropertiesTechniqueTable from "@/components/PropertiesTable/PropertiesTable";
 import { useState } from "react";
 

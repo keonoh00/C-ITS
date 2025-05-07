@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { Table, TableColumn } from "@/components/Table/Table";
+import { Table, TableColumn } from "@/components/common/Table/Table";
 import Link from "next/link";
 import { OperationItem, OperationResponse } from "@/api/defend/assetssment";
 

@@ -2,10 +2,10 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { SaveIcon, Trash2 } from "lucide-react";
-import SearchInput from "@/components/SearchInput/SearchInput";
+import SearchInput from "@/components/common/SearchInput/SearchInput";
 import AssessmentTable from "@/components/AssessmentTable/AssessmentTable";
 import { fetchOperations, OperationResponse } from "@/api/defend/assetssment";
-import Loading from "@/components/Loading/Loading";
+import Loading from "@/components/common/Loading/Loading";
 
 export default function Assessment() {
   const [data, setData] = useState<OperationResponse>([]);

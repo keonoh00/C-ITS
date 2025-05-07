@@ -2,7 +2,7 @@
 
 import EvaluationuationAssessmentTable from "@/components/EvaluationAssessmentTable/EvaluationAssessmentTable";
 import FilterSidebar from "@/components/FilterSidebar/FilterSidebar";
-import SearchInput from "@/components/SearchInput/SearchInput";
+import SearchInput from "@/components/common/SearchInput/SearchInput";
 import { PlusIcon } from "lucide-react";
 
 export default function EvaluationAssessment() {

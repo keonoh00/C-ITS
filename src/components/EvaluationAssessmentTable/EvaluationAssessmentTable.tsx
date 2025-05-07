@@ -3,9 +3,9 @@
 import React from "react";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
-import { Table, TableColumn } from "@/components/Table/Table";
+import { Table, TableColumn } from "@/components/common/Table/Table";
 import clsx from "clsx";
-import { Tag } from "../Tag/Tag";
+import { Tag } from "../common/Tag/Tag";
 
 export interface EvaluationRoundItem {
   assessmentName: string;

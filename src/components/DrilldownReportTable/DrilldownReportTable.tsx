@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { Table, TableColumn } from "@/components/Table/Table"; // Assuming you placed it like this
-import SearchInput from "../SearchInput/SearchInput";
-import { Tag } from "../Tag/Tag";
+import { Table, TableColumn } from "@/components/common/Table/Table"; // Assuming you placed it like this
+import SearchInput from "../common/SearchInput/SearchInput";
+import { Tag } from "../common/Tag/Tag";
 
 interface DrillDownItem {
   testCase: string;

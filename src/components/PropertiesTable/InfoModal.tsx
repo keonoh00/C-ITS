@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal } from "@/components/common/Modal/Modal";
-import SearchInput from "../SearchInput/SearchInput";
-import { Tag } from "../Tag/Tag";
+import SearchInput from "../common/SearchInput/SearchInput";
+import { Tag } from "../common/Tag/Tag";
 
 export enum InfoModalOutcomeEnum {
   Blocked = "Blocked",

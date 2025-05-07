@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { Table, TableColumn } from "@/components/Table/Table";
+import { Table, TableColumn } from "@/components/common/Table/Table";
 import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 import AssessmentDetailsResultModal from "./AssessmentDetailsResultModal";

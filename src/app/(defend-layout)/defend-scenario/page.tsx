@@ -4,7 +4,7 @@ import {
   EnrichedAdversary,
   fetchAdversariesWithAbilities,
 } from "@/api/defend/scenario";
-import Loading from "@/components/Loading/Loading";
+import Loading from "@/components/common/Loading/Loading";
 import { ScenarioTable } from "@/components/ScenarioTable/ScenarioTable";
 import { PlusIcon } from "lucide-react";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";

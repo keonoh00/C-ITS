@@ -2,7 +2,7 @@
 
 import FilterSidebar from "@/components/FilterSidebar/FilterSidebar";
 import { PlusIcon } from "lucide-react";
-import SearchInput from "@/components/SearchInput/SearchInput";
+import SearchInput from "@/components/common/SearchInput/SearchInput";
 import RoundTable from "@/components/RoundTable/RoundTable";
 
 export default function Round() {

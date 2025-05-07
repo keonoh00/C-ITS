@@ -1,7 +1,7 @@
 "use client";
 
 import { AbilityDetail, EnrichedAdversary } from "@/api/defend/scenario";
-import { Table, TableColumn } from "@/components/Table/Table";
+import { Table, TableColumn } from "@/components/common/Table/Table";
 import Image from "next/image";
 
 interface ScenarioTableProps {

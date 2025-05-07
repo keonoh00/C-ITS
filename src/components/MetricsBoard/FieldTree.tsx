@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Tag } from "../Tag/Tag";
+import { Tag } from "../common/Tag/Tag";
 
 interface FieldItem {
   title: string;

@@ -3,7 +3,7 @@
 import React from "react";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
-import { Table, TableColumn } from "../Table/Table";
+import { Table, TableColumn } from "../common/Table/Table";
 
 export interface RoundItem {
   assessmentName: string;
