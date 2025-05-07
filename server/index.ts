@@ -16,7 +16,6 @@ function isValidRequest(obj: any): obj is RequestInterface {
   return (
     obj &&
     typeof obj === "object" &&
-    typeof obj.key === "string" &&
     typeof obj.message === "string" &&
     (obj.duration === undefined || typeof obj.duration === "number") &&
     (obj.type === undefined ||
@@ -50,7 +49,7 @@ function log(
 
 const server = createServer((req, res) => {
   if (req.method === "POST" && req.url === "/trigger") {
-    const apiKey = req.headers["x-api-key"] || req.headers["Key"];
+    const apiKey = req.headers["x-api-key"] || req.headers["key"];
 
     if (apiKey !== ADMIN_SECRET) {
       log("UnauthorizedAttempt", { ip: req.socket.remoteAddress }, "warn");
