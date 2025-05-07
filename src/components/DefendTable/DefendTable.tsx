@@ -13,6 +13,19 @@ export function DefendTable({ data }: DefendTableProps) {
   const [modalData, setModalData] = useState<AttackDataItem | null>(null);
   const [open, setOpen] = useState(false);
 
+  const onClose = () => {
+    setOpen(false);
+    const timeout = setTimeout(() => setModalData(null), 500); // match animation duration
+    return () => clearTimeout(timeout);
+  };
+
+  const onOpen = (newData: AttackDataItem) => {
+    setModalData(newData);
+
+    const timeout = setTimeout(() => setOpen(true), 100); // match animation duration
+    return () => clearTimeout(timeout);
+  };
+
   const columns: TableColumn<AttackDataItem>[] = [
     {
       label: "선택",
@@ -24,10 +37,7 @@ export function DefendTable({ data }: DefendTableProps) {
       render: (item) => (
         <span
           className="underline cursor-pointer hover:text-blue-400 transition-colors text-left link"
-          onClick={() => {
-            setModalData(item);
-            setOpen(true);
-          }}
+          onClick={() => onOpen(item)}
         >
           {item.name}
         </span>
@@ -69,7 +79,7 @@ export function DefendTable({ data }: DefendTableProps) {
       {modalData ? (
         <AbilityModal
           open={open}
-          onClose={() => setOpen(false)}
+          onClose={onClose}
           onSave={() => console.log("Save")}
           modalData={modalData}
         />
