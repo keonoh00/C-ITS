@@ -1,6 +1,8 @@
 import { createServer } from "http";
 import WebSocket, { WebSocketServer } from "ws";
 
+const PORT = 3002;
+const ADMIN_SECRET = "BLUEADMIN123";
 interface RequestInterface {
   id?: number;
   message: string;
@@ -45,9 +47,6 @@ function log(
       console.log(output);
   }
 }
-
-const PORT = 3002;
-const ADMIN_SECRET = "admin";
 
 const server = createServer((req, res) => {
   if (req.method === "POST" && req.url === "/trigger") {
