@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { XIcon } from "lucide-react";
 import clsx from "clsx";
 import SearchInput from "../SearchInput/SearchInput";
+import { Tag } from "../Tag/Tag";
 
 export enum InfoModalOutcomeEnum {
   Blocked = "Blocked",
@@ -146,14 +147,9 @@ export const InfoModal: React.FC<InfoModalProps> = ({
 
           <div className="flex flex-col gap-2">
             <label>Tags</label>
-            <div className="flex flex-wrap gap-2 p-2 border border-neutral-500 rounded-sm bg-base-800 min-h-[48px]">
+            <div className="space-x-1 p-2 border border-neutral-500 rounded-sm bg-base-800 min-h-[48px]">
               {modalData.tags.map((tag, idx) => (
-                <span
-                  key={idx}
-                  className="bg-neutral-600 text-white text-sm px-3 py-1 rounded-md"
-                >
-                  {tag}
-                </span>
+                <Tag key={idx} label={tag} color={"amber"} />
               ))}
             </div>
           </div>

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Table, TableColumn } from "@/components/Table/Table"; // Assuming you placed it like this
 import SearchInput from "../SearchInput/SearchInput";
+import { Tag } from "../Tag/Tag";
 
 interface DrillDownItem {
   testCase: string;
@@ -82,32 +83,18 @@ export default function DrillDownTable() {
     },
     {
       label: "Outcome",
-      render: (item) => (
-        <span
-          className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-            item.outcome === "Not Alerted"
-              ? "bg-green-600 text-white"
-              : "bg-red-500 text-white"
-          }`}
-        >
-          {item.outcome}
-        </span>
+      render: (item, index) => (
+        <Tag
+          label={item.outcome}
+          key={index}
+          color={item.outcome === "Not Alerted" ? "green" : "red"}
+        />
       ),
     },
     {
       label: "Tags",
-      render: (item) => (
-        <div>
-          {item.tags.map((tag, idx) => (
-            <span
-              key={idx}
-              className="bg-blue-500 text-white text-xs rounded-full px-2 py-0.5"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      ),
+      render: (item) =>
+        item.tags.map((tag, idx) => <Tag label={tag} key={idx} color="blue" />),
     },
   ];
 

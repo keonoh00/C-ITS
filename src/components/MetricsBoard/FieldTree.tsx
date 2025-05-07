@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { Tag } from "../Tag/Tag";
 
 interface FieldItem {
   title: string;
@@ -80,22 +81,18 @@ export default function FieldTree() {
                   className="flex items-center justify-between text-sm text-neutral-300"
                 >
                   <div className="flex items-center gap-2">
-                    {/* Status Badges */}
-                    {child.title === "Blocked" && (
-                      <span className="bg-blue-500 text-xs text-white rounded-full px-2 py-0.5">
-                        Blocked
-                      </span>
-                    )}
-                    {child.title === "N/A" && (
-                      <span className="bg-black text-xs text-white rounded-full px-2 py-0.5">
-                        N/A
-                      </span>
-                    )}
-                    {child.title === "Alerted" && (
-                      <span className="bg-green-500 text-xs text-white rounded-full px-2 py-0.5">
-                        Alerted
-                      </span>
-                    )}
+                    <Tag
+                      label={child.title}
+                      color={
+                        child.title === "Blocked"
+                          ? "blue"
+                          : child.title === "N/A"
+                          ? "black"
+                          : child.title === "Alerted"
+                          ? "green"
+                          : "gray"
+                      }
+                    />
                   </div>
                   <span className="font-semibold">{child.count}</span>
                 </div>

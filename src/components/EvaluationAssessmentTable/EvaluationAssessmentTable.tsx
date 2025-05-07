@@ -5,6 +5,7 @@ import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { Table, TableColumn } from "@/components/Table/Table";
 import clsx from "clsx";
+import { Tag } from "../Tag/Tag";
 
 export interface EvaluationRoundItem {
   assessmentName: string;
@@ -74,15 +75,10 @@ const columns: TableColumn<EvaluationRoundItem>[] = [
   {
     label: "Status",
     render: (item: EvaluationRoundItem) => (
-      <span
-        className={
-          item.status === "Completed"
-            ? "px-2 py-1 bg-green-500 text-white text-xs rounded-full"
-            : "px-2 py-1 bg-neutral-400 text-black text-xs rounded-full"
-        }
-      >
-        {item.status}
-      </span>
+      <Tag
+        label={item.status}
+        color={item.status === "Completed" ? "green" : "gray"}
+      />
     ),
   },
   {

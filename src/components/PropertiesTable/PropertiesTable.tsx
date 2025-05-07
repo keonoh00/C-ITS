@@ -9,6 +9,7 @@ import {
   fetchAttackGraphConfiguration,
 } from "@/api/defend/graph";
 import { Pagination } from "../Pagination/Pagination";
+import { Tag } from "../Tag/Tag";
 
 export interface PropertiesTechniqueItem {
   technique: string;
@@ -32,43 +33,30 @@ const columns: TableColumn<PropertiesTechniqueItem>[] = [
   {
     label: "Status",
     render: (item) => (
-      <span
-        className={
-          item.status === "Complete"
-            ? "px-2 py-1 bg-green-500 text-white text-xs rounded-full"
-            : "px-2 py-1 bg-neutral-400 text-black text-xs rounded-full"
-        }
-      >
-        {item.status}
-      </span>
+      <Tag
+        label={item.status}
+        color={item.status === "Complete" ? "green" : "gray"}
+      />
     ),
   },
   {
     label: "Outcome",
-    render: (item) => {
-      const outcomeColor =
-        item.outcome === "Quarterly Testing"
-          ? "bg-blue-400"
-          : item.outcome === "Not Alerted"
-          ? "bg-yellow-400"
-          : "bg-red-500";
-
-      return (
-        <span
-          className={`px-2 py-1 ${outcomeColor} text-black text-xs rounded-full`}
-        >
-          {item.outcome}
-        </span>
-      );
-    },
+    render: (item) => (
+      <Tag
+        label={item.outcome}
+        color={
+          item.outcome === "Quarterly Testing"
+            ? "blue"
+            : item.outcome === "Not Alerted"
+            ? "yellow"
+            : "red"
+        }
+      />
+    ),
   },
   {
     label: "Tags",
-    render: (item) => (
-      <span className="px-2 py-1 bg-neutral-500 text-white text-xs rounded-full">
-        {item.tag}
-      </span>
-    ),
+    render: (item) => <Tag label={item.tag} color={"gray"} />,
   },
   {
     label: "Info",
