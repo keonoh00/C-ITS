@@ -42,7 +42,7 @@ const data: RoundItem[] = [
   },
   {
     assessmentName: "Penetration to C-ITS Center (Q4)",
-    defense: "MNX Hunter",
+    defense: "-",
     outcomeSuccess: 0,
     outcomeFail: 100,
     tag: "4회차",

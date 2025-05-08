@@ -11,8 +11,11 @@ import {
   Title,
   ChartOptions,
   ChartData,
+  Plugin,
 } from "chart.js";
-import annotationPlugin from "chartjs-plugin-annotation";
+import ChartDataLabels, {
+  Context as DataLabelContext,
+} from "chartjs-plugin-datalabels";
 import { Line } from "react-chartjs-2";
 import { useEffect, useState } from "react";
 
@@ -24,23 +27,19 @@ ChartJS.register(
   Tooltip,
   Filler,
   Title,
-  annotationPlugin
+  ChartDataLabels
 );
 
 const rawData = [
-  { runTime: new Date("2024-01-24"), score: 10 },
-  { runTime: new Date("2024-02-24"), score: 20 },
-  { runTime: new Date("2024-03-24"), score: 30 },
-  { runTime: new Date("2024-04-24"), score: 35 },
-  { runTime: new Date("2024-05-24"), score: 40 },
-  { runTime: new Date("2024-06-24"), score: 48 },
-  { runTime: new Date("2024-07-24"), score: 53 },
-  { runTime: new Date("2024-08-24"), score: 60 },
-  { runTime: new Date("2024-09-24"), score: 65 },
-  { runTime: new Date("2024-10-24"), score: 73 },
+  { runTime: new Date("2024-08-02T08:25:34"), score: 0 },
+  { runTime: new Date("2024-08-02T10:25:34"), score: 0 },
+  { runTime: new Date("2024-08-02T11:17:26"), score: 0 },
+  { runTime: new Date("2024-08-02T13:42:32"), score: 50 },
+  { runTime: new Date("2024-08-02T16:17:45"), score: 66 },
+  { runTime: new Date("2024-08-02T18:17:45"), score: 66 },
 ];
 
-const visibleIndices = new Set([1, 3, 5, 7]);
+const visibleIndices = new Set<number>([1, 2, 3, 4]);
 
 export default function ResilienceChart() {
   const [height, setHeight] = useState<number>(400);
@@ -53,10 +52,13 @@ export default function ResilienceChart() {
   }, []);
 
   const labels = rawData.map((d) =>
-    d.runTime.toLocaleDateString("en-CA", { year: "numeric", month: "short" })
+    d.runTime.toLocaleDateString("en-CA", {
+      year: "numeric",
+      month: "short",
+    })
   );
 
-  const data: ChartData<"line"> = {
+  const data: ChartData<"line", number[], string> = {
     labels,
     datasets: [
       {
@@ -64,11 +66,10 @@ export default function ResilienceChart() {
         data: rawData.map((d) => d.score),
         borderColor: "#5fa8f6",
         backgroundColor: "#5fa8f6",
-        pointRadius: rawData.map((_, i) => (visibleIndices.has(i) ? 4 : 0)),
-        pointHoverRadius: 5,
         borderWidth: 2,
-        fill: false,
-        tension: 0.4,
+        pointRadius: rawData.map((_, idx) => (visibleIndices.has(idx) ? 4 : 0)),
+        pointHoverRadius: 5,
+        tension: 0,
       },
     ],
   };
@@ -77,43 +78,30 @@ export default function ResilienceChart() {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      tooltip: {
-        filter: (item) => visibleIndices.has(item.dataIndex),
-      },
-      annotation: {
-        annotations: Object.fromEntries(
-          Array.from(visibleIndices).map((idx) => [
-            `label-${idx}`,
-            {
-              type: "label",
-              xValue: labels[idx],
-              yValue: rawData[idx].score,
-              backgroundColor: "#fff",
-              // borderColor: "#fff",
-              borderWidth: 1,
-              cornerRadius: 4,
-              font: {
-                size: 12,
-                weight: "bold",
-              },
-              padding: 8,
-              content: [
-                `${(idx + 1) / 2}회차 ${rawData[idx].runTime.toLocaleString(
-                  "en-CA"
-                )}`,
-                `Score : ${rawData[idx].score}`,
-              ],
-              yAdjust: -30,
-              textAlign: "center",
-              // color: "white",
-              // callout: {
-              //   display: true,
-              //   position: "bottom",
-              //   borderColor: "#5fa8f6",
-              // },
-            },
-          ])
-        ),
+      datalabels: {
+        align: "top",
+        anchor: "end",
+        backgroundColor: "#1e3a8a",
+        borderRadius: 4,
+        color: "white",
+        padding: 6,
+        font: {
+          size: 12,
+          weight: "bold",
+        },
+        display: (ctx: DataLabelContext) => visibleIndices.has(ctx.dataIndex),
+        formatter: (value: number, context: DataLabelContext): string[] => {
+          const idx = context.dataIndex;
+          const timestamp = rawData[idx].runTime.toLocaleString("ko-KR", {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+          });
+          return [`${idx + 1}회차 ${timestamp}`, `Score : ${value}`];
+        },
       },
     },
     scales: {
@@ -130,7 +118,11 @@ export default function ResilienceChart() {
 
   return (
     <div className="w-full bg-white p-4 rounded-md" style={{ height }}>
-      <Line data={data} options={options} />
+      <Line
+        data={data}
+        options={options}
+        plugins={[ChartDataLabels as Plugin]}
+      />
     </div>
   );
 }

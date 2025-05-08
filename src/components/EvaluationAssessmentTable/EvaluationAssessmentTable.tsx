@@ -10,41 +10,41 @@ import { Tag } from "../common/Tag/Tag";
 export interface EvaluationRoundItem {
   assessmentName: string;
   score: number;
-  lastActivity: string;
+  lastActivity: Date;
   status: "평가 완료" | "평가 진행중";
   round: number;
   reportLink: string;
 }
 
-const data: EvaluationRoundItem[] = [
+export const scenarioData: EvaluationRoundItem[] = [
   {
     assessmentName: "Brute-force attack For Server",
     score: 29.58,
-    lastActivity: "2024-07-05 14:25:31",
+    lastActivity: new Date("2024-07-05 14:25:31"),
     status: "평가 완료",
     round: 2,
     reportLink: "/round",
   },
   {
     assessmentName: "Penetration to C-ITS Center",
-    score: 29.58,
-    lastActivity: "2024-07-05 14:25:31",
+    score: -Infinity,
+    lastActivity: new Date("2024-08-05 14:25:31"),
     status: "평가 진행중",
-    round: 2,
+    round: 4,
     reportLink: "/round",
   },
   {
     assessmentName: "Command Execute to RSU",
-    score: 29.58,
-    lastActivity: "2024-07-05 14:25:31",
+    score: 58.52,
+    lastActivity: new Date("2024-07-05 16:17:28"),
     status: "평가 완료",
     round: 2,
     reportLink: "/round",
   },
   {
     assessmentName: "APT28",
-    score: 29.58,
-    lastActivity: "2024-07-05 14:25:31",
+    score: 78.63,
+    lastActivity: new Date("2024-08-03 14:25:42"),
     status: "평가 완료",
     round: 2,
     reportLink: "/round",
@@ -66,11 +66,17 @@ const columns: TableColumn<EvaluationRoundItem>[] = [
   },
   {
     label: "Score",
-    render: (item: EvaluationRoundItem) => <span>{item.score}%</span>,
+    render: (item: EvaluationRoundItem) => (
+      <span>{item.score === -Infinity ? "-" : `${item.score}%`}</span>
+    ),
   },
   {
     label: "Last Activity",
-    render: (item: EvaluationRoundItem) => <span>{item.lastActivity}</span>,
+    render: (item: EvaluationRoundItem) => (
+      <span>
+        {item.lastActivity.toISOString().replace("T", " ").split(".")[0]}
+      </span>
+    ),
   },
   {
     label: "Status",
@@ -98,7 +104,7 @@ const columns: TableColumn<EvaluationRoundItem>[] = [
 export default function EvaluationRoundTable() {
   return (
     <div className={clsx("w-full bg-base-800 rounded-lg p-4 overflow-auto")}>
-      <Table data={data} columns={columns} />
+      <Table data={scenarioData} columns={columns} />
     </div>
   );
 }
