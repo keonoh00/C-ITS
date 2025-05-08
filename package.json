@@ -10,7 +10,9 @@
     "start:server:dev": "nodemon server/index.ts"
   },
   "dependencies": {
+    "@xyflow/react": "^12.6.0",
     "chart.js": "^4.4.9",
+    "chartjs-plugin-annotation": "^3.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.503.0",
