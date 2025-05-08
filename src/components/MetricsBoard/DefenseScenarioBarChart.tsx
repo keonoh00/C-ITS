@@ -12,38 +12,24 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import React from "react";
+import { DataEntry, metriciesData } from "./data";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
-type DataEntry = {
-  name: string;
-  Blocked: number;
-  Alerted: number;
-  Logged: number;
-  None: number;
-};
-
-const data: DataEntry[] = [
-  { name: "Incident Responder", Blocked: 4, Alerted: 2, Logged: 3, None: 0 },
-  { name: "MNX Hunter", Blocked: 0, Alerted: 6, Logged: 0, None: 0 },
-  { name: "Elastic Hunter", Blocked: 8, Alerted: 7, Logged: 0, None: 1 },
-  { name: "ETC", Blocked: 0, Alerted: 10, Logged: 6, None: 1 },
-];
-
 const COLORS: Record<keyof Omit<DataEntry, "name">, string> = {
-  Blocked: "#4287f5",
-  Alerted: "#50c878",
+  Block: "#4287f5",
+  Alert: "#50c878",
   Logged: "#f5a142",
   None: "#f54242",
 };
 
-const keys = ["Blocked", "Alerted", "Logged", "None"] as const;
+const keys = ["None", "Logged", "Alert", "Block"] as const;
 
 const chartData: ChartData<"bar"> = {
-  labels: data.map((d) => d.name),
+  labels: metriciesData.map((d) => d.name),
   datasets: keys.map((key) => ({
     label: key,
-    data: data.map((d) => d[key]),
+    data: metriciesData.map((d) => d[key]),
     backgroundColor: COLORS[key],
     stack: "defense",
   })),

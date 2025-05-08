@@ -4,6 +4,7 @@ import React from "react";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { Table, TableColumn } from "../common/Table/Table";
+import { Tag } from "../common/Tag/Tag";
 
 export interface RoundItem {
   assessmentName: string;
@@ -20,7 +21,7 @@ const data: RoundItem[] = [
     defense: "Incident Responder, MNX Hunter",
     outcomeSuccess: 100,
     outcomeFail: 0,
-    tag: "Quarterly Testing",
+    tag: "1회차",
     link: "/properties",
   },
   {
@@ -28,7 +29,7 @@ const data: RoundItem[] = [
     defense: "Incident Responder, MNX Hunter, ETC",
     outcomeSuccess: 44,
     outcomeFail: 56,
-    tag: "Quarterly Testing",
+    tag: "2회차",
     link: "/properties",
   },
   {
@@ -36,7 +37,7 @@ const data: RoundItem[] = [
     defense: "Incident Responder, MNX Hunter, Elastic Hunter",
     outcomeSuccess: 72,
     outcomeFail: 28,
-    tag: "Quarterly Testing",
+    tag: "3회차",
     link: "/properties",
   },
   {
@@ -44,7 +45,7 @@ const data: RoundItem[] = [
     defense: "MNX Hunter",
     outcomeSuccess: 0,
     outcomeFail: 100,
-    tag: "Quarterly Testing",
+    tag: "4회차",
     link: "/properties",
   },
 ];
@@ -90,11 +91,7 @@ const columns: TableColumn<RoundItem>[] = [
   },
   {
     label: "Tags",
-    render: (item: RoundItem) => (
-      <span className="px-2 py-1 bg-primary-400 text-white text-xs rounded-full">
-        {item.tag}
-      </span>
-    ),
+    render: (item: RoundItem) => <Tag label={item.tag} color={"sky"} />,
   },
   {
     label: "Evaluate",

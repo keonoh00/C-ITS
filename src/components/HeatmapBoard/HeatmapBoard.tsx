@@ -59,7 +59,7 @@ const Replace1 = [
     id: "T1018",
     newTechnique: {
       id: "T1018",
-      outcome: OutcomeEnum.Moderate,
+      outcome: OutcomeEnum.Weakest,
       topCount: 2,
       bottomCount: 2,
     },
@@ -86,7 +86,7 @@ const Replace1 = [
     id: "T1087",
     newTechnique: {
       id: "T1087",
-      outcome: OutcomeEnum.Minimal,
+      outcome: OutcomeEnum.Weakest,
       topCount: 1,
       bottomCount: 1,
     },
@@ -95,7 +95,7 @@ const Replace1 = [
     id: "T1003",
     newTechnique: {
       id: "T1003",
-      outcome: OutcomeEnum.Weakest,
+      outcome: OutcomeEnum.Minimal,
       topCount: 2,
       bottomCount: 2,
     },
@@ -104,7 +104,7 @@ const Replace1 = [
     id: "T1110",
     newTechnique: {
       id: "T1110",
-      outcome: OutcomeEnum.Weakest,
+      outcome: OutcomeEnum.Minimal,
       topCount: 1,
       bottomCount: 1,
     },
@@ -116,7 +116,7 @@ const Replace2 = [
     id: "T1018",
     newTechnique: {
       id: "T1018",
-      outcome: OutcomeEnum.Moderate,
+      outcome: OutcomeEnum.Weakest,
       topCount: 2,
       bottomCount: 2,
     },
@@ -143,7 +143,7 @@ const Replace2 = [
     id: "T1087",
     newTechnique: {
       id: "T1087",
-      outcome: OutcomeEnum.Moderate,
+      outcome: OutcomeEnum.Weakest,
       topCount: 1,
       bottomCount: 1,
     },

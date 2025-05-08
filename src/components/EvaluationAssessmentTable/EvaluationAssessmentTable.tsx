@@ -11,7 +11,7 @@ export interface EvaluationRoundItem {
   assessmentName: string;
   score: number;
   lastActivity: string;
-  status: "Completed" | "In progress";
+  status: "평가 완료" | "평가 진행중";
   round: number;
   reportLink: string;
 }
@@ -21,7 +21,7 @@ const data: EvaluationRoundItem[] = [
     assessmentName: "Brute-force attack For Server",
     score: 29.58,
     lastActivity: "2024-07-05 14:25:31",
-    status: "Completed",
+    status: "평가 완료",
     round: 2,
     reportLink: "/round",
   },
@@ -29,7 +29,7 @@ const data: EvaluationRoundItem[] = [
     assessmentName: "Penetration to C-ITS Center",
     score: 29.58,
     lastActivity: "2024-07-05 14:25:31",
-    status: "In progress",
+    status: "평가 진행중",
     round: 2,
     reportLink: "/round",
   },
@@ -37,7 +37,7 @@ const data: EvaluationRoundItem[] = [
     assessmentName: "Command Execute to RSU",
     score: 29.58,
     lastActivity: "2024-07-05 14:25:31",
-    status: "Completed",
+    status: "평가 완료",
     round: 2,
     reportLink: "/round",
   },
@@ -45,7 +45,7 @@ const data: EvaluationRoundItem[] = [
     assessmentName: "APT28",
     score: 29.58,
     lastActivity: "2024-07-05 14:25:31",
-    status: "Completed",
+    status: "평가 완료",
     round: 2,
     reportLink: "/round",
   },
@@ -77,7 +77,7 @@ const columns: TableColumn<EvaluationRoundItem>[] = [
     render: (item: EvaluationRoundItem) => (
       <Tag
         label={item.status}
-        color={item.status === "Completed" ? "green" : "gray"}
+        color={item.status === "평가 완료" ? "green" : "gray"}
       />
     ),
   },

@@ -1,4 +1,3 @@
-// components/ResilienceChart.tsx
 "use client";
 
 import {
@@ -9,9 +8,11 @@ import {
   CategoryScale,
   Tooltip,
   Filler,
+  Title,
   ChartOptions,
   ChartData,
 } from "chart.js";
+import annotationPlugin from "chartjs-plugin-annotation";
 import { Line } from "react-chartjs-2";
 import { useEffect, useState } from "react";
 
@@ -21,27 +22,25 @@ ChartJS.register(
   PointElement,
   LineElement,
   Tooltip,
-  Filler
+  Filler,
+  Title,
+  annotationPlugin
 );
 
 const rawData = [
-  { month: "Jan-24", score: 10 },
-  { month: "Feb-24", score: 20 },
-  { month: "Mar-24", score: 30 },
-  { month: "Apr-24", score: 35 },
-  { month: "May-24", score: 40 },
-  { month: "Jun-24", score: 48 },
-  { month: "Jul-24", score: 53 },
-  { month: "Aug-24", score: 60 },
-  { month: "Sep-24", score: 65 },
-  { month: "Oct-24", score: 73 },
+  { runTime: new Date("2024-01-24"), score: 10 },
+  { runTime: new Date("2024-02-24"), score: 20 },
+  { runTime: new Date("2024-03-24"), score: 30 },
+  { runTime: new Date("2024-04-24"), score: 35 },
+  { runTime: new Date("2024-05-24"), score: 40 },
+  { runTime: new Date("2024-06-24"), score: 48 },
+  { runTime: new Date("2024-07-24"), score: 53 },
+  { runTime: new Date("2024-08-24"), score: 60 },
+  { runTime: new Date("2024-09-24"), score: 65 },
+  { runTime: new Date("2024-10-24"), score: 73 },
 ];
 
 const visibleIndices = new Set([1, 3, 5, 7]);
-
-const getCustomPointRadius = (index: number): number => {
-  return visibleIndices.has(index) ? 5 : 0;
-};
 
 export default function ResilienceChart() {
   const [height, setHeight] = useState<number>(400);
@@ -53,17 +52,20 @@ export default function ResilienceChart() {
     return () => window.removeEventListener("resize", updateHeight);
   }, []);
 
+  const labels = rawData.map((d) =>
+    d.runTime.toLocaleDateString("en-CA", { year: "numeric", month: "short" })
+  );
+
   const data: ChartData<"line"> = {
-    labels: rawData.map((d) => d.month),
+    labels,
     datasets: [
       {
         label: "Resilience Score",
         data: rawData.map((d) => d.score),
         borderColor: "#5fa8f6",
         backgroundColor: "#5fa8f6",
-        pointRadius: rawData.map((_, idx) => getCustomPointRadius(idx)),
-        pointHoverRadius: rawData.map((_, idx) => getCustomPointRadius(idx)),
-        pointHitRadius: rawData.map((_, idx) => getCustomPointRadius(idx)),
+        pointRadius: rawData.map((_, i) => (visibleIndices.has(i) ? 4 : 0)),
+        pointHoverRadius: 5,
         borderWidth: 2,
         fill: false,
         tension: 0.4,
@@ -74,14 +76,44 @@ export default function ResilienceChart() {
   const options: ChartOptions<"line"> = {
     responsive: true,
     maintainAspectRatio: false,
-    interaction: {
-      mode: "nearest",
-      axis: "x",
-      intersect: false,
-    },
     plugins: {
       tooltip: {
-        filter: (tooltipItem) => visibleIndices.has(tooltipItem.dataIndex),
+        filter: (item) => visibleIndices.has(item.dataIndex),
+      },
+      annotation: {
+        annotations: Object.fromEntries(
+          Array.from(visibleIndices).map((idx) => [
+            `label-${idx}`,
+            {
+              type: "label",
+              xValue: labels[idx],
+              yValue: rawData[idx].score,
+              backgroundColor: "#fff",
+              // borderColor: "#fff",
+              borderWidth: 1,
+              cornerRadius: 4,
+              font: {
+                size: 12,
+                weight: "bold",
+              },
+              padding: 8,
+              content: [
+                `${(idx + 1) / 2}회차 ${rawData[idx].runTime.toLocaleString(
+                  "en-CA"
+                )}`,
+                `Score : ${rawData[idx].score}`,
+              ],
+              yAdjust: -30,
+              textAlign: "center",
+              // color: "white",
+              // callout: {
+              //   display: true,
+              //   position: "bottom",
+              //   borderColor: "#5fa8f6",
+              // },
+            },
+          ])
+        ),
       },
     },
     scales: {

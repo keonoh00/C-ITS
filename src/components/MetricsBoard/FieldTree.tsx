@@ -12,33 +12,22 @@ interface FieldItem {
 const fieldsData: FieldItem[] = [
   {
     title: "Campaigns",
-    count: 250,
+    count: 52,
   },
   {
     title: "Passed",
-    count: 250,
+    count: 14,
     children: [
-      { title: "Blocked", count: 14 },
-      { title: "N/A", count: 14 },
-      { title: "Alerted", count: 204 },
+      { title: "Blocked", count: 0 },
+      { title: "Alert", count: 14 },
     ],
   },
   {
     title: "Failed",
-    count: 170,
+    count: 38,
     children: [
-      { title: "Blocked", count: 14 },
-      { title: "N/A", count: 14 },
-      { title: "Alerted", count: 204 },
-    ],
-  },
-  {
-    title: "To Be Determined",
-    count: 44,
-    children: [
-      { title: "Blocked", count: 14 },
-      { title: "N/A", count: 14 },
-      { title: "Alerted", count: 204 },
+      { title: "Logged", count: 12 },
+      { title: "None", count: 26 },
     ],
   },
 ];
@@ -86,10 +75,12 @@ export default function FieldTree() {
                       color={
                         child.title === "Blocked"
                           ? "blue"
-                          : child.title === "N/A"
-                          ? "black"
-                          : child.title === "Alerted"
+                          : child.title === "None"
+                          ? "red"
+                          : child.title === "Alert"
                           ? "green"
+                          : child.title === "Logged"
+                          ? "orange"
                           : "gray"
                       }
                     />
