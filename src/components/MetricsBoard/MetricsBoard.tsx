@@ -4,12 +4,19 @@ import React from "react";
 import ThreatPieChart from "./ThreatPieChart";
 import DefenseScenarioBarChart from "./DefenseScenarioBarChart";
 import FieldTree from "./FieldTree";
+import { getFieldTreeData, getMetriciesData } from "./data";
 
 interface MetricsBoardProps {
   score: number;
+  round: string;
 }
 
-const MetricsBoard: React.FC<MetricsBoardProps> = ({ score }) => {
+const MetricsBoard: React.FC<MetricsBoardProps> = ({ score, round }) => {
+  const metriciesData = getMetriciesData(round);
+  const fieldTreeData = getFieldTreeData(round);
+
+  console.log(metriciesData);
+
   return (
     <div className="flex flex-col gap-6 text-lg">
       {/* Top Section */}
@@ -18,7 +25,7 @@ const MetricsBoard: React.FC<MetricsBoardProps> = ({ score }) => {
         <div className="bg-base-800 p-4 rounded-md flex-1 min-w-[300px]">
           <div className="bg-base-800 p-4 rounded-md flex-1 min-w-[300px] space-y-5">
             <div className="font-bold text-white mb-4">Field</div>
-            <FieldTree />
+            <FieldTree data={fieldTreeData} />
           </div>
         </div>
 
@@ -27,7 +34,7 @@ const MetricsBoard: React.FC<MetricsBoardProps> = ({ score }) => {
           <h1 className="font-bold">
             Threat Resillence Metric (Score: {score})
           </h1>
-          <ThreatPieChart />
+          <ThreatPieChart data={metriciesData} />
         </div>
       </div>
 
@@ -39,7 +46,7 @@ const MetricsBoard: React.FC<MetricsBoardProps> = ({ score }) => {
             Scenario Blocked and detected test case for Defense Scenario
           </p>
         </div>
-        <DefenseScenarioBarChart />
+        <DefenseScenarioBarChart data={metriciesData} />
       </div>
     </div>
   );

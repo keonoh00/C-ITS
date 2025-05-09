@@ -9,30 +9,11 @@ interface FieldItem {
   children?: FieldItem[];
 }
 
-const fieldsData: FieldItem[] = [
-  {
-    title: "Campaigns",
-    count: 52,
-  },
-  {
-    title: "Passed",
-    count: 14,
-    children: [
-      { title: "Blocked", count: 0 },
-      { title: "Alert", count: 14 },
-    ],
-  },
-  {
-    title: "Failed",
-    count: 38,
-    children: [
-      { title: "Logged", count: 12 },
-      { title: "None", count: 26 },
-    ],
-  },
-];
+interface FieldTreeProps {
+  data: FieldItem[];
+}
 
-export default function FieldTree() {
+export default function FieldTree({ data }: FieldTreeProps) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   const toggleExpand = (title: string) => {
@@ -44,7 +25,7 @@ export default function FieldTree() {
 
   return (
     <div className="flex flex-col gap-2">
-      {fieldsData.map((field, idx) => (
+      {data.map((field, idx) => (
         <div key={idx}>
           <div
             onClick={() => field.children && toggleExpand(field.title)}

@@ -12,7 +12,7 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import React from "react";
-import { DataEntry, metriciesData } from "./data";
+import { DataEntry } from "./data";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
@@ -24,17 +24,6 @@ const COLORS: Record<keyof Omit<DataEntry, "name">, string> = {
 };
 
 const keys = ["None", "Logged", "Alert", "Block"] as const;
-
-const chartData: ChartData<"bar"> = {
-  labels: metriciesData.map((d) => d.name),
-  datasets: keys.map((key) => ({
-    label: key,
-    data: metriciesData.map((d) => (d[key] === 0 ? null : d[key])),
-    backgroundColor: COLORS[key],
-    stack: "defense",
-    barThickness: 200, // ← Add this
-  })),
-};
 
 const options: ChartOptions<"bar"> = {
   responsive: true,
@@ -81,7 +70,21 @@ const options: ChartOptions<"bar"> = {
   },
 };
 
-export default function DefenseScenarioBarChart() {
+export default function DefenseScenarioBarChart({
+  data,
+}: {
+  data: DataEntry[];
+}) {
+  const chartData: ChartData<"bar"> = {
+    labels: data.map((d) => d.name),
+    datasets: keys.map((key) => ({
+      label: key,
+      data: data.map((d) => (d[key] === 0 ? null : d[key])),
+      backgroundColor: COLORS[key],
+      stack: "defense",
+      barThickness: 200, // ← Add this
+    })),
+  };
   return (
     <div className="w-full h-[400px] bg-white p-4 rounded-md">
       <Bar data={chartData} options={options} />

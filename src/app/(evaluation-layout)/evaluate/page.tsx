@@ -78,6 +78,7 @@ export default function Evaluate() {
             score={
               resilienceData.find((val) => val.round === round)?.score || 0
             }
+            round={round}
           />
         )}
 
