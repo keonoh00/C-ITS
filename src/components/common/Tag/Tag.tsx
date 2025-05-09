@@ -1,37 +1,6 @@
 import React from "react";
 
-interface TagProps extends React.HTMLAttributes<HTMLSpanElement> {
-  label: string;
-  color?:
-    | "blue"
-    | "green"
-    | "red"
-    | "gray"
-    | "purple"
-    | "yellow"
-    | "indigo"
-    | "pink"
-    | "teal"
-    | "orange"
-    | "cyan"
-    | "lime"
-    | "amber"
-    | "stone"
-    | "sky"
-    | "emerald"
-    | "rose"
-    | "violet"
-    | "zinc"
-    | "neutral"
-    | "slate"
-    | "black"
-    | "white"
-    | "fuchsia"
-    | "brown";
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
-}
-
-const COLOR_MAP: Record<string, string> = {
+export const TAG_COLOR_MAP: Record<string, string> = {
   blue: "#3B82F6",
   green: "#10B981",
   red: "#EF4444",
@@ -59,6 +28,12 @@ const COLOR_MAP: Record<string, string> = {
   brown: "#92400E",
 };
 
+interface TagProps extends React.HTMLAttributes<HTMLSpanElement> {
+  label: string;
+  color?: keyof typeof TAG_COLOR_MAP;
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
+}
+
 const SIZE_MAP: Record<string, { fontSize: string; padding: string }> = {
   xs: { fontSize: "10px", padding: "2px 6px" },
   sm: { fontSize: "11px", padding: "3px 8px" },
@@ -74,7 +49,7 @@ export const Tag: React.FC<TagProps> = ({
   style = {},
   ...rest
 }) => {
-  const background = COLOR_MAP[color] ?? COLOR_MAP.gray;
+  const background = TAG_COLOR_MAP[color] ?? TAG_COLOR_MAP.gray;
   const sizeStyle = SIZE_MAP[size] ?? SIZE_MAP.md;
 
   return (
