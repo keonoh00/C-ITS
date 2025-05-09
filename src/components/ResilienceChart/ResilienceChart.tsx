@@ -132,7 +132,7 @@ export default function ResilienceChart() {
               second: "numeric",
             }
           );
-          return [`${idx + 1}회차 ${timestamp}`, `Score : ${value}`];
+          return [`${idx}회차 ${timestamp}`, `Score : ${value}`];
         },
       },
     },
