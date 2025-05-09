@@ -2,8 +2,8 @@
 
 import React, { useMemo, useRef, useState, useEffect } from "react";
 import {
+  getTacticTree,
   HeatmapEvaluationFramework,
-  OutcomeEnum,
   Tactic,
   Technique,
 } from "./tacticsData";
@@ -54,119 +54,21 @@ function replaceTechniquesByIds(
   }));
 }
 
-const Replace1 = [
-  {
-    id: "T1018",
-    newTechnique: {
-      id: "T1018",
-      outcome: OutcomeEnum.Weakest,
-      topCount: 2,
-      bottomCount: 2,
-    },
-  },
-  {
-    id: "T1021",
-    newTechnique: {
-      id: "T1021",
-      outcome: OutcomeEnum.Moderate,
-      topCount: 4,
-      bottomCount: 4,
-    },
-  },
-  {
-    id: "T1569",
-    newTechnique: {
-      id: "T1569",
-      outcome: OutcomeEnum.Moderate,
-      topCount: 3,
-      bottomCount: 3,
-    },
-  },
-  {
-    id: "T1087",
-    newTechnique: {
-      id: "T1087",
-      outcome: OutcomeEnum.Weakest,
-      topCount: 1,
-      bottomCount: 1,
-    },
-  },
-  {
-    id: "T1003",
-    newTechnique: {
-      id: "T1003",
-      outcome: OutcomeEnum.Minimal,
-      topCount: 2,
-      bottomCount: 2,
-    },
-  },
-  {
-    id: "T1110",
-    newTechnique: {
-      id: "T1110",
-      outcome: OutcomeEnum.Minimal,
-      topCount: 1,
-      bottomCount: 1,
-    },
-  },
-];
-
-const Replace2 = [
-  {
-    id: "T1018",
-    newTechnique: {
-      id: "T1018",
-      outcome: OutcomeEnum.Weakest,
-      topCount: 2,
-      bottomCount: 2,
-    },
-  },
-  {
-    id: "T1021",
-    newTechnique: {
-      id: "T1021",
-      outcome: OutcomeEnum.Moderate,
-      topCount: 4,
-      bottomCount: 4,
-    },
-  },
-  {
-    id: "T1569",
-    newTechnique: {
-      id: "T1569",
-      outcome: OutcomeEnum.Moderate,
-      topCount: 3,
-      bottomCount: 3,
-    },
-  },
-  {
-    id: "T1087",
-    newTechnique: {
-      id: "T1087",
-      outcome: OutcomeEnum.Weakest,
-      topCount: 1,
-      bottomCount: 1,
-    },
-  },
-  {
-    id: "T1003",
-    newTechnique: {
-      id: "T1003",
-      outcome: OutcomeEnum.Moderate,
-      topCount: 2,
-      bottomCount: 2,
-    },
-  },
-  {
-    id: "T1110",
-    newTechnique: {
-      id: "T1110",
-      outcome: OutcomeEnum.Moderate,
-      topCount: 1,
-      bottomCount: 1,
-    },
-  },
-];
+function flattenTacticTree(
+  tactics: Tactic[]
+): { id: string; newTechnique: Partial<Technique> }[] {
+  return tactics.flatMap((tactic) =>
+    tactic.techniques.map((tech) => ({
+      id: tech.id,
+      newTechnique: {
+        id: tech.id,
+        outcome: tech.outcome,
+        topCount: tech.topCount,
+        bottomCount: tech.bottomCount,
+      },
+    }))
+  );
+}
 
 export default function HeatmapBoard({
   selectedTactic,
@@ -176,18 +78,9 @@ export default function HeatmapBoard({
 }: HeatmapBoardProps) {
   const tacticsData: Tactic[] = useMemo(() => {
     const original = frameworkMap[framework] ?? [];
+    const replacements = flattenTacticTree(getTacticTree(round));
 
-    // Dummy replacement (you can later replace this with actual input)
-    const dummyReplaced = replaceTechniquesByIds(
-      original,
-      round == "Penetration to C-ITS Center (Q2)"
-        ? Replace1
-        : round == "Penetration to C-ITS Center (Q4)"
-        ? Replace2
-        : []
-    );
-
-    return dummyReplaced;
+    return replaceTechniquesByIds(original, replacements);
   }, [framework, round]);
 
   const filteredTactics: Tactic[] = useMemo(() => {
