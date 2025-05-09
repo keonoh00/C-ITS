@@ -30,13 +30,33 @@ ChartJS.register(
   ChartDataLabels
 );
 
-const rawData = [
-  { runTime: new Date("2024-08-02T08:25:34"), score: 0 },
-  { runTime: new Date("2024-08-02T10:25:34"), score: 0 },
-  { runTime: new Date("2024-08-02T11:17:26"), score: 0 },
-  { runTime: new Date("2024-08-02T13:42:32"), score: 50 },
-  { runTime: new Date("2024-08-02T16:17:45"), score: 66 },
-  { runTime: new Date("2024-08-02T18:17:45"), score: 66 },
+export const resilienceData = [
+  { runTime: new Date("2024-08-02T08:25:34"), score: 0, round: "" },
+  {
+    runTime: new Date("2024-08-02T10:25:34"),
+    score: 0,
+    round: "Penetration to C-ITS Center (Q1)",
+  },
+  {
+    runTime: new Date("2024-08-02T11:17:26"),
+    score: 0,
+    round: "Penetration to C-ITS Center (Q2)",
+  },
+  {
+    runTime: new Date("2024-08-02T13:42:32"),
+    score: 50,
+    round: "Penetration to C-ITS Center (Q3)",
+  },
+  {
+    runTime: new Date("2024-08-02T16:17:45"),
+    score: 66,
+    round: "Penetration to C-ITS Center (Q4)",
+  },
+  {
+    runTime: new Date("2024-08-02T18:17:45"),
+    score: 66,
+    round: "All Selected (4)",
+  },
 ];
 
 const visibleIndices = new Set<number>([1, 2, 3, 4]);
@@ -51,7 +71,7 @@ export default function ResilienceChart() {
     return () => window.removeEventListener("resize", updateHeight);
   }, []);
 
-  const labels = rawData.map((d) =>
+  const labels = resilienceData.map((d) =>
     d.runTime.toLocaleDateString("en-CA", {
       year: "numeric",
       month: "short",
@@ -63,11 +83,13 @@ export default function ResilienceChart() {
     datasets: [
       {
         label: "Resilience Score",
-        data: rawData.map((d) => d.score),
+        data: resilienceData.map((d) => d.score),
         borderColor: "#5fa8f6",
         backgroundColor: "#5fa8f6",
         borderWidth: 2,
-        pointRadius: rawData.map((_, idx) => (visibleIndices.has(idx) ? 4 : 0)),
+        pointRadius: resilienceData.map((_, idx) =>
+          visibleIndices.has(idx) ? 4 : 0
+        ),
         pointHoverRadius: 5,
         tension: 0,
       },
@@ -78,6 +100,13 @@ export default function ResilienceChart() {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
+      legend: {
+        align: "center",
+        labels: {
+          color: "#000",
+          font: { size: 18 },
+        },
+      },
       datalabels: {
         align: "top",
         anchor: "end",
@@ -86,31 +115,34 @@ export default function ResilienceChart() {
         color: "white",
         padding: 6,
         font: {
-          size: 12,
+          size: 16,
           weight: "bold",
         },
         display: (ctx: DataLabelContext) => visibleIndices.has(ctx.dataIndex),
         formatter: (value: number, context: DataLabelContext): string[] => {
           const idx = context.dataIndex;
-          const timestamp = rawData[idx].runTime.toLocaleString("ko-KR", {
-            year: "numeric",
-            month: "numeric",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            second: "numeric",
-          });
+          const timestamp = resilienceData[idx].runTime.toLocaleString(
+            "ko-KR",
+            {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+              second: "numeric",
+            }
+          );
           return [`${idx + 1}회차 ${timestamp}`, `Score : ${value}`];
         },
       },
     },
     scales: {
       x: {
-        ticks: { color: "#aaa" },
+        ticks: { color: "#444", font: { size: 16, weight: 600 } },
         grid: { color: "#444" },
       },
       y: {
-        ticks: { color: "#aaa" },
+        ticks: { color: "#444" },
         grid: { color: "#444" },
       },
     },

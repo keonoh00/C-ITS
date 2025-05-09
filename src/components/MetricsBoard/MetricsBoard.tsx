@@ -5,9 +5,13 @@ import ThreatPieChart from "./ThreatPieChart";
 import DefenseScenarioBarChart from "./DefenseScenarioBarChart";
 import FieldTree from "./FieldTree";
 
-export default function MetricsBoard() {
+interface MetricsBoardProps {
+  score: number;
+}
+
+const MetricsBoard: React.FC<MetricsBoardProps> = ({ score }) => {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 text-lg">
       {/* Top Section */}
       <div className="flex flex-wrap gap-6">
         {/* Left: Field Tree */}
@@ -20,7 +24,9 @@ export default function MetricsBoard() {
 
         {/* Right: Pie Chart */}
         <div className="bg-base-800 p-4 rounded-md flex-1 min-w-[300px] space-y-5">
-          <h1 className="font-bold">Threat Resillence</h1>
+          <h1 className="font-bold">
+            Threat Resillence Metric (Score: {score})
+          </h1>
           <ThreatPieChart />
         </div>
       </div>
@@ -29,7 +35,7 @@ export default function MetricsBoard() {
       <div className="bg-base-800 p-4 rounded-md space-y-5">
         <div>
           <h1 className="font-bold">Statistics by Defense</h1>
-          <p className="text-neutral-400 text-sm">
+          <p className="text-neutral-400 text-md">
             Scenario Blocked and detected test case for Defense Scenario
           </p>
         </div>
@@ -37,4 +43,6 @@ export default function MetricsBoard() {
       </div>
     </div>
   );
-}
+};
+
+export default MetricsBoard;

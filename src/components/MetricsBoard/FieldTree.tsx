@@ -56,9 +56,9 @@ export default function FieldTree() {
                   {expanded[field.title] ? "▾" : "▸"}
                 </span>
               )}
-              <span className="text-sm text-white">{field.title}</span>
+              <span className="text-md text-white">{field.title}</span>
             </div>
-            <span className="text-sm text-white font-bold">{field.count}</span>
+            <span className="text-md text-white font-bold">{field.count}</span>
           </div>
 
           {/* Expand Children */}
@@ -67,11 +67,12 @@ export default function FieldTree() {
               {field.children.map((child, cIdx) => (
                 <div
                   key={cIdx}
-                  className="flex items-center justify-between text-sm text-neutral-300"
+                  className="flex items-center justify-between text-md text-neutral-300"
                 >
                   <div className="flex items-center gap-2">
                     <Tag
                       label={child.title}
+                      size="lg"
                       color={
                         child.title === "Blocked"
                           ? "blue"

@@ -4,7 +4,9 @@ import FilterBar from "@/components/FilterBar/FilterBar";
 import HeatmapBoard, {
   frameworkMap,
 } from "@/components/HeatmapBoard/HeatmapBoard";
-import ResilienceChart from "@/components/ResilienceChart/ResilienceChart";
+import ResilienceChart, {
+  resilienceData,
+} from "@/components/ResilienceChart/ResilienceChart";
 import MetricsBoard from "@/components/MetricsBoard/MetricsBoard"; // 🔥 New one
 import React, { useState } from "react";
 import DrillDownTable from "@/components/DrilldownReportTable/DrilldownReportTable";
@@ -71,7 +73,13 @@ export default function Evaluate() {
 
         {reportType === "Resilience Trending" && <ResilienceChart />}
 
-        {reportType === "Metrics" && <MetricsBoard />}
+        {reportType === "Metrics" && (
+          <MetricsBoard
+            score={
+              resilienceData.find((val) => val.round === round)?.score || 0
+            }
+          />
+        )}
 
         {reportType === "Drilldown Report" && <DrillDownTable />}
       </div>

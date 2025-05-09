@@ -9,22 +9,10 @@ import {
   ChartOptions,
 } from "chart.js";
 import { Pie } from "react-chartjs-2";
+import ChartDataLabels from "chartjs-plugin-datalabels"; // import plugin
 import { metriciesData } from "./data";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
-
-// const data = {
-//   labels: ["Blocked", "Alerted", "Logged", "None"],
-//   datasets: [
-//     {
-//       label: "Threat Ratio",
-//       data: [32.6, 23.9, 18.9, 24.6],
-//       backgroundColor: ["#4287f5", "#50c878", "#f5a142", "#f54242"],
-//       borderColor: "#fff",
-//       borderWidth: 1,
-//     },
-//   ],
-// };
+ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels); // register it
 
 const totals = metriciesData.reduce(
   (acc, entry) => {
@@ -40,7 +28,11 @@ const totals = metriciesData.reduce(
 const totalSum = totals.Blocked + totals.Alerted + totals.Logged + totals.None;
 
 const toPercent = (value: number) =>
-  totalSum === 0 ? 0 : parseFloat(((value / totalSum) * 100).toFixed(1));
+  totalSum === 0
+    ? 0
+    : value === 0
+    ? null
+    : parseFloat(((value / totalSum) * 100).toFixed(1));
 
 const data = {
   labels: ["Blocked", "Alerted", "Logged", "None"],
@@ -59,6 +51,7 @@ const data = {
     },
   ],
 };
+
 const options: ChartOptions<"pie"> = {
   responsive: true,
   maintainAspectRatio: false,
@@ -68,7 +61,7 @@ const options: ChartOptions<"pie"> = {
       align: "center",
       labels: {
         color: "#000",
-        font: { size: 12 },
+        font: { size: 18 },
       },
     },
     tooltip: {
@@ -77,6 +70,14 @@ const options: ChartOptions<"pie"> = {
       bodyColor: "#fff",
       borderColor: "#333",
       borderWidth: 1,
+    },
+    datalabels: {
+      color: "#fff",
+      font: {
+        size: 16,
+        weight: "bold",
+      },
+      formatter: (value) => (value ? `${value}%` : ""),
     },
   },
 };

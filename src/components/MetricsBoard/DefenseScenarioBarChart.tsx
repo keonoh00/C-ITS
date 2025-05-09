@@ -29,9 +29,10 @@ const chartData: ChartData<"bar"> = {
   labels: metriciesData.map((d) => d.name),
   datasets: keys.map((key) => ({
     label: key,
-    data: metriciesData.map((d) => d[key]),
+    data: metriciesData.map((d) => (d[key] === 0 ? null : d[key])),
     backgroundColor: COLORS[key],
     stack: "defense",
+    barThickness: 200, // ← Add this
   })),
 };
 
@@ -42,7 +43,7 @@ const options: ChartOptions<"bar"> = {
     legend: {
       labels: {
         color: "#333",
-        font: { size: 12 },
+        font: { size: 16, weight: 600 },
       },
     },
     tooltip: {
@@ -51,11 +52,19 @@ const options: ChartOptions<"bar"> = {
       bodyColor: "#fff",
       borderColor: "transparent",
     },
+    datalabels: {
+      color: "#fff",
+      font: {
+        size: 16,
+        weight: "bold",
+      },
+    },
   },
+
   scales: {
     x: {
       stacked: true,
-      ticks: { color: "#666" },
+      ticks: { color: "#666", font: { size: 16, weight: 800 } },
       grid: { display: false },
     },
     y: {
@@ -63,6 +72,7 @@ const options: ChartOptions<"bar"> = {
       ticks: {
         color: "#666",
         precision: 0,
+        font: { size: 16 },
       },
       grid: {
         color: "#aaa",
