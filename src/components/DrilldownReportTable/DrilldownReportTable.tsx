@@ -26,13 +26,19 @@ uniqueOutcomes.forEach((outcome, index) => {
   OUTCOME_COLOR_MAP[outcome] = TAG_COLOR_KEYS[index % TAG_COLOR_KEYS.length];
 });
 
-export default function DrillDownTable() {
+interface DrillDownTableProps {
+  round: string;
+}
+
+export default function DrillDownTable({ round }: DrillDownTableProps) {
   const [query, setQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 10;
-  const filteredData = drillDownData.filter((item) =>
-    item.testCase.toLowerCase().includes(query.toLowerCase())
-  );
+  const filteredData = drillDownData
+    .filter((item) => item.testCase.toLowerCase().includes(query.toLowerCase()))
+    .filter((item) =>
+      round.startsWith("All Selected") ? true : item.phase === round
+    );
   const totalPages = Math.ceil(filteredData.length / pageSize);
   const paginatedData = filteredData.slice(
     (currentPage - 1) * pageSize,

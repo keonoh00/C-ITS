@@ -81,7 +81,7 @@ export default function Evaluate() {
           />
         )}
 
-        {reportType === "Drilldown Report" && <DrillDownTable />}
+        {reportType === "Drilldown Report" && <DrillDownTable round={round} />}
       </div>
     </div>
   );
