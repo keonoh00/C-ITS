@@ -24,7 +24,7 @@ const IMPACT_ORDER: Record<SeverityEnum, number> = {
   [SeverityEnum.NoTestCoverage]: 0,
 };
 
-const PASS_SET = new Set(["blocked", "alert"]);
+const PASSED_OUTCOMES = new Set(["blocked", "alert"]);
 
 export const frameworkMap: Record<HeatmapEvaluationFramework, RawTactic[]> = {
   [HeatmapEvaluationFramework.ENTERPRISE]: tacticsDataEnterprise,
@@ -33,28 +33,28 @@ export const frameworkMap: Record<HeatmapEvaluationFramework, RawTactic[]> = {
 };
 
 // -------------------- Helpers --------------------
-const getRoundFilteredData = (round: string) =>
+const getFilteredResultsByRound = (round: string) =>
   round.startsWith("All")
     ? testedResults
     : testedResults.filter((item) => item.phase === round);
 
-const normalizeTactic = (t: string) =>
-  t.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+const normalizeTacticLabel = (label: string) =>
+  label.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
-const normalizeTechniqueId = (id: string) => id.split(".")[0];
+const extractTechniqueId = (techniqueId: string) => techniqueId.split(".")[0];
 
-const isPassed = (outcome: string): boolean =>
-  PASS_SET.has(outcome.toLowerCase());
+const isPassedOutcome = (outcome: string): boolean =>
+  PASSED_OUTCOMES.has(outcome.toLowerCase());
 
 const normalizeOutcome = (outcome: string): OutcomeType => {
-  const o = outcome.toLowerCase();
-  if (o === "blocked" || o === "block") return "Block";
-  if (o === "alert" || o === "alerted") return "Alert";
-  if (o === "logged") return "Logged";
+  const normalized = outcome.toLowerCase();
+  if (normalized === "blocked" || normalized === "block") return "Block";
+  if (normalized === "alert" || normalized === "alerted") return "Alert";
+  if (normalized === "logged") return "Logged";
   return "None";
 };
 
-const mapToSeverityEnum = (outcome: string): SeverityEnum => {
+const mapOutcomeToSeverity = (outcome: string): SeverityEnum => {
   switch (normalizeOutcome(outcome)) {
     case "Block":
     case "Alert":
@@ -67,100 +67,92 @@ const mapToSeverityEnum = (outcome: string): SeverityEnum => {
   }
 };
 
-const mapPercentageToSeverity = (
-  percent: number,
+const mapPassPercentageToSeverity = (
+  percentage: number,
   total: number
 ): SeverityEnum => {
   if (total === 0) return SeverityEnum.NoTestCoverage;
-  if (percent <= 20) return SeverityEnum.Weakest;
-  if (percent <= 40) return SeverityEnum.Minimal;
-  if (percent <= 60) return SeverityEnum.Lower;
-  if (percent <= 80) return SeverityEnum.Moderate;
+  if (percentage <= 20) return SeverityEnum.Weakest;
+  if (percentage <= 40) return SeverityEnum.Minimal;
+  if (percentage <= 60) return SeverityEnum.Lower;
+  if (percentage <= 80) return SeverityEnum.Moderate;
   return SeverityEnum.Strong;
 };
 
-// -------------------- Core Tactic Tree Computation --------------------
+// -------------------- Tactic Evaluation --------------------
 const getTacticTree = (round: string): Tactic[] => {
-  const filtered = getRoundFilteredData(round);
+  const filteredResults = getFilteredResultsByRound(round);
 
-  const tacticMap = new Map<
+  const tacticGroupMap = new Map<
     string,
     Map<
       string,
       {
         name: string;
-        _pass: number;
-        _total: number;
-        _sub: SubTechnique[];
+        passed: number;
+        total: number;
+        subtechniques: SubTechnique[];
       }
     >
   >();
 
-  for (const item of filtered) {
-    const tactic = normalizeTactic(item.tactic);
-    const fullId = item.techniqueId;
-    const parentId = normalizeTechniqueId(fullId);
-    const passed = isPassed(item.outcome) ? 1 : 0;
-    const severity = mapToSeverityEnum(item.outcome);
+  for (const item of filteredResults) {
+    const tacticName = normalizeTacticLabel(item.tactic);
+    const fullTechniqueId = item.techniqueId;
+    const rootTechniqueId = extractTechniqueId(fullTechniqueId);
+    const passed = isPassedOutcome(item.outcome) ? 1 : 0;
+    const severity = mapOutcomeToSeverity(item.outcome);
 
-    if (!tacticMap.has(tactic)) {
-      tacticMap.set(tactic, new Map());
+    if (!tacticGroupMap.has(tacticName)) {
+      tacticGroupMap.set(tacticName, new Map());
     }
 
-    const techMap = tacticMap.get(tactic)!;
-
-    if (!techMap.has(parentId)) {
-      techMap.set(parentId, {
+    const techniqueMap = tacticGroupMap.get(tacticName)!;
+    if (!techniqueMap.has(rootTechniqueId)) {
+      techniqueMap.set(rootTechniqueId, {
         name: item.technique,
-        _pass: 0,
-        _total: 0,
-        _sub: [],
+        passed: 0,
+        total: 0,
+        subtechniques: [],
       });
     }
 
-    const tech = techMap.get(parentId)!;
-    tech._pass += passed;
-    tech._total += 1;
-
-    tech._sub.push({
-      id: fullId + "-" + tech._sub.length,
+    const technique = techniqueMap.get(rootTechniqueId)!;
+    technique.passed += passed;
+    technique.total += 1;
+    technique.subtechniques.push({
+      id: `${fullTechniqueId}-${technique.subtechniques.length}`,
       name: item.testCase,
       severity,
       description: item.testCase,
     });
   }
 
-  const result: Tactic[] = [];
-
-  for (const [tacticName, techMap] of tacticMap.entries()) {
-    const techniques: Technique[] = [];
-
-    for (const [techId, data] of techMap.entries()) {
-      const score =
-        data._total > 0 ? +((data._pass / data._total) * 100).toFixed(1) : 0;
-
-      techniques.push({
-        id: techId,
-        name: data.name,
-        resilienceScore: score,
-        severity: mapPercentageToSeverity(score, data._total),
-        topCount: data._pass,
-        bottomCount: data._total,
-        subtechniques: data._sub,
-      });
-    }
-
-    result.push({ name: tacticName, techniques });
-  }
-
-  return result;
+  return Array.from(tacticGroupMap.entries()).map(
+    ([tacticName, techniqueMap]) => ({
+      name: tacticName,
+      techniques: Array.from(techniqueMap.entries()).map(([techId, data]) => {
+        const score =
+          data.total > 0 ? +((data.passed / data.total) * 100).toFixed(1) : 0;
+        return {
+          id: techId,
+          name: data.name,
+          resilienceScore: score,
+          severity: mapPassPercentageToSeverity(score, data.total),
+          topCount: data.passed,
+          bottomCount: data.total,
+          subtechniques: data.subtechniques,
+        };
+      }),
+    })
+  );
 };
 
-// -------------------- Utilities --------------------
-function flattenTacticTree(
-  tactics: Tactic[]
+// -------------------- Replacement Mapping --------------------
+function extractTechniqueReplacements(
+  evaluated: Tactic[]
 ): { id: string; newTechnique: Partial<Technique> }[] {
-  return tactics.flatMap((tactic) =>
+  return evaluated.flatMap((tactic) =>
     tactic.techniques.map((tech) => ({
       id: tech.id,
       newTechnique: {
@@ -173,19 +165,17 @@ function flattenTacticTree(
   );
 }
 
-function replaceTechniquesByIds(
-  data: RawTactic[],
+function applyTechniqueReplacements(
+  baseFramework: RawTactic[],
   replacements: { id: string; newTechnique: Partial<Technique> }[]
 ): RawTactic[] {
-  if (!replacements || replacements.length < 1) return data;
-  const replacementMap = new Map(
-    replacements.map((r) => [r.id, r.newTechnique])
-  );
+  if (!replacements.length) return baseFramework;
+  const map = new Map(replacements.map((r) => [r.id, r.newTechnique]));
 
-  return data.map((tactic) => ({
+  return baseFramework.map((tactic) => ({
     ...tactic,
     techniques: tactic.techniques.map((tech) => {
-      const replacement = replacementMap.get(tech.id);
+      const replacement = map.get(tech.id);
       return replacement
         ? {
             ...tech,
@@ -197,7 +187,8 @@ function replaceTechniquesByIds(
   }));
 }
 
-// -------------------- Combined Data Entry Point --------------------
+// -------------------- Exported Functions --------------------
+
 export function getProcessedTacticsData(
   round: string,
   framework: HeatmapEvaluationFramework,
@@ -205,32 +196,19 @@ export function getProcessedTacticsData(
   selectedTactic: string
 ): Tactic[] {
   const baseFramework = frameworkMap[framework] ?? [];
-  const evaluated = getTacticTree(round); // Tactic[]
-  const replacements = flattenTacticTree(evaluated);
-  const updatedRaw = replaceTechniquesByIds(baseFramework, replacements); // RawTactic[]
-  const selectedUpdatedRaw = selectedTactic.startsWith("All")
-    ? updatedRaw
-    : updatedRaw.filter((item) => item.name === selectedTactic);
+  const evaluatedTree = getTacticTree(round);
+  const replacements = extractTechniqueReplacements(evaluatedTree);
+  const updatedFramework = applyTechniqueReplacements(
+    baseFramework,
+    replacements
+  );
 
-  // Convert RawTactic[] to Tactic[]
-  const converted: Tactic[] = selectedUpdatedRaw.map((t) => ({
-    name: t.name,
-    techniques: t.techniques.map((tech) => {
-      return {
-        id: tech.id,
-        name: tech.name,
-        resilienceScore: Math.round((tech.topCount / tech.bottomCount) * 100),
-        severity: tech.severity ?? SeverityEnum.NoTestCoverage,
-        topCount: tech.topCount ?? 0,
-        bottomCount: tech.bottomCount ?? 0,
-        subtechniques: tech.subtechniques ?? [],
-      };
-    }),
-  }));
+  const relevantTactics = selectedTactic.startsWith("All")
+    ? updatedFramework
+    : updatedFramework.filter((t) => t.name === selectedTactic);
 
-  // Sort techniques in each tactic
-  return converted.map((tactic) => {
-    const sorted = [...tactic.techniques].sort((a, b) => {
+  return relevantTactics.map((t) => {
+    const sortedTechniques = [...t.techniques].sort((a, b) => {
       if (sortType === "ALPHABETICAL") {
         return a.name.localeCompare(b.name);
       }
@@ -241,23 +219,31 @@ export function getProcessedTacticsData(
       return bImpact - aImpact;
     });
 
-    return { ...tactic, techniques: sorted };
+    return {
+      name: t.name,
+      techniques: sortedTechniques.map((tech) => ({
+        id: tech.id,
+        name: tech.name,
+        resilienceScore: Math.round((tech.topCount / tech.bottomCount) * 100),
+        severity: tech.severity ?? SeverityEnum.NoTestCoverage,
+        topCount: tech.topCount ?? 0,
+        bottomCount: tech.bottomCount ?? 0,
+        subtechniques: tech.subtechniques ?? [],
+      })),
+    };
   });
 }
 
 export function getMetricData(round: string): MetricItem[] {
-  const filtered = round.startsWith("All")
-    ? testedResults
-    : testedResults.filter((item) => item.phase === round);
-
-  const tacticMap = new Map<string, MetricItem>();
+  const filtered = getFilteredResultsByRound(round);
+  const tacticMetrics = new Map<string, MetricItem>();
 
   for (const item of filtered) {
     const tactic = item.tactic;
-    const outcome = item.outcome;
+    const outcome = normalizeOutcome(item.outcome);
 
-    if (!tacticMap.has(tactic)) {
-      tacticMap.set(tactic, {
+    if (!tacticMetrics.has(tactic)) {
+      tacticMetrics.set(tactic, {
         name: tactic,
         Block: 0,
         Alert: 0,
@@ -266,46 +252,44 @@ export function getMetricData(round: string): MetricItem[] {
       });
     }
 
-    const entry = tacticMap.get(tactic)!;
-    if (outcome === "Blocked") entry.Block++;
-    else if (outcome === "Alert" || outcome === "Alerted") entry.Alert++;
-    else if (outcome === "Logged") entry.Logged++;
-    else entry.None++;
+    tacticMetrics.get(tactic)![outcome]++;
   }
 
-  return Array.from(tacticMap.values());
+  return Array.from(tacticMetrics.values());
 }
 
 export function getFieldTreeData(round: string): FieldItem[] {
-  const filtered = round.startsWith("All")
-    ? testedResults
-    : testedResults.filter((item) => item.phase === round);
-
-  let blocked = 0;
-  let alert = 0;
-  let logged = 0;
-  let none = 0;
+  const filtered = getFilteredResultsByRound(round);
+  let blocked = 0,
+    alert = 0,
+    logged = 0,
+    none = 0;
 
   for (const item of filtered) {
-    const outcome = item.outcome.toLowerCase();
-    if (outcome === "blocked" || outcome === "block") blocked++;
-    else if (outcome === "alert" || outcome === "alerted") alert++;
-    else if (outcome === "logged") logged++;
-    else none++;
+    const outcome = normalizeOutcome(item.outcome);
+    switch (outcome) {
+      case "Block":
+        blocked++;
+        break;
+      case "Alert":
+        alert++;
+        break;
+      case "Logged":
+        logged++;
+        break;
+      case "None":
+        none++;
+        break;
+    }
   }
 
-  const total = filtered.length;
-  const passed = blocked + alert;
-  const failed = logged + none;
+  const total = blocked + alert + logged + none;
 
   return [
-    {
-      title: "Campaigns",
-      count: total,
-    },
+    { title: "Campaigns", count: total },
     {
       title: "Passed",
-      count: passed,
+      count: blocked + alert,
       children: [
         { title: "Blocked", count: blocked },
         { title: "Alert", count: alert },
@@ -313,7 +297,7 @@ export function getFieldTreeData(round: string): FieldItem[] {
     },
     {
       title: "Failed",
-      count: failed,
+      count: logged + none,
       children: [
         { title: "Logged", count: logged },
         { title: "None", count: none },
