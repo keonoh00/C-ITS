@@ -65,13 +65,18 @@ function isPassed(outcome: string): boolean {
   return outcome === "Blocked" || outcome === "Alert";
 }
 
-function mapPercentageToSeverity(passedRatio: number): SeverityEnum {
-  if (passedRatio === 0) return SeverityEnum.NoTestCoverage;
-  if (passedRatio > 80) return SeverityEnum.Strong;
-  if (passedRatio > 60) return SeverityEnum.Moderate;
-  if (passedRatio > 40) return SeverityEnum.Lower;
-  if (passedRatio > 20) return SeverityEnum.Minimal;
-  return SeverityEnum.Weakest;
+function mapPercentageToSeverity(
+  passedRatio: number,
+  bottomCount: number
+): SeverityEnum {
+  if (bottomCount === 0) return SeverityEnum.NoTestCoverage;
+  if (passedRatio <= 20) return SeverityEnum.Weakest;
+  if (passedRatio <= 40) return SeverityEnum.Minimal;
+  if (passedRatio <= 60) return SeverityEnum.Lower;
+  if (passedRatio <= 80) return SeverityEnum.Moderate;
+  if (passedRatio >= 80) return SeverityEnum.Strong;
+
+  return SeverityEnum.NoTestCoverage;
 }
 
 export const getTacticTree = (round: string): Tactic[] => {
@@ -137,14 +142,15 @@ export const getTacticTree = (round: string): Tactic[] => {
 
     for (const [id, tech] of techMap.entries()) {
       const score = tech._total > 0 ? (tech._pass / tech._total) * 100 : 0;
+      const bottomCount = tech._total;
 
       techniques.push({
         id,
         name: tech.name,
         resilienceScore: score,
-        severity: mapPercentageToSeverity(score),
+        severity: mapPercentageToSeverity(score, bottomCount),
         topCount: tech._pass,
-        bottomCount: tech._total,
+        bottomCount,
         subtechniques: tech._sub,
       });
     }
