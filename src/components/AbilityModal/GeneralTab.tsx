@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { HeatmapEvaluationFramework } from "../HeatmapBoard/tacticsData";
 import { AttackDataItem } from "@/api/defend/defend";
+import { HeatmapEvaluationFramework } from "@/api/evaluate/types";
 
 interface GeneralTabProps {
   data: AttackDataItem;

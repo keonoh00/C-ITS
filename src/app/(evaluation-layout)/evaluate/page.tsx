@@ -1,32 +1,34 @@
 "use client";
 
-import FilterBar from "@/components/FilterBar/FilterBar";
-import HeatmapBoard, {
-  frameworkMap,
-} from "@/components/HeatmapBoard/HeatmapBoard";
-import ResilienceChart, {
-  resilienceData,
-} from "@/components/ResilienceChart/ResilienceChart";
-import MetricsBoard from "@/components/MetricsBoard/MetricsBoard"; // 🔥 New one
-import React, { useState } from "react";
-import DrillDownTable from "@/components/DrilldownReportTable/DrilldownReportTable";
+import { frameworkMap, getProcessedTacticsData } from "@/api/evaluate";
 import {
   EvaluationReportTypes,
   HeatmapEvaluationFramework,
-} from "@/components/HeatmapBoard/tacticsData";
+  SortType,
+  Tactic,
+} from "@/api/evaluate/types";
+import DrillDownTable from "@/components/DrilldownReportTable/DrilldownReportTable";
+import FilterBar from "@/components/FilterBar/FilterBar";
+import HeatmapBoard from "@/components/HeatmapBoard/HeatmapBoard";
+import MetricsBoard from "@/components/MetricsBoard/MetricsBoard";
+import ResilienceChart, {
+  resilienceData,
+} from "@/components/ResilienceChart/ResilienceChart";
+import { useMemo, useState } from "react";
 
-export enum DUMMY_ROUND_OPTIONS {
-  ALL = "All Selected (4)",
-  Q1 = "Penetration to C-ITS Center (Q1)",
-  Q2 = "Penetration to C-ITS Center (Q2)",
-  Q3 = "Penetration to C-ITS Center (Q3)",
-  Q4 = "Penetration to C-ITS Center (Q4)",
-}
+const DUMMY_ROUND_OPTIONS = [
+  "All Selected (4)",
+  "Penetration to C-ITS Center (Q1)",
+  "Penetration to C-ITS Center (Q2)",
+  "Penetration to C-ITS Center (Q3)",
+  "Penetration to C-ITS Center (Q4)",
+];
 
 export default function Evaluate() {
   const [framework, setFramework] = useState<HeatmapEvaluationFramework>(
     HeatmapEvaluationFramework.ENTERPRISE
   );
+  const [sortType] = useState<SortType>("IMPACT");
   const tacticOptions = [
     { name: `All Selected (${frameworkMap[framework].length})` },
     ...frameworkMap[framework],
@@ -34,11 +36,13 @@ export default function Evaluate() {
   const [reportType, setReportType] = useState<EvaluationReportTypes>(
     EvaluationReportTypes.HEATMAP
   );
-  const [round, setRound] = useState<DUMMY_ROUND_OPTIONS>(
-    DUMMY_ROUND_OPTIONS.ALL
-  );
+  const [round, setRound] = useState<string>(DUMMY_ROUND_OPTIONS[0]);
 
   const [selectedTactic, setSelectedTactic] = useState(tacticOptions[0]);
+
+  const tacticsData: Tactic[] = useMemo(() => {
+    return getProcessedTacticsData(round, framework, sortType, selectedTactic);
+  }, [framework, round, sortType, selectedTactic]);
 
   return (
     <div className="flex flex-col gap-5">
@@ -65,24 +69,18 @@ export default function Evaluate() {
       <div className="flex flex-col gap-4 p-6 bg-base-900">
         {/* Main Content */}
         {reportType === "Heat Map" && (
-          <HeatmapBoard
-            selectedTactic={selectedTactic}
-            framework={framework}
-            sortType={"impact"}
-            round={round}
-          />
+          <HeatmapBoard sortedAndFilteredTactics={tacticsData} />
         )}
 
-        {reportType === "Resilience Trending" && (
-          <ResilienceChart round={round} />
-        )}
+        {reportType === "Resilience Trending" && <ResilienceChart />}
 
         {reportType === "Metrics" && (
           <MetricsBoard
             score={
               resilienceData.find((val) => val.round === round)?.score || 0
             }
-            round={round}
+            metriciesData={[]}
+            fieldTreeData={[]}
           />
         )}
 

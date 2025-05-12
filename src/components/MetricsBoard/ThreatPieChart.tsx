@@ -10,7 +10,7 @@ import {
 } from "chart.js";
 import { Pie } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels"; // import plugin
-import { DataEntry } from "./data";
+import { DataEntry } from "@/api/evaluate/types";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels); // register it
 

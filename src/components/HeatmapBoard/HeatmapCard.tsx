@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { SeverityEnum } from "./tacticsData";
 import { clsx } from "clsx";
-import { RawTechnique } from "./enterprise/enterpriseData";
+import { SeverityEnum, Technique } from "@/api/evaluate/types";
 
 const CustomStyle = {
   [SeverityEnum.NoTestCoverage]:
@@ -16,7 +15,7 @@ const CustomStyle = {
 };
 
 interface HeatmapCardProps {
-  technique: RawTechnique;
+  technique: Technique;
 }
 
 export default function HeatmapCard({ technique }: HeatmapCardProps) {

@@ -1,4 +1,4 @@
-export interface DrillDownItem {
+export interface TestResultItem {
   testCase: string;
   techniqueId: string;
   technique: string;
@@ -7,7 +7,7 @@ export interface DrillDownItem {
   tactic: string;
 }
 
-export const drillDownData: DrillDownItem[] = [
+export const testedResults: TestResultItem[] = [
   {
     testCase: "Discover AD Server",
     phase: "Penetration to C-ITS Center (Q1)",

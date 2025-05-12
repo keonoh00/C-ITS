@@ -4,12 +4,12 @@ import React, { useState } from "react";
 import { Table, TableColumn } from "@/components/common/Table/Table"; // Assuming you placed it like this
 import SearchInput from "../common/SearchInput/SearchInput";
 import { TAG_COLOR_MAP, Tag } from "../common/Tag/Tag";
-import { drillDownData, DrillDownItem } from "./data";
+import { testedResults, TestResultItem } from "@/api/evaluate/data";
 import { Pagination } from "../common/Pagination/Pagination";
 
-const uniqueTactics = [...new Set(drillDownData.map((it) => it.tactic))].sort();
+const uniqueTactics = [...new Set(testedResults.map((it) => it.tactic))].sort();
 const uniqueOutcomes = [
-  ...new Set(drillDownData.map((it) => it.outcome)),
+  ...new Set(testedResults.map((it) => it.outcome)),
 ].sort();
 
 const TACTIC_COLOR_MAP: Record<string, string> = {};
@@ -34,7 +34,7 @@ export default function DrillDownTable({ round }: DrillDownTableProps) {
   const [query, setQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 10;
-  const filteredData = drillDownData
+  const filteredData = testedResults
     .filter((item) => item.testCase.toLowerCase().includes(query.toLowerCase()))
     .filter((item) =>
       round.startsWith("All Selected") ? true : item.phase === round
@@ -49,7 +49,7 @@ export default function DrillDownTable({ round }: DrillDownTableProps) {
     setCurrentPage(page);
   };
 
-  const columns: TableColumn<DrillDownItem>[] = [
+  const columns: TableColumn<TestResultItem>[] = [
     {
       label: "Test case",
       render: (item) => item.testCase,
@@ -95,7 +95,7 @@ export default function DrillDownTable({ round }: DrillDownTableProps) {
         <SearchInput onSearch={setQuery} />
       </div>
 
-      <Table<DrillDownItem> data={paginatedData} columns={columns} />
+      <Table<TestResultItem> data={paginatedData} columns={columns} />
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}

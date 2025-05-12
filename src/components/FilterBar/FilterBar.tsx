@@ -1,20 +1,19 @@
 "use client";
 
-import React from "react";
 import {
   EvaluationReportTypes,
   HeatmapEvaluationFramework,
   HeatmapEvaluationFrameworkKeyType,
-} from "../HeatmapBoard/tacticsData";
-import { DUMMY_ROUND_OPTIONS } from "@/app/(evaluation-layout)/evaluate/page";
+} from "@/api/evaluate/types";
+import React from "react";
 
 interface FilterBarProps {
   reportOptions: EvaluationReportTypes[];
   reportType: EvaluationReportTypes;
   setReportType: (value: EvaluationReportTypes) => void;
-  roundOptions: DUMMY_ROUND_OPTIONS[];
-  round: DUMMY_ROUND_OPTIONS;
-  setRound: (value: DUMMY_ROUND_OPTIONS) => void;
+  roundOptions: string[];
+  round: string;
+  setRound: (value: string) => void;
   tactics: string;
   tacticOptions: string[];
   setTactics: (value: string) => void;
@@ -63,7 +62,7 @@ export default function FilterBar({
         <select
           className="p-2 bg-base-800 border border-neutral-600 rounded text-sm text-neutral-300"
           value={round}
-          onChange={(e) => setRound(e.target.value as DUMMY_ROUND_OPTIONS)}
+          onChange={(e) => setRound(e.target.value)}
         >
           {roundOptions.map((option) => (
             <option key={option}>{option}</option>

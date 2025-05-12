@@ -4,20 +4,19 @@ import React from "react";
 import ThreatPieChart from "./ThreatPieChart";
 import DefenseScenarioBarChart from "./DefenseScenarioBarChart";
 import FieldTree from "./FieldTree";
-import { getFieldTreeData, getMetriciesData } from "./data";
-import { DUMMY_ROUND_OPTIONS } from "@/app/(evaluation-layout)/evaluate/page";
+import { DataEntry, FieldItem } from "@/api/evaluate/types";
 
 interface MetricsBoardProps {
   score: number;
-  round: DUMMY_ROUND_OPTIONS;
+  metriciesData: DataEntry[];
+  fieldTreeData: FieldItem[];
 }
 
-const MetricsBoard: React.FC<MetricsBoardProps> = ({ score, round }) => {
-  const metriciesData = getMetriciesData(round);
-  const fieldTreeData = getFieldTreeData(round);
-
-  console.log(metriciesData);
-
+const MetricsBoard: React.FC<MetricsBoardProps> = ({
+  score,
+  metriciesData,
+  fieldTreeData,
+}) => {
   return (
     <div className="flex flex-col gap-6 text-lg">
       {/* Top Section */}
