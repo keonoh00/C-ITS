@@ -2,7 +2,6 @@ import clsx from "clsx";
 
 const outcomeColors = {
   "No Test Coverage": "bg-neutral-700",
-  "Outcome TBD": "bg-neutral-500",
   Weakest: "bg-red-500",
   Minimal: "bg-orange-400",
   Lower: "bg-yellow-400",

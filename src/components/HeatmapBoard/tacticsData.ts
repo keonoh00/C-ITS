@@ -1,17 +1,8 @@
 import { drillDownData } from "../DrilldownReportTable/data";
+import { SubTechnique, RawTechnique } from "./enterprise/enterpriseData";
 
-export interface SubTechnique {
-  name: string;
-  id: string;
-  outcome: OutcomeEnum;
-  topCount: number;
-  bottomCount: number;
-  description: string;
-}
-
-export enum OutcomeEnum {
+export enum SeverityEnum {
   NoTestCoverage = "No Test Coverage",
-  OutcomeTBD = "Outcome TBD",
   Weakest = "Weakest",
   Minimal = "Minimal",
   Lower = "Lower",
@@ -19,13 +10,8 @@ export enum OutcomeEnum {
   Strong = "Strong",
 }
 
-export interface Technique {
-  name: string;
-  id: string;
-  outcome: OutcomeEnum;
-  topCount: number;
-  bottomCount: number;
-  subtechniques?: SubTechnique[];
+export interface Technique extends RawTechnique {
+  resilienceScore: number;
 }
 
 export interface Tactic {
@@ -46,25 +32,25 @@ export enum EvaluationReportTypes {
   METRICS = "Metrics",
 }
 
+export type HeatmapEvaluationFrameworkKeyType =
+  keyof typeof HeatmapEvaluationFramework;
+
 const getRoundFilteredData = (_round: string) =>
   _round.startsWith("All")
     ? drillDownData
     : drillDownData.filter((item) => item.phase === _round);
 
-export type HeatmapEvaluationFrameworkKeyType =
-  keyof typeof HeatmapEvaluationFramework;
-
-function mapToOutcomeEnum(raw: string): OutcomeEnum {
+function mapToSeverityEnum(raw: string): SeverityEnum {
   switch (raw) {
     case "Blocked":
     case "Alert":
-      return OutcomeEnum.Strong;
+      return SeverityEnum.Strong;
     case "Logged":
-      return OutcomeEnum.Minimal;
+      return SeverityEnum.Minimal;
     case "None":
-      return OutcomeEnum.Weakest;
+      return SeverityEnum.Weakest;
     default:
-      return OutcomeEnum.OutcomeTBD;
+      return SeverityEnum.NoTestCoverage;
   }
 }
 
@@ -73,7 +59,19 @@ function normalizeTactic(tactic: string): string {
 }
 
 function normalizeTechniqueId(techniqueId: string): string {
-  return techniqueId.split(".")[0];
+  return techniqueId.split(".")[0]; // T1003.001 → T1003
+}
+function isPassed(outcome: string): boolean {
+  return outcome === "Blocked" || outcome === "Alert";
+}
+
+function mapPercentageToSeverity(passedRatio: number): SeverityEnum {
+  if (passedRatio === 0) return SeverityEnum.NoTestCoverage;
+  if (passedRatio > 80) return SeverityEnum.Strong;
+  if (passedRatio > 60) return SeverityEnum.Moderate;
+  if (passedRatio > 40) return SeverityEnum.Lower;
+  if (passedRatio > 20) return SeverityEnum.Minimal;
+  return SeverityEnum.Weakest;
 }
 
 export const getTacticTree = (round: string): Tactic[] => {
@@ -81,14 +79,21 @@ export const getTacticTree = (round: string): Tactic[] => {
 
   const tacticMap = new Map<
     string,
-    Map<string, Technique & { _sub: SubTechnique[] }>
+    Map<
+      string,
+      Technique & {
+        _sub: SubTechnique[];
+        _pass: number;
+        _total: number;
+      }
+    >
   >();
 
   for (const item of filtered) {
     const tactic = normalizeTactic(item.tactic);
     const fullId = item.techniqueId;
     const parentId = normalizeTechniqueId(fullId);
-    const outcome = mapToOutcomeEnum(item.outcome);
+    const passed = isPassed(item.outcome) ? 1 : 0;
 
     if (!tacticMap.has(tactic)) {
       tacticMap.set(tactic, new Map());
@@ -100,22 +105,28 @@ export const getTacticTree = (round: string): Tactic[] => {
       techMap.set(parentId, {
         id: parentId,
         name: item.technique,
-        outcome,
+        resilienceScore: 0,
+        severity: SeverityEnum.NoTestCoverage,
         topCount: 0,
         bottomCount: 0,
-        _sub: [], // temporary holder
+        _pass: 0,
+        _total: 0,
+        _sub: [],
       });
     }
 
     const tech = techMap.get(parentId)!;
 
+    tech._pass += passed;
+    tech._total += 1;
+
     tech._sub.push({
       id: fullId + "-" + tech._sub.length,
       name: item.testCase,
-      outcome,
+      severity: mapToSeverityEnum(item.outcome),
+      description: item.testCase,
       topCount: 0,
       bottomCount: 0,
-      description: item.testCase,
     });
   }
 
@@ -125,12 +136,15 @@ export const getTacticTree = (round: string): Tactic[] => {
     const techniques: Technique[] = [];
 
     for (const [id, tech] of techMap.entries()) {
+      const score = tech._total > 0 ? (tech._pass / tech._total) * 100 : 0;
+
       techniques.push({
         id,
         name: tech.name,
-        outcome: tech.outcome,
-        topCount: tech._sub.length,
-        bottomCount: tech._sub.length,
+        resilienceScore: score,
+        severity: mapPercentageToSeverity(score),
+        topCount: tech._pass,
+        bottomCount: tech._total,
         subtechniques: tech._sub,
       });
     }

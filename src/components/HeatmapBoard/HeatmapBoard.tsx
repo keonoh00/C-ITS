@@ -4,12 +4,17 @@ import React, { useMemo, useRef, useState, useEffect } from "react";
 import {
   getTacticTree,
   HeatmapEvaluationFramework,
+  SeverityEnum,
   Tactic,
   Technique,
 } from "./tacticsData";
 import HeatmapCard from "./HeatmapCard";
 import Legend from "./Legend";
-import { tacticsDataEnterprise } from "./enterprise/enterpriseData";
+import {
+  RawTactic,
+  RawTechnique,
+  tacticsDataEnterprise,
+} from "./enterprise/enterpriseData";
 import { tacticsDataMobile } from "./mobile/mobileData";
 import { tacticsDataICS } from "./ics/icsData";
 
@@ -20,26 +25,25 @@ interface HeatmapBoardProps {
   sortType: "alphabetical" | "impact";
 }
 
-export const frameworkMap: Record<HeatmapEvaluationFramework, Tactic[]> = {
+export const frameworkMap: Record<HeatmapEvaluationFramework, RawTactic[]> = {
   [HeatmapEvaluationFramework.ENTERPRISE]: tacticsDataEnterprise,
   [HeatmapEvaluationFramework.MOBILE]: tacticsDataMobile,
   [HeatmapEvaluationFramework.ICS]: tacticsDataICS,
 };
 
-const impactOrder: Record<string, number> = {
-  Weakest: 6,
-  Minimal: 5,
-  Lower: 4,
-  Moderate: 3,
-  Strong: 2,
-  "Outcome TBD": 1,
-  "No Test Coverage": 0,
+const impactOrder: Record<SeverityEnum, number> = {
+  [SeverityEnum.Weakest]: 5,
+  [SeverityEnum.Minimal]: 4,
+  [SeverityEnum.Lower]: 3,
+  [SeverityEnum.Moderate]: 2,
+  [SeverityEnum.Strong]: 1,
+  [SeverityEnum.NoTestCoverage]: 0,
 };
 
 function replaceTechniquesByIds(
-  data: Tactic[],
+  data: RawTactic[],
   replacements: { id: string; newTechnique: Partial<Technique> }[]
-): Tactic[] {
+): RawTactic[] {
   if (!replacements || replacements.length < 1) return data;
   const replacementMap = new Map(
     replacements.map((r) => [r.id, r.newTechnique])
@@ -62,7 +66,7 @@ function flattenTacticTree(
       id: tech.id,
       newTechnique: {
         id: tech.id,
-        outcome: tech.outcome,
+        severity: tech.severity,
         topCount: tech.topCount,
         bottomCount: tech.bottomCount,
       },
@@ -76,14 +80,14 @@ export default function HeatmapBoard({
   round,
   sortType,
 }: HeatmapBoardProps) {
-  const tacticsData: Tactic[] = useMemo(() => {
+  const tacticsData: RawTactic[] = useMemo(() => {
     const original = frameworkMap[framework] ?? [];
     const replacements = flattenTacticTree(getTacticTree(round));
 
     return replaceTechniquesByIds(original, replacements);
   }, [framework, round]);
 
-  const filteredTactics: Tactic[] = useMemo(() => {
+  const filteredTactics: RawTactic[] = useMemo(() => {
     if (selectedTactic.startsWith("All Selected")) return tacticsData;
     return tacticsData.filter((t) => t.name === selectedTactic);
   }, [selectedTactic, tacticsData]);
@@ -106,13 +110,13 @@ export default function HeatmapBoard({
     return () => el.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const sortedTechniques = (techniques: Technique[]): Technique[] => {
+  const sortedTechniques = (techniques: RawTechnique[]): RawTechnique[] => {
     return [...techniques].sort((a, b) => {
       if (sortType === "alphabetical") {
         return a.name.localeCompare(b.name);
       } else if (sortType === "impact") {
-        const aImpact = impactOrder[a.outcome ?? "No Test Coverage"] ?? 0;
-        const bImpact = impactOrder[b.outcome ?? "No Test Coverage"] ?? 0;
+        const aImpact = impactOrder[a.severity ?? "No Test Coverage"] ?? 0;
+        const bImpact = impactOrder[b.severity ?? "No Test Coverage"] ?? 0;
         return bImpact - aImpact;
       }
       return 0;

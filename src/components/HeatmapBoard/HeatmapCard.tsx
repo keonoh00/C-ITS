@@ -1,22 +1,22 @@
 "use client";
 
 import React, { useState } from "react";
-import { OutcomeEnum, Technique } from "./tacticsData";
+import { SeverityEnum } from "./tacticsData";
 import { clsx } from "clsx";
+import { RawTechnique } from "./enterprise/enterpriseData";
 
 const CustomStyle = {
-  [OutcomeEnum.NoTestCoverage]:
+  [SeverityEnum.NoTestCoverage]:
     "bg-neutral-700 border-dashed border-white text-gray-300",
-  [OutcomeEnum.OutcomeTBD]: "bg-neutral-500 border-gray-500",
-  [OutcomeEnum.Weakest]: "bg-red-500 border-gray-500",
-  [OutcomeEnum.Minimal]: "bg-orange-400 border-gray-500",
-  [OutcomeEnum.Lower]: "bg-yellow-400 border-gray-500",
-  [OutcomeEnum.Moderate]: "bg-green-400 border-gray-500",
-  [OutcomeEnum.Strong]: "bg-green-600 border-gray-500",
+  [SeverityEnum.Weakest]: "bg-red-500 border-gray-500",
+  [SeverityEnum.Minimal]: "bg-orange-400 border-gray-500",
+  [SeverityEnum.Lower]: "bg-yellow-400 border-gray-500",
+  [SeverityEnum.Moderate]: "bg-green-400 border-gray-500",
+  [SeverityEnum.Strong]: "bg-green-600 border-gray-500",
 };
 
 interface HeatmapCardProps {
-  technique: Technique;
+  technique: RawTechnique;
 }
 
 export default function HeatmapCard({ technique }: HeatmapCardProps) {
@@ -33,7 +33,7 @@ export default function HeatmapCard({ technique }: HeatmapCardProps) {
     <div
       className={clsx(
         "rounded-md border overflow-hidden  w-full min-w-0 flex flex-col",
-        CustomStyle[technique.outcome],
+        CustomStyle[technique.severity],
         hasSubtechniques ? "cursor-pointer" : "cursor-default"
       )}
       onClick={toggleExpand}

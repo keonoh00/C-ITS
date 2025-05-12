@@ -1,4 +1,4 @@
-import { Tactic, Technique } from "../tacticsData";
+import { RawTactic, RawTechnique } from "./../enterprise/enterpriseData";
 import InitialAccessTechniques from "./Initial Access.json";
 import ExecutionTechniques from "./Execution.json";
 import PersistenceTechniques from "./Persistence.json";
@@ -12,53 +12,53 @@ import InhibitResponseFunctionTechniques from "./Inhibit Response Function.json"
 import ImpairProcessControlTechniques from "./Impair Process Control.json";
 import ImpactTechniques from "./Impact.json";
 
-export const tacticsDataICS: Tactic[] = [
+export const tacticsDataICS: RawTactic[] = [
   {
     name: "Initial Access",
-    techniques: InitialAccessTechniques as Technique[],
+    techniques: InitialAccessTechniques as RawTechnique[],
   },
   {
     name: "Execution",
-    techniques: ExecutionTechniques as Technique[],
+    techniques: ExecutionTechniques as RawTechnique[],
   },
   {
     name: "Persistence",
-    techniques: PersistenceTechniques as Technique[],
+    techniques: PersistenceTechniques as RawTechnique[],
   },
   {
     name: "Privilege Escalation",
-    techniques: PrivilegeEscalationTechniques as Technique[],
+    techniques: PrivilegeEscalationTechniques as RawTechnique[],
   },
   {
     name: "Evasion",
-    techniques: EvasionTechniques as Technique[],
+    techniques: EvasionTechniques as RawTechnique[],
   },
   {
     name: "Discovery",
-    techniques: DiscoveryTechniques as Technique[],
+    techniques: DiscoveryTechniques as RawTechnique[],
   },
   {
     name: "Lateral Movement",
-    techniques: LateralMovementTechniques as Technique[],
+    techniques: LateralMovementTechniques as RawTechnique[],
   },
   {
     name: "Collection",
-    techniques: CollectionTechniques as Technique[],
+    techniques: CollectionTechniques as RawTechnique[],
   },
   {
     name: "Command and Control",
-    techniques: CommandAndControlTechniques as Technique[],
+    techniques: CommandAndControlTechniques as RawTechnique[],
   },
   {
     name: "Inhibit Response Function",
-    techniques: InhibitResponseFunctionTechniques as Technique[],
+    techniques: InhibitResponseFunctionTechniques as RawTechnique[],
   },
   {
     name: "Impair Process Control",
-    techniques: ImpairProcessControlTechniques as Technique[],
+    techniques: ImpairProcessControlTechniques as RawTechnique[],
   },
   {
     name: "Impact",
-    techniques: ImpactTechniques as Technique[],
+    techniques: ImpactTechniques as RawTechnique[],
   },
 ];

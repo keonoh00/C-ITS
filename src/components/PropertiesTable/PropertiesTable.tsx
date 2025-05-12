@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Table, TableColumn } from "@/components/common/Table/Table";
 import { ArrowUpRight } from "lucide-react";
-import { InfoModal, InfoModalData, InfoModalOutcomeEnum } from "./InfoModal";
+import { InfoModal, InfoModalData, InfoModalSeverityEnum } from "./InfoModal";
 import { AttackRoleGroup } from "@/api/defend/graph";
 import { Pagination } from "../common/Pagination/Pagination";
 import { Tag } from "../common/Tag/Tag";
@@ -411,8 +411,8 @@ export default function PropertiesTechniqueTable() {
               detectionTime: new Date(),
               tags: ["Content Dev", "Engineering"],
               outcome: [
-                "Blocked" as InfoModalOutcomeEnum,
-                "Logged" as InfoModalOutcomeEnum,
+                "Blocked" as InfoModalSeverityEnum,
+                "Logged" as InfoModalSeverityEnum,
               ],
             });
             setIsOpen(true);

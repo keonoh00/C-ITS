@@ -3,7 +3,7 @@ import { Modal } from "@/components/common/Modal/Modal";
 import SearchInput from "../common/SearchInput/SearchInput";
 import { Tag } from "../common/Tag/Tag";
 
-export enum InfoModalOutcomeEnum {
+export enum InfoModalSeverityEnum {
   Blocked = "Blocked",
   Alerted = "Alerted",
   Logged = "Logged",
@@ -15,7 +15,7 @@ export interface InfoModalData {
   detectionTime: Date;
   description: string;
   tags: string[];
-  outcome: InfoModalOutcomeEnum[];
+  outcome: InfoModalSeverityEnum[];
 }
 
 interface InfoModalProps {
@@ -76,7 +76,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({
         <div className="flex flex-col gap-2">
           <label>Outcome</label>
           <div className="flex flex-row gap-6">
-            {Object.keys(InfoModalOutcomeEnum).map((key) => (
+            {Object.keys(InfoModalSeverityEnum).map((key) => (
               <label
                 key={key}
                 className="flex items-center gap-2 cursor-pointer"
@@ -86,7 +86,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({
                   name={key}
                   className="form-checkbox"
                   defaultChecked={modalData.outcome.includes(
-                    key as InfoModalOutcomeEnum
+                    key as InfoModalSeverityEnum
                   )}
                 />
                 <span>{key}</span>

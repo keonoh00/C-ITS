@@ -1,4 +1,3 @@
-import { Tactic, Technique } from "../tacticsData";
 import ReconnaissanceTechniques from "./Reconnaissance.json";
 import ResourceDevelopmentTechniques from "./Resource Development.json";
 import InitialAccessTechniques from "./Initial Access.json";
@@ -14,61 +13,93 @@ import CommandAndControlTechniques from "./Command and Control.json";
 import ExfiltrationTechniques from "./Exfiltration.json";
 import ImpactTechniques from "./Impact.json";
 
-export const tacticsDataEnterprise: Tactic[] = [
+export interface SubTechnique {
+  name: string;
+  id: string;
+  severity: SeverityEnum;
+  topCount: number;
+  bottomCount: number;
+  description: string;
+}
+
+export enum SeverityEnum {
+  NoTestCoverage = "No Test Coverage",
+  Weakest = "Weakest",
+  Minimal = "Minimal",
+  Lower = "Lower",
+  Moderate = "Moderate",
+  Strong = "Strong",
+}
+
+export interface RawTechnique {
+  name: string;
+  id: string;
+  severity: SeverityEnum;
+  topCount: number;
+  bottomCount: number;
+  subtechniques?: SubTechnique[];
+}
+
+export interface RawTactic {
+  name: string;
+  techniques: RawTechnique[];
+}
+
+export const tacticsDataEnterprise: RawTactic[] = [
   {
     name: "Reconnaissance",
-    techniques: ReconnaissanceTechniques as Technique[],
+    techniques: ReconnaissanceTechniques as RawTechnique[],
   },
   {
     name: "Resource Development",
-    techniques: ResourceDevelopmentTechniques as Technique[],
+    techniques: ResourceDevelopmentTechniques as RawTechnique[],
   },
   {
     name: "InitialAccess",
-    techniques: InitialAccessTechniques as Technique[],
+    techniques: InitialAccessTechniques as RawTechnique[],
   },
   {
     name: "Execution",
-    techniques: ExecutionTechniques as Technique[],
+    techniques: ExecutionTechniques as RawTechnique[],
   },
   {
     name: "Persistence",
-    techniques: PersistenceTechniques as Technique[],
+    techniques: PersistenceTechniques as RawTechnique[],
   },
   {
     name: "Privilege Escalation",
-    techniques: PrivilegeEscalationTechniques as Technique[],
+    techniques: PrivilegeEscalationTechniques as RawTechnique[],
   },
   {
     name: "Defense Evasion",
-    techniques: DefenseEvasionTechniques as Technique[],
+    techniques: DefenseEvasionTechniques as RawTechnique[],
   },
   {
     name: "Credential Access",
-    techniques: CredentialAccessTechniques as Technique[],
+    techniques: CredentialAccessTechniques as RawTechnique[],
   },
   {
     name: "Discovery",
-    techniques: DiscoveryTechniques as Technique[],
+    techniques: DiscoveryTechniques as RawTechnique[],
   },
   {
     name: "Lateral Movement",
-    techniques: LateralMovementTechniques as Technique[],
+    techniques: LateralMovementTechniques as RawTechnique[],
   },
   {
     name: "Collection",
-    techniques: CollectionTechniques as Technique[],
+    techniques: CollectionTechniques as RawTechnique[],
   },
   {
     name: "Command And Control",
-    techniques: CommandAndControlTechniques as Technique[],
+    techniques: CommandAndControlTechniques as RawTechnique[],
   },
   {
     name: "Exfiltration",
-    techniques: ExfiltrationTechniques as Technique[],
+    techniques: ExfiltrationTechniques as RawTechnique[],
   },
   {
     name: "Impact",
-    techniques: ImpactTechniques as Technique[],
+    techniques: ImpactTechniques as RawTechnique[],
   },
 ];
