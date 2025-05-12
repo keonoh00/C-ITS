@@ -5,10 +5,11 @@ import ThreatPieChart from "./ThreatPieChart";
 import DefenseScenarioBarChart from "./DefenseScenarioBarChart";
 import FieldTree from "./FieldTree";
 import { getFieldTreeData, getMetriciesData } from "./data";
+import { DUMMY_ROUND_OPTIONS } from "@/app/(evaluation-layout)/evaluate/page";
 
 interface MetricsBoardProps {
   score: number;
-  round: string;
+  round: DUMMY_ROUND_OPTIONS;
 }
 
 const MetricsBoard: React.FC<MetricsBoardProps> = ({ score, round }) => {

@@ -17,11 +17,12 @@ import {
 } from "./enterprise/enterpriseData";
 import { tacticsDataMobile } from "./mobile/mobileData";
 import { tacticsDataICS } from "./ics/icsData";
+import { DUMMY_ROUND_OPTIONS } from "@/app/(evaluation-layout)/evaluate/page";
 
 interface HeatmapBoardProps {
   selectedTactic: string;
   framework: HeatmapEvaluationFramework;
-  round: string;
+  round: DUMMY_ROUND_OPTIONS;
   sortType: "alphabetical" | "impact";
 }
 

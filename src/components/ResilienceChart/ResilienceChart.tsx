@@ -61,7 +61,7 @@ export const resilienceData = [
 
 const visibleIndices = new Set<number>([1, 2, 3, 4]);
 
-export default function ResilienceChart() {
+const ResilienceChart: React.FC = () => {
   const [height, setHeight] = useState<number>(400);
 
   useEffect(() => {
@@ -157,4 +157,6 @@ export default function ResilienceChart() {
       />
     </div>
   );
-}
+};
+
+export default ResilienceChart;

@@ -15,13 +15,13 @@ import {
   HeatmapEvaluationFramework,
 } from "@/components/HeatmapBoard/tacticsData";
 
-const DUMMY_ROUND_OPTIONS = [
-  "All Selected (4)",
-  "Penetration to C-ITS Center (Q1)",
-  "Penetration to C-ITS Center (Q2)",
-  "Penetration to C-ITS Center (Q3)",
-  "Penetration to C-ITS Center (Q4)",
-];
+export enum DUMMY_ROUND_OPTIONS {
+  ALL = "All Selected (4)",
+  Q1 = "Penetration to C-ITS Center (Q1)",
+  Q2 = "Penetration to C-ITS Center (Q2)",
+  Q3 = "Penetration to C-ITS Center (Q3)",
+  Q4 = "Penetration to C-ITS Center (Q4)",
+}
 
 export default function Evaluate() {
   const [framework, setFramework] = useState<HeatmapEvaluationFramework>(
@@ -34,7 +34,9 @@ export default function Evaluate() {
   const [reportType, setReportType] = useState<EvaluationReportTypes>(
     EvaluationReportTypes.HEATMAP
   );
-  const [round, setRound] = useState(DUMMY_ROUND_OPTIONS[0]);
+  const [round, setRound] = useState<DUMMY_ROUND_OPTIONS>(
+    DUMMY_ROUND_OPTIONS.ALL
+  );
 
   const [selectedTactic, setSelectedTactic] = useState(tacticOptions[0]);
 
@@ -51,7 +53,7 @@ export default function Evaluate() {
         reportOptions={Object.values(EvaluationReportTypes)}
         reportType={reportType}
         setReportType={setReportType}
-        roundOptions={DUMMY_ROUND_OPTIONS}
+        roundOptions={Object.values(DUMMY_ROUND_OPTIONS)}
         round={round}
         setRound={setRound}
         tactics={selectedTactic}
@@ -71,7 +73,9 @@ export default function Evaluate() {
           />
         )}
 
-        {reportType === "Resilience Trending" && <ResilienceChart />}
+        {reportType === "Resilience Trending" && (
+          <ResilienceChart round={round} />
+        )}
 
         {reportType === "Metrics" && (
           <MetricsBoard
