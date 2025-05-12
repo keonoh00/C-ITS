@@ -37,7 +37,7 @@ const columns: TableColumn<GraphFlattenBlock & { onClick: () => void }>[] = [
             ? "green"
             : item.outcome === "Logged"
             ? "orange"
-            : item.outcome === "Blocked"
+            : item.outcome === "Block"
             ? "blue"
             : item.outcome === "None"
             ? "red"
