@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 
-const API_BASE = "http://192.168.5.111:8888";
+const API_BASE = "http://localhost:8888";
 
 export async function POST(req: NextRequest) {
   try {
