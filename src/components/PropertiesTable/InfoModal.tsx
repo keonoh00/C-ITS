@@ -2,26 +2,13 @@ import React from "react";
 import { Modal } from "@/components/common/Modal/Modal";
 import SearchInput from "../common/SearchInput/SearchInput";
 import { Tag } from "../common/Tag/Tag";
-
-export enum InfoModalSeverityEnum {
-  Blocked = "Blocked",
-  Alerted = "Alerted",
-  Logged = "Logged",
-  None = "None",
-}
-
-export interface InfoModalData {
-  defenses: string;
-  detectionTime: Date;
-  description: string;
-  tags: string[];
-  outcome: InfoModalSeverityEnum[];
-}
+import { GraphFlattenBlock } from "@/api/defend/graph";
+import { OUTCOME_TYPES } from "@/api/evaluate/types";
 
 interface InfoModalProps {
   open: boolean;
   onClose: () => void;
-  modalData: InfoModalData;
+  modalData: GraphFlattenBlock;
   onSave: () => void;
 }
 
@@ -49,7 +36,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({
     <Modal
       open={open}
       onClose={onClose}
-      title="Find atypical open ports"
+      title={modalData.technique_name}
       footer={footer}
     >
       <div className="gap-4 flex flex-col">
@@ -66,7 +53,16 @@ export const InfoModal: React.FC<InfoModalProps> = ({
                 key={label}
                 className="flex items-center gap-2 cursor-pointer"
               >
-                <input type="checkbox" name={label} className="form-checkbox" />
+                <input
+                  type="checkbox"
+                  name={label}
+                  className="form-checkbox"
+                  defaultChecked={
+                    (modalData.result.passed && label === "Success") ||
+                    (modalData.result.failed && label === "Failed") ||
+                    false
+                  }
+                />
                 <span>{label}</span>
               </label>
             ))}
@@ -76,7 +72,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({
         <div className="flex flex-col gap-2">
           <label>Outcome</label>
           <div className="flex flex-row gap-6">
-            {Object.keys(InfoModalSeverityEnum).map((key) => (
+            {OUTCOME_TYPES.map((key) => (
               <label
                 key={key}
                 className="flex items-center gap-2 cursor-pointer"
@@ -85,9 +81,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({
                   type="checkbox"
                   name={key}
                   className="form-checkbox"
-                  defaultChecked={modalData.outcome.includes(
-                    key as InfoModalSeverityEnum
-                  )}
+                  defaultChecked={modalData.outcome.includes(key)}
                 />
                 <span>{key}</span>
               </label>
@@ -99,7 +93,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({
           <label>Tags</label>
           <div className="space-x-1 p-2 border border-neutral-500 rounded-sm bg-base-800 min-h-[48px]">
             {modalData.tags.map((tag, idx) => (
-              <Tag key={idx} label={tag} color="amber" />
+              <Tag key={idx} label={tag} />
             ))}
           </div>
         </div>
@@ -108,7 +102,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({
           <label>Defenses</label>
           <input
             className="p-2 border border-neutral-500 text-neutral-300 rounded-sm bg-base-800"
-            defaultValue={modalData.defenses}
+            defaultValue={modalData.attack_name}
           />
         </div>
 
@@ -124,7 +118,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({
           <label>Description</label>
           <textarea
             className="p-2 h-48 border border-neutral-500 text-neutral-300 rounded-sm bg-base-800"
-            defaultValue={modalData.description}
+            defaultValue={modalData.target}
           />
         </div>
       </div>

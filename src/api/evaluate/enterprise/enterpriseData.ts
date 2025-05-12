@@ -12,6 +12,7 @@ import CollectionTechniques from "./Collection.json";
 import CommandAndControlTechniques from "./Command and Control.json";
 import ExfiltrationTechniques from "./Exfiltration.json";
 import ImpactTechniques from "./Impact.json";
+import { SeverityEnum } from "../types";
 
 export interface SubTechnique {
   name: string;
@@ -20,15 +21,6 @@ export interface SubTechnique {
   topCount: number;
   bottomCount: number;
   description: string;
-}
-
-export enum SeverityEnum {
-  NoTestCoverage = "No Test Coverage",
-  Weakest = "Weakest",
-  Minimal = "Minimal",
-  Lower = "Lower",
-  Moderate = "Moderate",
-  Strong = "Strong",
 }
 
 export interface RawTechnique {

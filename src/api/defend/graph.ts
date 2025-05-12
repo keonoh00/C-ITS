@@ -1,12 +1,15 @@
 import { proxyFetch } from "..";
+import { OutcomeType } from "../evaluate/types";
+
+// -------------------- Types --------------------
 
 export interface AttackStep {
   attack_id: string;
   index: string;
   attack_name: string;
   next_step: string[];
-  findings: Record<string, string[]>; // based on findings: { key: string[] }
-  requirements: Record<string, unknown>; // changed from string[] to object
+  findings: Record<string, string[]>;
+  requirements: Record<string, unknown>;
   technique_id: string;
   technique_name: string;
   sub_index: string;
@@ -18,16 +21,29 @@ export interface AttackStep {
     failed: number;
   };
 }
+
+export interface GraphFlattenBlock extends AttackStep {
+  target: string;
+  status: "Complete" | "Failed";
+  outcome: OutcomeType;
+  tags: string[];
+  detectionTime: Date;
+}
+
 export interface AttackRoleGroup {
   role: string;
   data: AttackStep[];
 }
 
+// -------------------- Core Function --------------------
+
 export async function fetchAttackGraphConfiguration(
   graphId: string,
   log: boolean = false
-): Promise<AttackRoleGroup[]> {
-  return [
+): Promise<GraphFlattenBlock[]> {
+  const useDummyData = true;
+
+  const dummyRaw: AttackRoleGroup[] = [
     {
       role: "Office-Employee",
       data: [
@@ -323,16 +339,15 @@ export async function fetchAttackGraphConfiguration(
   ];
 
   const path = `/restapi/graph/configuration/${graphId}`;
+  const headers: Record<string, string> = { Key: "ADMIN123" };
 
-  const headers: Record<string, string> = {
-    Key: "ADMIN123",
-  };
-
-  const response = await proxyFetch({
-    path,
-    method: "GET",
-    headers,
-  });
+  const response = useDummyData
+    ? dummyRaw
+    : await proxyFetch({
+        path,
+        method: "GET",
+        headers,
+      });
 
   if (log) {
     console.log("PROXY FETCH Request:");
@@ -342,5 +357,17 @@ export async function fetchAttackGraphConfiguration(
     console.log("← Response Data:", response);
   }
 
-  return response as AttackRoleGroup[];
+  const result: AttackRoleGroup[] = response as AttackRoleGroup[];
+
+  return result.flatMap((group) =>
+    group.data.map((step, index) => ({
+      ...step,
+      technique: step.attack_name,
+      target: group.role,
+      status: step.result.passed > 0 ? "Complete" : "Failed",
+      outcome: ["None", "Logged", "Logged", "Alert"][index % 4] as OutcomeType,
+      tags: ["Engineering"],
+      detectionTime: new Date(),
+    }))
+  );
 }

@@ -1,8 +1,13 @@
 "use client";
 
+import {
+  fetchAttackGraphConfiguration,
+  GraphFlattenBlock,
+} from "@/api/defend/graph";
 import { Dropdown } from "@/components/common/Dropdown/Dropdown";
+import Loading from "@/components/common/Loading/Loading";
 import PropertiesTechniqueTable from "@/components/PropertiesTable/PropertiesTable";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const OPTIONS = [
   "465e4284-92e8-40a1-b764-2a70866ef1de",
@@ -13,6 +18,16 @@ const OPTIONS = [
 
 export default function Properties() {
   const [selectedOption, setSelectedOption] = useState<string>(OPTIONS[0]);
+  const [graphData, setGraphData] = useState<GraphFlattenBlock[]>([]);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const _data = await fetchAttackGraphConfiguration(OPTIONS[0], true);
+      setGraphData(_data);
+    };
+    fetch();
+  }, []);
+
   return (
     <div>
       <div className="flex flex-row items-center justify-between mb-6">
@@ -39,14 +54,18 @@ export default function Properties() {
       <div className="flex bg-base-800 p-12 justify-center">
         <embed
           type="text/html"
-          src="http://192.168.5.111:1111/graph?id=f0277a5c-2304-4af5-b4e7-b950d3e41807&type=result"
+          src={`http://192.168.5.111:1111/graph?id=${selectedOption}&type=result`}
           width={960}
           height={540}
         />
       </div>
 
       <div className="space-y-10 mt-4 w-full">
-        <PropertiesTechniqueTable />
+        {graphData ? (
+          <PropertiesTechniqueTable graphData={graphData} />
+        ) : (
+          <Loading />
+        )}
       </div>
     </div>
   );
