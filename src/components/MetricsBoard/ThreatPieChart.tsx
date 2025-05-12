@@ -10,7 +10,7 @@ import {
 } from "chart.js";
 import { Pie } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels"; // import plugin
-import { DataEntry } from "@/api/evaluate/types";
+import { MetricItem } from "@/api/evaluate/types";
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels); // register it
 
@@ -44,7 +44,7 @@ const options: ChartOptions<"pie"> = {
   },
 };
 
-export default function ThreatPieChart({ data }: { data: DataEntry[] }) {
+export default function ThreatPieChart({ data }: { data: MetricItem[] }) {
   const totals = data.reduce(
     (acc, entry) => {
       acc.Blocked += entry.Block;

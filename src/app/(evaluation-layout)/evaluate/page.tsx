@@ -1,11 +1,18 @@
 "use client";
 
-import { frameworkMap, getProcessedTacticsData } from "@/api/evaluate";
+import {
+  frameworkMap,
+  getFieldTreeData,
+  getMetricData,
+  getProcessedTacticsData,
+} from "@/api/evaluate";
 import {
   EvaluationReportTypes,
+  MetricItem,
   HeatmapEvaluationFramework,
   SortType,
   Tactic,
+  FieldItem,
 } from "@/api/evaluate/types";
 import DrillDownTable from "@/components/DrilldownReportTable/DrilldownReportTable";
 import FilterBar from "@/components/FilterBar/FilterBar";
@@ -44,6 +51,14 @@ export default function Evaluate() {
     return getProcessedTacticsData(round, framework, sortType, selectedTactic);
   }, [framework, round, sortType, selectedTactic]);
 
+  const metricesData: MetricItem[] = useMemo(() => {
+    return getMetricData(round);
+  }, [round]);
+
+  const fieldTreeData: FieldItem[] = useMemo(() => {
+    return getFieldTreeData(round);
+  }, [round]);
+
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-row items-center justify-between">
@@ -79,8 +94,8 @@ export default function Evaluate() {
             score={
               resilienceData.find((val) => val.round === round)?.score || 0
             }
-            metriciesData={[]}
-            fieldTreeData={[]}
+            fieldTreeData={fieldTreeData}
+            metriciesData={metricesData}
           />
         )}
 

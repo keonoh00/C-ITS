@@ -4,11 +4,11 @@ import React from "react";
 import ThreatPieChart from "./ThreatPieChart";
 import DefenseScenarioBarChart from "./DefenseScenarioBarChart";
 import FieldTree from "./FieldTree";
-import { DataEntry, FieldItem } from "@/api/evaluate/types";
+import { FieldItem, MetricItem } from "@/api/evaluate/types";
 
 interface MetricsBoardProps {
   score: number;
-  metriciesData: DataEntry[];
+  metriciesData: MetricItem[];
   fieldTreeData: FieldItem[];
 }
 

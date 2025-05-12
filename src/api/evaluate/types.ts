@@ -1,5 +1,5 @@
 // -------------------- Types --------------------
-export interface DataEntry {
+export interface MetricItem {
   name: string;
   Block: number;
   Alert: number;

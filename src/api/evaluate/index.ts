@@ -3,7 +3,9 @@ import { RawTactic, tacticsDataEnterprise } from "./enterprise/enterpriseData";
 import { tacticsDataMobile } from "./mobile/mobileData";
 import { tacticsDataICS } from "./ics/icsData";
 import {
+  FieldItem,
   HeatmapEvaluationFramework,
+  MetricItem,
   OutcomeType,
   SeverityEnum,
   SortType,
@@ -13,7 +15,7 @@ import {
 } from "./types";
 
 // -------------------- Constants --------------------
-export const IMPACT_ORDER: Record<SeverityEnum, number> = {
+const IMPACT_ORDER: Record<SeverityEnum, number> = {
   [SeverityEnum.Weakest]: 5,
   [SeverityEnum.Minimal]: 4,
   [SeverityEnum.Lower]: 3,
@@ -78,7 +80,7 @@ const mapPercentageToSeverity = (
 };
 
 // -------------------- Core Tactic Tree Computation --------------------
-export const getTacticTree = (round: string): Tactic[] => {
+const getTacticTree = (round: string): Tactic[] => {
   const filtered = getRoundFilteredData(round);
 
   const tacticMap = new Map<
@@ -155,7 +157,7 @@ export const getTacticTree = (round: string): Tactic[] => {
 };
 
 // -------------------- Utilities --------------------
-export function flattenTacticTree(
+function flattenTacticTree(
   tactics: Tactic[]
 ): { id: string; newTechnique: Partial<Technique> }[] {
   return tactics.flatMap((tactic) =>
@@ -171,7 +173,7 @@ export function flattenTacticTree(
   );
 }
 
-export function replaceTechniquesByIds(
+function replaceTechniquesByIds(
   data: RawTactic[],
   replacements: { id: string; newTechnique: Partial<Technique> }[]
 ): RawTactic[] {
@@ -241,4 +243,81 @@ export function getProcessedTacticsData(
 
     return { ...tactic, techniques: sorted };
   });
+}
+
+export function getMetricData(round: string): MetricItem[] {
+  const filtered = round.startsWith("All")
+    ? testedResults
+    : testedResults.filter((item) => item.phase === round);
+
+  const tacticMap = new Map<string, MetricItem>();
+
+  for (const item of filtered) {
+    const tactic = item.tactic;
+    const outcome = item.outcome;
+
+    if (!tacticMap.has(tactic)) {
+      tacticMap.set(tactic, {
+        name: tactic,
+        Block: 0,
+        Alert: 0,
+        Logged: 0,
+        None: 0,
+      });
+    }
+
+    const entry = tacticMap.get(tactic)!;
+    if (outcome === "Blocked") entry.Block++;
+    else if (outcome === "Alert" || outcome === "Alerted") entry.Alert++;
+    else if (outcome === "Logged") entry.Logged++;
+    else entry.None++;
+  }
+
+  return Array.from(tacticMap.values());
+}
+
+export function getFieldTreeData(round: string): FieldItem[] {
+  const filtered = round.startsWith("All")
+    ? testedResults
+    : testedResults.filter((item) => item.phase === round);
+
+  let blocked = 0;
+  let alert = 0;
+  let logged = 0;
+  let none = 0;
+
+  for (const item of filtered) {
+    const outcome = item.outcome.toLowerCase();
+    if (outcome === "blocked" || outcome === "block") blocked++;
+    else if (outcome === "alert" || outcome === "alerted") alert++;
+    else if (outcome === "logged") logged++;
+    else none++;
+  }
+
+  const total = filtered.length;
+  const passed = blocked + alert;
+  const failed = logged + none;
+
+  return [
+    {
+      title: "Campaigns",
+      count: total,
+    },
+    {
+      title: "Passed",
+      count: passed,
+      children: [
+        { title: "Blocked", count: blocked },
+        { title: "Alert", count: alert },
+      ],
+    },
+    {
+      title: "Failed",
+      count: failed,
+      children: [
+        { title: "Logged", count: logged },
+        { title: "None", count: none },
+      ],
+    },
+  ];
 }

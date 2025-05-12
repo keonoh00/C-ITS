@@ -12,11 +12,11 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import React from "react";
-import { DataEntry } from "@/api/evaluate/types";
+import { MetricItem } from "@/api/evaluate/types";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
-const COLORS: Record<keyof Omit<DataEntry, "name">, string> = {
+const COLORS: Record<keyof Omit<MetricItem, "name">, string> = {
   Block: "#4287f5",
   Alert: "#50c878",
   Logged: "#f5a142",
@@ -73,7 +73,7 @@ const options: ChartOptions<"bar"> = {
 export default function DefenseScenarioBarChart({
   data,
 }: {
-  data: DataEntry[];
+  data: MetricItem[];
 }) {
   const chartData: ChartData<"bar"> = {
     labels: data.map((d) => d.name),
