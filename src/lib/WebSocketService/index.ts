@@ -26,7 +26,13 @@ class WebSocketService {
     trigger: new Set(),
   };
 
-  private constructor() {
+  private constructor() {}
+
+  private initializeSocket() {
+    if (this.socket) return;
+
+    if (typeof window === "undefined") return;
+
     const ws = new WebSocket(`ws://${window.location.hostname}:3002`);
 
     ws.onopen = () => console.log("WebSocket connected");
@@ -52,6 +58,7 @@ class WebSocketService {
   static getInstance(): WebSocketService {
     if (!WebSocketService.instance) {
       WebSocketService.instance = new WebSocketService();
+      WebSocketService.instance.initializeSocket();
     }
     return WebSocketService.instance;
   }
@@ -66,7 +73,6 @@ class WebSocketService {
 
   private emit<T extends MessageType>(type: T, payload: unknown) {
     const handlers = this.listeners[type];
-
     handlers.forEach((handler) => {
       handler(payload as WebSocketMessageMap[T]);
     });
