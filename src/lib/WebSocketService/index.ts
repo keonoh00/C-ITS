@@ -1,12 +1,12 @@
-type WebSocketMessageMap = {
+export type WebSocketMessageMap = {
   notification: {
     message: string;
     type?: "info" | "success" | "error" | "warning";
     duration?: number;
   };
-  operation_update: {
-    id: string;
-    status: "pending" | "running" | "complete" | "failed";
+  trigger: {
+    pid: string;
+    host: string;
   };
 };
 
@@ -23,7 +23,7 @@ class WebSocketService {
     [K in MessageType]: Set<MessageHandler<K>>;
   } = {
     notification: new Set(),
-    operation_update: new Set(),
+    trigger: new Set(),
   };
 
   private constructor() {

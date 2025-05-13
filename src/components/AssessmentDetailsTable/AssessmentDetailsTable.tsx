@@ -3,38 +3,22 @@
 import clsx from "clsx";
 import { Table, TableColumn } from "@/components/common/Table/Table";
 import { ExternalLink } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import AssessmentDetailsResultModal from "./AssessmentDetailsResultModal";
+import { OperationItem } from "@/api/defend/assetssment";
+import { WebSocketMessageMap, ws } from "@/lib/WebSocketService";
 
 type ExecutionStatus = "success" | "fail";
 
-export interface LogEntry {
+interface LogEntry {
   timestamp: string;
-  status: ExecutionStatus;
+  status: "success" | "fail";
   defend: string;
   agent: string;
   host: string;
-  pid: number;
+  pid: string;
+  result: string;
 }
-
-const logs: LogEntry[] = [
-  {
-    timestamp: "8/12/2024, 04:02:06 PM GMT+9",
-    status: "success",
-    defend: "Hunt for known suspicious files",
-    agent: "Employee PC",
-    host: "Desktop-KER6",
-    pid: 204,
-  },
-  {
-    timestamp: "8/12/2024, 04:02:06 PM GMT+9",
-    status: "fail",
-    defend: "Search for Powershell Execution Policy Bypass",
-    agent: "Employee PC",
-    host: "Desktop-KER6",
-    pid: 4789,
-  },
-];
 
 interface StatusDotProps {
   status: ExecutionStatus;
@@ -60,9 +44,30 @@ export const StatusDot: React.FC<StatusDotProps> = ({ status, label }) => {
   );
 };
 
-export default function AssessmentDetailsTable() {
-  const [open, setOpen] = useState<boolean>(false);
+interface Props {
+  operation: OperationItem;
+}
+
+export default function AssessmentDetailsTable({ operation }: Props) {
+  const [open, setOpen] = useState(false);
   const [selectedLog, setSelectedLog] = useState<LogEntry | null>(null);
+  const [visibleLogs, setVisibleLogs] = useState<LogEntry[]>([]);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  const logs: LogEntry[] = useMemo(() => {
+    return operation.chain.map((link) => {
+      const agent = operation.host_group.find((a) => a.paw === link.paw);
+      return {
+        timestamp: link.collect || link.finish || "-",
+        status: link.status === 0 ? "success" : "fail",
+        defend: link.ability?.name ?? "Unknown Ability",
+        agent: agent?.display_name ?? link.paw,
+        host: agent?.host ?? "unknown",
+        pid: link.pid ?? "-",
+        result: link.output ?? "No output",
+      };
+    });
+  }, [operation]);
 
   const columns: TableColumn<LogEntry>[] = [
     { label: "Timestamp", render: (log) => log.timestamp },
@@ -71,7 +76,7 @@ export default function AssessmentDetailsTable() {
       render: (log) => (
         <StatusDot
           status={log.status}
-          label={log.status == "success" ? "Success" : "Fail"}
+          label={log.status === "success" ? "Success" : "Fail"}
         />
       ),
     },
@@ -95,9 +100,43 @@ export default function AssessmentDetailsTable() {
     },
   ];
 
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [visibleLogs]);
+
+  useEffect(() => {
+    const startUpdate = (data: WebSocketMessageMap["trigger"]) => {
+      setVisibleLogs([]);
+      let timer: NodeJS.Timeout;
+
+      const pushNext = () => {
+        setVisibleLogs((prev) => {
+          if (logs.length > prev.length) {
+            const newItem = { ...logs[prev.length], ...data };
+            console.log(data);
+            timer = setTimeout(pushNext, getRandomDelay());
+            return [...prev, newItem];
+          }
+          return prev;
+        });
+      };
+
+      // start first
+      timer = setTimeout(pushNext, getRandomDelay());
+
+      return () => clearTimeout(timer);
+    };
+
+    const getRandomDelay = () => Math.floor(Math.random() * 2000) + 5000; // 5000–7000 ms
+
+    ws.on("trigger", startUpdate);
+    return () => ws.off("trigger", startUpdate);
+  }, [logs]);
+
   return (
-    <div className="w-full bg-base-800 rounded-lg">
-      <Table data={logs} columns={columns} />
+    <div className="w-full bg-base-800 rounded-lg max-h-[500px] overflow-y-auto">
+      <Table data={visibleLogs} columns={columns} />
+      <div ref={bottomRef} />
       {selectedLog && (
         <AssessmentDetailsResultModal
           open={open}

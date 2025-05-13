@@ -41,12 +41,9 @@ export default function Assessment() {
             defaultValue=""
             className="w-full bg-base-800 border border-base-700 text-neutral-300 px-4 py-2 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
           >
-            <option value="" disabled hidden>
-              Response Unauthorized
+            <option value="" disabled>
+              {data && data.length > 0 ? data[0].name : ""}
             </option>
-            <option value="opt1">Option 1</option>
-            <option value="opt2">Option 2</option>
-            <option value="opt3">Option 3</option>
           </select>
 
           <div className="pointer-events-none absolute right-4 top-1/2 transform -translate-y-1/2 text-neutral-400">
@@ -96,7 +93,7 @@ export default function Assessment() {
                 <div className="h-12" />
               </div>
 
-              <AssessmentDetailsTable />
+              <AssessmentDetailsTable operation={data[0]} />
             </>
           )}
         </div>
