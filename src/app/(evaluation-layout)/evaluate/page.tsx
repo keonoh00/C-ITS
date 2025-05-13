@@ -25,10 +25,10 @@ import { useMemo, useState } from "react";
 
 const DUMMY_ROUND_OPTIONS = [
   "All Selected (4)",
-  "Penetration to C-ITS Center (Q1)",
-  "Penetration to C-ITS Center (Q2)",
-  "Penetration to C-ITS Center (Q3)",
-  "Penetration to C-ITS Center (Q4)",
+  "Penetration to C-ITS Center (1회차)",
+  "Penetration to C-ITS Center (2회차)",
+  "Penetration to C-ITS Center (3회차)",
+  "Penetration to C-ITS Center (4회차)",
 ];
 
 export default function Evaluate() {
@@ -41,9 +41,11 @@ export default function Evaluate() {
     ...frameworkMap[framework],
   ].map((option) => option.name);
   const [reportType, setReportType] = useState<EvaluationReportTypes>(
-    EvaluationReportTypes.HEATMAP
+    EvaluationReportTypes.RESILIENCETRENDING
   );
-  const [round, setRound] = useState<string>(DUMMY_ROUND_OPTIONS[0]);
+  const [round, setRound] = useState<string>(
+    DUMMY_ROUND_OPTIONS[DUMMY_ROUND_OPTIONS.length - 1]
+  );
 
   const [selectedTactic, setSelectedTactic] = useState(tacticOptions[0]);
 

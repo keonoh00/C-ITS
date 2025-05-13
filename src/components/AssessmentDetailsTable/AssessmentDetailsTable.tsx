@@ -7,12 +7,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import AssessmentDetailsResultModal from "./AssessmentDetailsResultModal";
 import { OperationItem } from "@/api/defend/assetssment";
 import { WebSocketMessageMap, ws } from "@/lib/WebSocketService";
+import { fetchAgents } from "@/api/defend/assets";
+import Loading from "../common/Loading/Loading";
 
 type ExecutionStatus = "success" | "fail";
 
-interface LogEntry {
+export interface LogEntry {
   timestamp: string;
-  status: "success" | "fail";
+  status: ExecutionStatus;
   defend: string;
   agent: string;
   host: string;
@@ -28,9 +30,7 @@ interface StatusDotProps {
 export const StatusDot: React.FC<StatusDotProps> = ({ status, label }) => {
   return (
     <div className="relative flex justify-center items-center h-14">
-      {/* vertical line */}
       <div className="absolute -top-3 -bottom-3 w-[2px] bg-neutral-500 z-0" />
-      {/* status circle */}
       <div
         className={clsx(
           "w-8 h-8 rounded-full border-2 flex items-center justify-center text-[10px] font-[1000] text-white z-10",
@@ -46,13 +46,26 @@ export const StatusDot: React.FC<StatusDotProps> = ({ status, label }) => {
 
 interface Props {
   operation: OperationItem;
+  onStopButtonLoading: () => void;
+  onRun: () => void;
+  onComplete: () => void;
 }
 
-export default function AssessmentDetailsTable({ operation }: Props) {
+export default function AssessmentDetailsTable({
+  operation,
+  onStopButtonLoading,
+  onRun,
+  onComplete,
+}: Props) {
   const [open, setOpen] = useState(false);
   const [selectedLog, setSelectedLog] = useState<LogEntry | null>(null);
   const [visibleLogs, setVisibleLogs] = useState<LogEntry[]>([]);
+  const [pidHost, setPidHost] = useState<{ pid: number; host: string } | null>(
+    null
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
+  const pushingRef = useRef(false);
 
   const logs: LogEntry[] = useMemo(() => {
     return operation.chain.map((link) => {
@@ -62,12 +75,12 @@ export default function AssessmentDetailsTable({ operation }: Props) {
         status: link.status === 0 ? "success" : "fail",
         defend: link.ability?.name ?? "Unknown Ability",
         agent: agent?.display_name ?? link.paw,
-        host: agent?.host ?? "unknown",
-        pid: link.pid ?? "-",
+        host: pidHost?.host ?? "",
+        pid: pidHost?.pid !== undefined ? String(pidHost.pid) : "",
         result: link.output ?? "No output",
       };
     });
-  }, [operation]);
+  }, [operation.chain, operation.host_group, pidHost]);
 
   const columns: TableColumn<LogEntry>[] = [
     { label: "Timestamp", render: (log) => log.timestamp },
@@ -101,41 +114,77 @@ export default function AssessmentDetailsTable({ operation }: Props) {
   ];
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [visibleLogs]);
+    const pidFetch = async () => {
+      try {
+        const data = await fetchAgents();
+        if (data.length > 0) {
+          setPidHost({ pid: data[0].ppid, host: data[0].host });
+        }
+      } catch (e) {
+        console.error("Failed to fetch agent info", e);
+      }
+    };
+    pidFetch();
+  }, []);
 
   useEffect(() => {
-    const startUpdate = (data: WebSocketMessageMap["trigger"]) => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [visibleLogs]);
+  useEffect(() => {
+    const getRandomDelay = () => Math.floor(Math.random() * 5000) + 5000;
+
+    const startUpdate = () => {
       setVisibleLogs([]);
-      let timer: NodeJS.Timeout;
+      onStopButtonLoading();
+      onRun();
+      setIsLoading(true);
+      pushingRef.current = true;
 
       const pushNext = () => {
         setVisibleLogs((prev) => {
           if (logs.length > prev.length) {
-            const newItem = { ...logs[prev.length], ...data };
-            console.log(data);
-            timer = setTimeout(pushNext, getRandomDelay());
+            const newItem = {
+              ...logs[prev.length],
+              timestamp: new Date().toISOString(),
+            };
+            setTimeout(pushNext, getRandomDelay());
             return [...prev, newItem];
+          } else {
+            // No state change, just end the loop
+            return prev;
           }
-          return prev;
         });
       };
 
-      // start first
-      timer = setTimeout(pushNext, getRandomDelay());
-
-      return () => clearTimeout(timer);
+      setTimeout(pushNext, getRandomDelay());
     };
 
-    const getRandomDelay = () => Math.floor(Math.random() * 2000) + 5000; // 5000–7000 ms
+    ws.on(
+      "trigger",
+      startUpdate as (payload: WebSocketMessageMap["trigger"]) => void
+    );
+    return () =>
+      ws.off(
+        "trigger",
+        startUpdate as (payload: WebSocketMessageMap["trigger"]) => void
+      );
+  }, [logs, onRun, onStopButtonLoading]);
 
-    ws.on("trigger", startUpdate);
-    return () => ws.off("trigger", startUpdate);
-  }, [logs]);
+  // ✅ This watches for the end of pushing and triggers onComplete after render
+  useEffect(() => {
+    if (pushingRef.current && visibleLogs.length === logs.length) {
+      pushingRef.current = false;
+      setIsLoading(false);
+      setTimeout(() => {
+        onComplete(); // ✅ Safe deferred call
+      }, 0);
+    }
+  }, [visibleLogs, logs, onComplete]);
 
   return (
     <div className="w-full bg-base-800 rounded-lg max-h-[500px] overflow-y-auto">
       <Table data={visibleLogs} columns={columns} />
+      {isLoading ? <Loading /> : null}
       <div ref={bottomRef} />
       {selectedLog && (
         <AssessmentDetailsResultModal

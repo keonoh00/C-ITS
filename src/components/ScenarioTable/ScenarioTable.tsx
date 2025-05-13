@@ -2,6 +2,7 @@
 
 import { AbilityDetail, EnrichedAdversary } from "@/api/defend/scenario";
 import { Table, TableColumn } from "@/components/common/Table/Table";
+import { XIcon } from "lucide-react";
 import Image from "next/image";
 
 interface ScenarioTableProps {
@@ -26,40 +27,48 @@ export const ScenarioTable: React.FC<ScenarioTableProps> = ({ data }) => {
       label: "TTP",
       render: (item) => item.technique_name,
     },
-    {
-      label: "Plug-In",
-      render: (item) => item.plugin,
-    },
+
     {
       label: "Pre-Con Requires",
-      render: (item, index) => (
-        <button
-          key={index}
-          className="bg-black w-[24px] h-[24px] rounded relative"
-        >
-          <Image src={"/assets/lock.svg"} alt="lock" className="p-[4px]" fill />
-        </button>
-      ),
+      render: (item, index) =>
+        item.requirements && item.requirements.length > 0 ? (
+          <button
+            key={index}
+            className="bg-black w-[24px] h-[24px] rounded relative"
+          >
+            <Image
+              src={"/assets/lock.svg"}
+              alt="lock"
+              className="p-[4px]"
+              fill
+            />
+          </button>
+        ) : null,
     },
     {
       label: "Unlock",
-      render: (item, index) => (
-        <button
-          key={index}
-          className="bg-black w-[24px] h-[24px] rounded relative"
-        >
-          <Image
-            src={"/assets/unlock.svg"}
-            alt="lock"
-            className="p-[4px]"
-            fill
-          />
-        </button>
-      ),
+      render: (item, index) =>
+        item.plugin ? (
+          <button
+            key={index}
+            className="bg-black w-[24px] h-[24px] rounded relative"
+          >
+            <Image
+              src={"/assets/unlock.svg"}
+              alt="lock"
+              className="p-[4px]"
+              fill
+            />
+          </button>
+        ) : null,
     },
     {
-      label: "-",
-      render: () => "-",
+      label: "삭제",
+      render: () => (
+        <button className="rounded">
+          <XIcon size={18} color="red" />
+        </button>
+      ),
     },
   ];
 

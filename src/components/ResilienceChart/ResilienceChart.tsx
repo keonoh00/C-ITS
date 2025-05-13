@@ -18,6 +18,7 @@ import ChartDataLabels, {
 } from "chartjs-plugin-datalabels";
 import { Line } from "react-chartjs-2";
 import { useEffect, useState } from "react";
+import { getMetricData } from "@/api/evaluate";
 
 ChartJS.register(
   CategoryScale,
@@ -30,34 +31,90 @@ ChartJS.register(
   ChartDataLabels
 );
 
-export const resilienceData = [
-  { runTime: new Date("2024-08-02T08:25:34"), score: 0, round: "" },
+interface ResilienceDataPoint {
+  runTime: Date;
+  score: number;
+  round: string;
+}
+interface ResilienceDataPoint {
+  runTime: Date;
+  score: number;
+  round: string;
+}
+
+const rounds = [
+  { round: "start" },
   {
-    runTime: new Date("2024-08-02T10:25:34"),
-    score: 0,
-    round: "Penetration to C-ITS Center (Q1)",
+    runTime: "2025-05-13T10:25:34",
+    round: "Penetration to C-ITS Center (1회차)",
   },
   {
-    runTime: new Date("2024-08-02T11:17:26"),
-    score: 0,
-    round: "Penetration to C-ITS Center (Q2)",
+    runTime: "2025-05-13T11:17:26",
+    round: "Penetration to C-ITS Center (2회차)",
   },
   {
-    runTime: new Date("2024-08-02T13:42:32"),
-    score: 50,
-    round: "Penetration to C-ITS Center (Q3)",
+    runTime: "2025-05-13T13:42:32",
+    round: "Penetration to C-ITS Center (3회차)",
   },
   {
-    runTime: new Date("2024-08-02T16:17:45"),
-    score: 66,
-    round: "Penetration to C-ITS Center (Q4)",
+    runTime: "today",
+    round: "Penetration to C-ITS Center (4회차)",
   },
-  {
-    runTime: new Date("2024-08-02T18:17:45"),
-    score: 66,
-    round: "All Selected (4)",
-  },
+  { round: "end" },
 ];
+
+export const resilienceData: ResilienceDataPoint[] = rounds.map(
+  ({ runTime, round }) => {
+    if (round === "start") {
+      const firstRealTime =
+        rounds.find((r) => r.runTime)?.runTime ?? new Date().toISOString();
+      return {
+        runTime: new Date(firstRealTime),
+        score: 0,
+        round: "",
+      };
+    }
+
+    if (round === "end") {
+      const lastRealTime =
+        [...rounds].reverse().find((r) => r.runTime)?.runTime ??
+        new Date().toISOString();
+      return {
+        runTime: new Date(lastRealTime),
+        score: 62,
+        round: "",
+      };
+    }
+
+    const time =
+      runTime === "today" ? new Date() : new Date(runTime ?? Date.now());
+
+    const _data = getMetricData(round);
+
+    const totals = _data.reduce(
+      (acc, entry) => {
+        acc.Block += entry.Block ?? 0;
+        acc.Alert += entry.Alert ?? 0;
+        acc.Logged += entry.Logged ?? 0;
+        acc.None += entry.None ?? 0;
+        return acc;
+      },
+      { Block: 0, Alert: 0, Logged: 0, None: 0 }
+    );
+
+    const totalSum = totals.Block + totals.Alert + totals.Logged + totals.None;
+    const passed = totals.Block + totals.Alert;
+
+    const score =
+      totalSum === 0 ? 0 : parseFloat(((passed / totalSum) * 100).toFixed(1));
+
+    return {
+      runTime: time,
+      score,
+      round,
+    };
+  }
+);
 
 const visibleIndices = new Set<number>([1, 2, 3, 4]);
 

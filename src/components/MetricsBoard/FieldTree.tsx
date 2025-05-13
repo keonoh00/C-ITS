@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Tag } from "../common/Tag/Tag";
 
 interface FieldItem {
@@ -14,7 +14,17 @@ interface FieldTreeProps {
 }
 
 export default function FieldTree({ data }: FieldTreeProps) {
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  // Precompute expanded state for parents with children
+  const initialExpanded = useMemo(() => {
+    const expandedState: Record<string, boolean> = {};
+    data.forEach((item) => {
+      if (item.children) expandedState[item.title] = true;
+    });
+    return expandedState;
+  }, [data]);
+
+  const [expanded, setExpanded] =
+    useState<Record<string, boolean>>(initialExpanded);
 
   const toggleExpand = (title: string) => {
     setExpanded((prev) => ({

@@ -52,7 +52,7 @@ export interface AbilityDetail {
   privilege: string;
   singleton: boolean;
   access: Record<string, unknown>;
-  plugin: "";
+  plugin: string;
   last_modified: string;
   executors: AbilityExecutor[];
   name: string;
@@ -99,7 +99,7 @@ const DUMMY: EnrichedAdversary[] = [
         tactic: "hunt",
         technique_id: "T1046",
         technique_name: "-",
-        plugin: "",
+        plugin: "true",
         last_modified: new Date().toISOString(),
         privilege: "User",
         singleton: false,
@@ -122,7 +122,7 @@ const DUMMY: EnrichedAdversary[] = [
         tactic: "detection",
         technique_id: "T1057",
         technique_name: "-",
-        plugin: "",
+        plugin: "true",
         last_modified: new Date().toISOString(),
         privilege: "User",
         singleton: false,
@@ -145,7 +145,7 @@ const DUMMY: EnrichedAdversary[] = [
         tactic: "detection",
         technique_id: "T1057",
         technique_name: "-",
-        plugin: "",
+        plugin: "true",
         last_modified: new Date().toISOString(),
         privilege: "User",
         singleton: false,
@@ -168,7 +168,7 @@ const DUMMY: EnrichedAdversary[] = [
         tactic: "detection",
         technique_id: "T1049",
         technique_name: "-",
-        plugin: "",
+        plugin: "true",
         last_modified: new Date().toISOString(),
         privilege: "User",
         singleton: false,
@@ -191,7 +191,7 @@ const DUMMY: EnrichedAdversary[] = [
         tactic: "response",
         technique_id: "T1005",
         technique_name: "-",
-        plugin: "",
+        plugin: "true",
         last_modified: new Date().toISOString(),
         privilege: "User",
         singleton: false,
@@ -214,7 +214,7 @@ const DUMMY: EnrichedAdversary[] = [
         tactic: "response",
         technique_id: "T1083",
         technique_name: "-",
-        plugin: "",
+        plugin: "true",
         last_modified: new Date().toISOString(),
         privilege: "User",
         singleton: false,
@@ -247,7 +247,7 @@ const DUMMY: EnrichedAdversary[] = [
         delete_payload: false,
         repeatable: false,
         buckets: [],
-        requirements: [],
+        requirements: ["true"],
         threat_group: [],
         mitre_domain: "enterprise-attack",
       },
@@ -270,7 +270,7 @@ const DUMMY: EnrichedAdversary[] = [
         delete_payload: false,
         repeatable: false,
         buckets: [],
-        requirements: [],
+        requirements: ["true"],
         threat_group: [],
         mitre_domain: "enterprise-attack",
       },
@@ -293,7 +293,7 @@ const DUMMY: EnrichedAdversary[] = [
         delete_payload: false,
         repeatable: false,
         buckets: [],
-        requirements: [],
+        requirements: ["true"],
         threat_group: [],
         mitre_domain: "enterprise-attack",
       },
@@ -316,7 +316,7 @@ const DUMMY: EnrichedAdversary[] = [
         delete_payload: false,
         repeatable: false,
         buckets: [],
-        requirements: [],
+        requirements: ["true"],
         threat_group: [],
         mitre_domain: "enterprise-attack",
       },

@@ -10,22 +10,13 @@ import { Tag } from "../common/Tag/Tag";
 
 const columns: TableColumn<GraphFlattenBlock & { onClick: () => void }>[] = [
   {
-    label: "Technique",
+    label: "Attack Name",
     className: "py-5",
-    render: (item) => <span>{item.technique_name}</span>,
+    render: (item) => <span>{item.attack_name}</span>,
   },
   {
     label: "Target",
     render: (item) => <span>{item.target}</span>,
-  },
-  {
-    label: "Status",
-    render: (item) => (
-      <Tag
-        label={item.status}
-        color={item.status === "Complete" ? "green" : "red"}
-      />
-    ),
   },
   {
     label: "Outcome",
@@ -48,7 +39,9 @@ const columns: TableColumn<GraphFlattenBlock & { onClick: () => void }>[] = [
   },
   {
     label: "Tags",
-    render: (item) => <Tag label={item.tags[0]} color={"gray"} />,
+    render: (item) => {
+      return <Tag label={item.tags[0]} color={"gray"} />;
+    },
   },
   {
     label: "Info",
@@ -85,7 +78,7 @@ const PropertiesTechniqueTable: React.FC<PropertiesTechniqueTableProps> = ({
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  const pageSize = 4;
+  const pageSize = 6;
   const totalPages = Math.ceil(onClickPopulatedData.length / pageSize);
   const paginatedData = onClickPopulatedData.slice(
     (currentPage - 1) * pageSize,

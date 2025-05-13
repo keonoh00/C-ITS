@@ -8,12 +8,8 @@ import { testedResults, TestResultItem } from "@/api/evaluate/data";
 import { Pagination } from "../common/Pagination/Pagination";
 
 const uniqueTactics = [...new Set(testedResults.map((it) => it.tactic))].sort();
-const uniqueOutcomes = [
-  ...new Set(testedResults.map((it) => it.outcome)),
-].sort();
 
 const TACTIC_COLOR_MAP: Record<string, string> = {};
-const OUTCOME_COLOR_MAP: Record<string, string> = {};
 const TAG_COLOR_KEYS = Object.keys(
   TAG_COLOR_MAP
 ) as (keyof typeof TAG_COLOR_MAP)[];
@@ -22,10 +18,12 @@ uniqueTactics.forEach((tactic, index) => {
   TACTIC_COLOR_MAP[tactic] = TAG_COLOR_KEYS[index % TAG_COLOR_KEYS.length];
 });
 
-uniqueOutcomes.forEach((outcome, index) => {
-  OUTCOME_COLOR_MAP[outcome] = TAG_COLOR_KEYS[index % TAG_COLOR_KEYS.length];
-});
-
+const OUTCOME_COLOR_MAP: Record<string, keyof typeof TAG_COLOR_MAP> = {
+  Alert: "green",
+  Blocked: "blue",
+  None: "red",
+  Logged: "orange",
+};
 interface DrillDownTableProps {
   round: string;
 }
@@ -83,7 +81,7 @@ export default function DrillDownTable({ round }: DrillDownTableProps) {
         <Tag
           label={item.outcome}
           key={index}
-          color={OUTCOME_COLOR_MAP[item.outcome] as keyof typeof TAG_COLOR_MAP}
+          color={OUTCOME_COLOR_MAP[item.outcome] ?? "gray"}
         />
       ),
     },

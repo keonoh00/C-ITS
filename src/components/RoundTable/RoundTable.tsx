@@ -9,46 +9,29 @@ import { Tag } from "../common/Tag/Tag";
 export interface RoundItem {
   assessmentName: string;
   defense: string;
-  outcomeSuccess: number;
-  outcomeFail: number;
+  progress: number;
   tag: string;
   link: string;
 }
 
-const data: RoundItem[] = [
-  {
-    assessmentName: "Penetration to C-ITS Center (Q1)",
-    defense: "Incident Responder, MNX Hunter",
-    outcomeSuccess: 100,
-    outcomeFail: 0,
-    tag: "1회차",
-    link: "/properties",
-  },
-  {
-    assessmentName: "Penetration to C-ITS Center (Q2)",
-    defense: "Incident Responder, MNX Hunter, ETC",
-    outcomeSuccess: 44,
-    outcomeFail: 56,
-    tag: "2회차",
-    link: "/properties",
-  },
-  {
-    assessmentName: "Penetration to C-ITS Center (Q3)",
-    defense: "Incident Responder, MNX Hunter, Elastic Hunter",
-    outcomeSuccess: 72,
-    outcomeFail: 28,
-    tag: "3회차",
-    link: "/properties",
-  },
-  {
-    assessmentName: "Penetration to C-ITS Center (Q4)",
-    defense: "-",
-    outcomeSuccess: 0,
-    outcomeFail: 100,
-    tag: "4회차",
-    link: "/properties",
-  },
+const roundMeta = [
+  { tag: "1회차", defense: "Detection, Hunt, Response" },
+  { tag: "2회차", defense: "Detection, Hunt, Response" },
+  { tag: "3회차", defense: "Detection, Hunt, Response" },
+  { tag: "4회차", defense: "Detection, Hunt, Response" },
 ];
+
+const data: RoundItem[] = roundMeta.map(({ tag, defense }) => {
+  const assessmentName = `Penetration to C-ITS Center (${tag})`;
+
+  return {
+    assessmentName,
+    defense,
+    progress: 100,
+    tag,
+    link: `/properties/${encodeURIComponent(assessmentName)}`,
+  };
+});
 
 const columns: TableColumn<RoundItem>[] = [
   {
@@ -59,7 +42,7 @@ const columns: TableColumn<RoundItem>[] = [
         href={item.link}
         className="underline text-blue-400 hover:text-blue-300"
       >
-        {item.assessmentName}
+        <p>{item.assessmentName}</p>
       </Link>
     ),
   },
@@ -73,19 +56,17 @@ const columns: TableColumn<RoundItem>[] = [
       <div className="flex items-center justify-center gap-1">
         <div className="w-24 h-4 bg-base-700 rounded overflow-hidden flex">
           <div
-            className={
-              item.outcomeSuccess > 0 ? "bg-blue-400" : "bg-neutral-500"
-            }
-            style={{ width: `${item.outcomeSuccess}%` }}
+            className={item.progress > 0 ? "bg-blue-400" : "bg-neutral-500"}
+            style={{ width: `${item.progress}%` }}
           />
-          {item.outcomeFail > 0 && (
+          {item.progress > 0 && (
             <div
               className="bg-blue-600"
-              style={{ width: `${item.outcomeFail}%` }}
+              style={{ width: `${100 - item.progress}%` }}
             />
           )}
         </div>
-        <span className="text-xs text-neutral-400">{item.outcomeSuccess}%</span>
+        <span className="text-xs text-neutral-400">{item.progress}%</span>
       </div>
     ),
   },
