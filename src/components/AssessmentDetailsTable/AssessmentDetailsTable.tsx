@@ -66,6 +66,7 @@ export default function AssessmentDetailsTable({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const pushingRef = useRef(false);
+  const indexRef = useRef(0);
 
   const logs: LogEntry[] = useMemo(() => {
     return operation.chain.map((link) => {
@@ -130,8 +131,9 @@ export default function AssessmentDetailsTable({
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [visibleLogs]);
+
   useEffect(() => {
-    const getRandomDelay = () => Math.floor(Math.random() * 5000) + 5000;
+    const getRandomDelay = () => Math.floor(Math.random() * 5000) + 5000; // 5-10 sec
 
     const startUpdate = () => {
       setVisibleLogs([]);
@@ -139,24 +141,32 @@ export default function AssessmentDetailsTable({
       onRun();
       setIsLoading(true);
       pushingRef.current = true;
+      indexRef.current = 0;
 
       const pushNext = () => {
-        setVisibleLogs((prev) => {
-          if (logs.length > prev.length) {
-            const newItem = {
-              ...logs[prev.length],
-              timestamp: new Date().toISOString(),
-            };
-            setTimeout(pushNext, getRandomDelay());
-            return [...prev, newItem];
-          } else {
-            // No state change, just end the loop
-            return prev;
-          }
-        });
+        if (indexRef.current >= logs.length) {
+          pushingRef.current = false;
+          setIsLoading(false);
+          setTimeout(onComplete, 0);
+          return;
+        }
+
+        const nextItem = {
+          ...logs[indexRef.current],
+          timestamp: new Date().toISOString(),
+        };
+
+        setVisibleLogs((prev) => [...prev, nextItem]);
+        indexRef.current += 1;
+
+        const delay = getRandomDelay(); // random delay after first item
+        setTimeout(pushNext, delay);
       };
 
-      setTimeout(pushNext, getRandomDelay());
+      // First item after exactly 5 sec
+      setTimeout(() => {
+        pushNext(); // first push
+      }, 5000);
     };
 
     ws.on(
@@ -168,15 +178,14 @@ export default function AssessmentDetailsTable({
         "trigger",
         startUpdate as (payload: WebSocketMessageMap["trigger"]) => void
       );
-  }, [logs, onRun, onStopButtonLoading]);
+  }, [logs, onRun, onStopButtonLoading, onComplete]);
 
-  // ✅ This watches for the end of pushing and triggers onComplete after render
   useEffect(() => {
     if (pushingRef.current && visibleLogs.length === logs.length) {
       pushingRef.current = false;
       setIsLoading(false);
       setTimeout(() => {
-        onComplete(); // ✅ Safe deferred call
+        onComplete();
       }, 0);
     }
   }, [visibleLogs, logs, onComplete]);
