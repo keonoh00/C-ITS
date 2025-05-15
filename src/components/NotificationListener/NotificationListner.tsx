@@ -1,38 +1,24 @@
 "use client";
 
 import { useEffect } from "react";
-import { Toast, useToast } from "@/components/ToastProvider/ToastProvider";
+import { useToast } from "@/components/ToastProvider/ToastProvider";
+import { ws } from "@/lib/WebSocketService";
 
 export default function NotificationListener() {
   const showToast = useToast();
 
   useEffect(() => {
-    const socket = new WebSocket(`ws://${window.location.hostname}:3002`);
-
-    socket.onopen = () => {
-      console.log("WebSocket connected");
+    const handler = (data: {
+      message: string;
+      type?: "info" | "success" | "error" | "warning";
+      duration?: number;
+    }) => {
+      const { message, type = "info", duration = 3000 } = data;
+      showToast(message, { type, duration });
     };
 
-    socket.onmessage = (event) => {
-      try {
-        const { message, type, duration } = JSON.parse(event.data) as Toast;
-
-        if (typeof message === "string") {
-          showToast(message, {
-            type: type || "info",
-            duration: duration || 3000,
-          });
-        }
-      } catch (err) {
-        console.error("Failed to parse message:", err);
-      }
-    };
-
-    socket.onerror = (err) => {
-      console.error("WebSocket error:", err);
-    };
-
-    return () => socket.close();
+    ws.on("notification", handler);
+    return () => ws.off("notification", handler);
   }, [showToast]);
 
   return null;

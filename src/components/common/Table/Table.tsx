@@ -24,7 +24,7 @@ export function Table<T>({
   const isEmpty = !Array.isArray(data) || data.length === 0;
 
   return (
-    <table className="w-full text-sm text-left text-white">
+    <table className="w-full table-fixed text-sm text-left text-white">
       <thead className="bg-base-800 text-neutral-300 border-b border-base-700">
         <tr>
           {columns.map((col, idx) => (

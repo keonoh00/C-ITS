@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Tag } from "../common/Tag/Tag";
 
 interface FieldItem {
@@ -9,31 +9,22 @@ interface FieldItem {
   children?: FieldItem[];
 }
 
-const fieldsData: FieldItem[] = [
-  {
-    title: "Campaigns",
-    count: 52,
-  },
-  {
-    title: "Passed",
-    count: 14,
-    children: [
-      { title: "Blocked", count: 0 },
-      { title: "Alert", count: 14 },
-    ],
-  },
-  {
-    title: "Failed",
-    count: 38,
-    children: [
-      { title: "Logged", count: 12 },
-      { title: "None", count: 26 },
-    ],
-  },
-];
+interface FieldTreeProps {
+  data: FieldItem[];
+}
 
-export default function FieldTree() {
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+export default function FieldTree({ data }: FieldTreeProps) {
+  // Precompute expanded state for parents with children
+  const initialExpanded = useMemo(() => {
+    const expandedState: Record<string, boolean> = {};
+    data.forEach((item) => {
+      if (item.children) expandedState[item.title] = true;
+    });
+    return expandedState;
+  }, [data]);
+
+  const [expanded, setExpanded] =
+    useState<Record<string, boolean>>(initialExpanded);
 
   const toggleExpand = (title: string) => {
     setExpanded((prev) => ({
@@ -44,7 +35,7 @@ export default function FieldTree() {
 
   return (
     <div className="flex flex-col gap-2">
-      {fieldsData.map((field, idx) => (
+      {data.map((field, idx) => (
         <div key={idx}>
           <div
             onClick={() => field.children && toggleExpand(field.title)}
@@ -56,9 +47,9 @@ export default function FieldTree() {
                   {expanded[field.title] ? "▾" : "▸"}
                 </span>
               )}
-              <span className="text-sm text-white">{field.title}</span>
+              <span className="text-md text-white">{field.title}</span>
             </div>
-            <span className="text-sm text-white font-bold">{field.count}</span>
+            <span className="text-md text-white font-bold">{field.count}</span>
           </div>
 
           {/* Expand Children */}
@@ -67,11 +58,12 @@ export default function FieldTree() {
               {field.children.map((child, cIdx) => (
                 <div
                   key={cIdx}
-                  className="flex items-center justify-between text-sm text-neutral-300"
+                  className="flex items-center justify-between text-md text-neutral-300"
                 >
                   <div className="flex items-center gap-2">
                     <Tag
                       label={child.title}
+                      size="lg"
                       color={
                         child.title === "Blocked"
                           ? "blue"

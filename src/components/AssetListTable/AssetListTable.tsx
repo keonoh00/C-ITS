@@ -12,7 +12,7 @@ const assetColumns: TableColumn<Agent>[] = [
     label: "Hostname",
     render: (item) => (
       <a href="#" className="text-blue-400 underline">
-        {item.display_name}
+        {item.host}
       </a>
     ),
   },

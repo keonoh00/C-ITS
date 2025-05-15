@@ -5,6 +5,11 @@ import { Table, TableColumn } from "@/components/common/Table/Table";
 import Link from "next/link";
 import { OperationItem, OperationResponse } from "@/api/defend/assetssment";
 
+export enum AssessmentRunningState {
+  Running = "Running",
+  Complete = "Complete",
+  Ready = "Ready",
+}
 export interface AssessmentTableProps {
   data: OperationResponse;
 }
@@ -36,7 +41,13 @@ export default function AssessmentTable({ data }: AssessmentTableProps) {
         <span
           className={clsx(
             "px-2 py-1 rounded text-xs font-semibold",
-            item.state ? "bg-green-500 text-white" : "bg-red-500 text-white"
+            item.state === AssessmentRunningState.Ready
+              ? "bg-gray-300 text-black"
+              : item.state === AssessmentRunningState.Complete
+              ? "bg-blue-500 text-white"
+              : item.state === AssessmentRunningState.Running
+              ? "bg-green-500 text-white"
+              : ""
           )}
         >
           {item.state}

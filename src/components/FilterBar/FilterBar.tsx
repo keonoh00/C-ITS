@@ -1,11 +1,11 @@
 "use client";
 
-import React from "react";
 import {
   EvaluationReportTypes,
   HeatmapEvaluationFramework,
   HeatmapEvaluationFrameworkKeyType,
-} from "../HeatmapBoard/tacticsData";
+} from "@/api/evaluate/types";
+import React from "react";
 
 interface FilterBarProps {
   reportOptions: EvaluationReportTypes[];
@@ -57,21 +57,23 @@ export default function FilterBar({
       </div>
 
       {/* Round */}
-      <div className="flex items-center gap-2 min-w-[200px]">
-        <label className="text-sm text-neutral-400">Round</label>
-        <select
-          className="p-2 bg-base-800 border border-neutral-600 rounded text-sm text-neutral-300"
-          value={round}
-          onChange={(e) => setRound(e.target.value)}
-        >
-          {roundOptions.map((option) => (
-            <option key={option}>{option}</option>
-          ))}
-        </select>
-      </div>
+      {reportType !== EvaluationReportTypes.RESILIENCETRENDING && (
+        <div className="flex items-center gap-2 min-w-[200px]">
+          <label className="text-sm text-neutral-400">Round</label>
+          <select
+            className="p-2 bg-base-800 border border-neutral-600 rounded text-sm text-neutral-300"
+            value={round}
+            onChange={(e) => setRound(e.target.value)}
+          >
+            {roundOptions.map((option) => (
+              <option key={option}>{option}</option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {/* Tactics & Framework */}
-      {reportType === "Heat Map" && (
+      {reportType === EvaluationReportTypes.HEATMAP && (
         <div className="flex flex-wrap gap-6 min-w-[500px]">
           <div className="flex items-center gap-2 min-w-[200px]">
             <label className="text-sm text-neutral-400">Tactics</label>

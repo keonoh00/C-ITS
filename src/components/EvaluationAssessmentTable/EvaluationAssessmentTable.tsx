@@ -17,38 +17,38 @@ export interface EvaluationRoundItem {
 }
 
 export const scenarioData: EvaluationRoundItem[] = [
-  {
-    assessmentName: "Brute-force attack For Server",
-    score: 29.58,
-    lastActivity: new Date("2024-07-05 14:25:31"),
-    status: "평가 완료",
-    round: 2,
-    reportLink: "/round",
-  },
+  // {
+  //   assessmentName: "Brute-force attack For Server",
+  //   score: 29.58,
+  //   lastActivity: new Date("2024-07-05 14:25:31"),
+  //   status: "평가 완료",
+  //   round: 2,
+  //   reportLink: "/round",
+  // },
   {
     assessmentName: "Penetration to C-ITS Center",
     score: -Infinity,
     lastActivity: new Date("2024-08-05 14:25:31"),
-    status: "평가 진행중",
+    status: "평가 완료",
     round: 4,
     reportLink: "/round",
   },
-  {
-    assessmentName: "Command Execute to RSU",
-    score: 58.52,
-    lastActivity: new Date("2024-07-05 16:17:28"),
-    status: "평가 완료",
-    round: 2,
-    reportLink: "/round",
-  },
-  {
-    assessmentName: "APT28",
-    score: 78.63,
-    lastActivity: new Date("2024-08-03 14:25:42"),
-    status: "평가 완료",
-    round: 2,
-    reportLink: "/round",
-  },
+  // {
+  //   assessmentName: "Command Execute to RSU",
+  //   score: 58.52,
+  //   lastActivity: new Date("2024-07-05 16:17:28"),
+  //   status: "평가 완료",
+  //   round: 2,
+  //   reportLink: "/round",
+  // },
+  // {
+  //   assessmentName: "APT28",
+  //   score: 78.63,
+  //   lastActivity: new Date("2024-08-03 14:25:42"),
+  //   status: "평가 완료",
+  //   round: 2,
+  //   reportLink: "/round",
+  // },
 ];
 
 const columns: TableColumn<EvaluationRoundItem>[] = [

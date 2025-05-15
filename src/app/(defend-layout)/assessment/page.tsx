@@ -3,7 +3,9 @@
 import { useEffect, useState, useCallback } from "react";
 import { SaveIcon, Trash2 } from "lucide-react";
 import SearchInput from "@/components/common/SearchInput/SearchInput";
-import AssessmentTable from "@/components/AssessmentTable/AssessmentTable";
+import AssessmentTable, {
+  AssessmentRunningState,
+} from "@/components/AssessmentTable/AssessmentTable";
 import { fetchOperations, OperationResponse } from "@/api/defend/assetssment";
 import Loading from "@/components/common/Loading/Loading";
 
@@ -17,7 +19,13 @@ export default function Assessment() {
     setError(null);
     try {
       const response = await fetchOperations();
-      setData(response);
+      setData(
+        response.map((item) => ({
+          ...item,
+          state: AssessmentRunningState.Ready,
+          start: "",
+        }))
+      );
     } catch (err) {
       setError((err as Error).message || "Failed to load data.");
       setData([]);

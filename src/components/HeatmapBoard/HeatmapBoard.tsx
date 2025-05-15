@@ -1,200 +1,17 @@
 "use client";
 
-import React, { useMemo, useRef, useState, useEffect } from "react";
-import {
-  HeatmapEvaluationFramework,
-  OutcomeEnum,
-  Tactic,
-  Technique,
-} from "./tacticsData";
+import React, { useEffect, useRef, useState } from "react";
 import HeatmapCard from "./HeatmapCard";
 import Legend from "./Legend";
-import { tacticsDataEnterprise } from "./enterprise/enterpriseData";
-import { tacticsDataMobile } from "./mobile/mobileData";
-import { tacticsDataICS } from "./ics/icsData";
+import { Tactic } from "@/api/evaluate/types";
 
 interface HeatmapBoardProps {
-  selectedTactic: string;
-  framework: HeatmapEvaluationFramework;
-  round: string;
-  sortType: "alphabetical" | "impact";
+  sortedAndFilteredTactics: Tactic[];
 }
-
-export const frameworkMap: Record<HeatmapEvaluationFramework, Tactic[]> = {
-  [HeatmapEvaluationFramework.ENTERPRISE]: tacticsDataEnterprise,
-  [HeatmapEvaluationFramework.MOBILE]: tacticsDataMobile,
-  [HeatmapEvaluationFramework.ICS]: tacticsDataICS,
-};
-
-const impactOrder: Record<string, number> = {
-  Weakest: 6,
-  Minimal: 5,
-  Lower: 4,
-  Moderate: 3,
-  Strong: 2,
-  "Outcome TBD": 1,
-  "No Test Coverage": 0,
-};
-
-function replaceTechniquesByIds(
-  data: Tactic[],
-  replacements: { id: string; newTechnique: Partial<Technique> }[]
-): Tactic[] {
-  if (!replacements || replacements.length < 1) return data;
-  const replacementMap = new Map(
-    replacements.map((r) => [r.id, r.newTechnique])
-  );
-
-  return data.map((tactic) => ({
-    ...tactic,
-    techniques: tactic.techniques.map((tech) => {
-      const replacement = replacementMap.get(tech.id);
-      return replacement ? { ...tech, ...replacement } : tech;
-    }),
-  }));
-}
-
-const Replace1 = [
-  {
-    id: "T1018",
-    newTechnique: {
-      id: "T1018",
-      outcome: OutcomeEnum.Weakest,
-      topCount: 2,
-      bottomCount: 2,
-    },
-  },
-  {
-    id: "T1021",
-    newTechnique: {
-      id: "T1021",
-      outcome: OutcomeEnum.Moderate,
-      topCount: 4,
-      bottomCount: 4,
-    },
-  },
-  {
-    id: "T1569",
-    newTechnique: {
-      id: "T1569",
-      outcome: OutcomeEnum.Moderate,
-      topCount: 3,
-      bottomCount: 3,
-    },
-  },
-  {
-    id: "T1087",
-    newTechnique: {
-      id: "T1087",
-      outcome: OutcomeEnum.Weakest,
-      topCount: 1,
-      bottomCount: 1,
-    },
-  },
-  {
-    id: "T1003",
-    newTechnique: {
-      id: "T1003",
-      outcome: OutcomeEnum.Minimal,
-      topCount: 2,
-      bottomCount: 2,
-    },
-  },
-  {
-    id: "T1110",
-    newTechnique: {
-      id: "T1110",
-      outcome: OutcomeEnum.Minimal,
-      topCount: 1,
-      bottomCount: 1,
-    },
-  },
-];
-
-const Replace2 = [
-  {
-    id: "T1018",
-    newTechnique: {
-      id: "T1018",
-      outcome: OutcomeEnum.Weakest,
-      topCount: 2,
-      bottomCount: 2,
-    },
-  },
-  {
-    id: "T1021",
-    newTechnique: {
-      id: "T1021",
-      outcome: OutcomeEnum.Moderate,
-      topCount: 4,
-      bottomCount: 4,
-    },
-  },
-  {
-    id: "T1569",
-    newTechnique: {
-      id: "T1569",
-      outcome: OutcomeEnum.Moderate,
-      topCount: 3,
-      bottomCount: 3,
-    },
-  },
-  {
-    id: "T1087",
-    newTechnique: {
-      id: "T1087",
-      outcome: OutcomeEnum.Weakest,
-      topCount: 1,
-      bottomCount: 1,
-    },
-  },
-  {
-    id: "T1003",
-    newTechnique: {
-      id: "T1003",
-      outcome: OutcomeEnum.Moderate,
-      topCount: 2,
-      bottomCount: 2,
-    },
-  },
-  {
-    id: "T1110",
-    newTechnique: {
-      id: "T1110",
-      outcome: OutcomeEnum.Moderate,
-      topCount: 1,
-      bottomCount: 1,
-    },
-  },
-];
 
 export default function HeatmapBoard({
-  selectedTactic,
-  framework,
-  round,
-  sortType,
+  sortedAndFilteredTactics,
 }: HeatmapBoardProps) {
-  const tacticsData: Tactic[] = useMemo(() => {
-    const original = frameworkMap[framework] ?? [];
-
-    // Dummy replacement (you can later replace this with actual input)
-    const dummyReplaced = replaceTechniquesByIds(
-      original,
-      round == "Penetration to C-ITS Center (Q2)"
-        ? Replace1
-        : round == "Penetration to C-ITS Center (Q4)"
-        ? Replace2
-        : []
-    );
-
-    return dummyReplaced;
-  }, [framework, round]);
-
-  const filteredTactics: Tactic[] = useMemo(() => {
-    if (selectedTactic.startsWith("All Selected")) return tacticsData;
-    return tacticsData.filter((t) => t.name === selectedTactic);
-  }, [selectedTactic, tacticsData]);
-
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showLeft, setShowLeft] = useState(false);
   const [showRight, setShowRight] = useState(false);
@@ -213,19 +30,6 @@ export default function HeatmapBoard({
     return () => el.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const sortedTechniques = (techniques: Technique[]): Technique[] => {
-    return [...techniques].sort((a, b) => {
-      if (sortType === "alphabetical") {
-        return a.name.localeCompare(b.name);
-      } else if (sortType === "impact") {
-        const aImpact = impactOrder[a.outcome ?? "No Test Coverage"] ?? 0;
-        const bImpact = impactOrder[b.outcome ?? "No Test Coverage"] ?? 0;
-        return bImpact - aImpact;
-      }
-      return 0;
-    });
-  };
-
   return (
     <div className="w-full h-full flex flex-col">
       <Legend />
@@ -242,7 +46,7 @@ export default function HeatmapBoard({
           className="flex-1 overflow-x-auto overflow-y-auto mt-6 pb-4"
         >
           <div className="flex gap-4 min-w-fit justify-around">
-            {filteredTactics.map((tactic, idx) => (
+            {sortedAndFilteredTactics.map((tactic, idx) => (
               <div
                 key={idx}
                 className="flex-shrink-0 w-[145px] flex flex-col rounded-lg p-2"
@@ -257,16 +61,14 @@ export default function HeatmapBoard({
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  {sortedTechniques(tactic.techniques).map(
-                    (technique, tIdx) => (
-                      <div
-                        key={tIdx}
-                        className="flex flex-col gap-2 overflow-y-auto"
-                      >
-                        <HeatmapCard technique={technique} />
-                      </div>
-                    )
-                  )}
+                  {tactic.techniques.map((technique, tIdx) => (
+                    <div
+                      key={tIdx}
+                      className="flex flex-col gap-2 overflow-y-auto"
+                    >
+                      <HeatmapCard technique={technique} />
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
